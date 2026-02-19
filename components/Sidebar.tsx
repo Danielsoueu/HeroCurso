@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, PlayCircle, ArrowLeft, ChevronRight } from 'lucide-react';
+import { CheckCircle, PlayCircle, ArrowLeft, ChevronRight, Lock } from 'lucide-react';
 import { modules } from '../data';
 
 interface SidebarProps {
@@ -34,43 +34,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Mobile Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/20 z-30 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-slate-900/40 z-30 lg:hidden backdrop-blur-sm transition-opacity"
           onClick={onCloseMobile}
         ></div>
       )}
 
       <div className={`
         fixed lg:static inset-y-0 left-0 z-40
-        w-80 bg-white border-r border-slate-200 flex flex-col h-full
+        w-80 bg-white border-r border-slate-100 flex flex-col h-full
         transform transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        {/* Header - Simple and Clean */}
-        <div className="p-6 border-b border-slate-100">
+        {/* Header Branding */}
+        <div className="p-6 border-b border-slate-100 bg-white relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-32 h-32 bg-hero-50 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+           
            <button 
              onClick={onBackToHome}
-             className="group flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-hero-600 transition-colors mb-6"
+             className="relative z-10 group flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-hero-600 transition-colors mb-6 uppercase tracking-wider"
            >
-             <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-hero-50 transition-colors">
-               <ArrowLeft className="w-3 h-3" />
-             </div>
+             <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
              Voltar ao Início
            </button>
            
-           <h1 className="font-extrabold text-xl text-slate-900 leading-tight">
-             Cobrança &<br/>
-             <span className="text-hero-600">Negociação</span>
-           </h1>
+           <div className="relative z-10">
+             <h1 className="font-extrabold text-2xl text-slate-900 leading-none tracking-tight">
+               Cobrança &<br/>
+               <span className="text-transparent bg-clip-text bg-gradient-to-r from-hero-600 to-hero-500">
+                 Negociação
+               </span>
+             </h1>
+             <p className="text-xs text-slate-400 mt-2 font-medium">Trilha Avançada • Financeiro</p>
+           </div>
            
-           {/* Progress Card */}
-           <div className="mt-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+           {/* Modern Progress Card */}
+           <div className="mt-6 relative z-10">
              <div className="flex justify-between items-end mb-2">
-               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Seu Progresso</span>
-               <span className="text-sm font-bold text-hero-600">{calculateProgress()}%</span>
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Seu Progresso</span>
+               <span className="text-xs font-bold text-hero-600 bg-hero-50 px-2 py-0.5 rounded-full border border-hero-100">{calculateProgress()}%</span>
              </div>
-             <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+             <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                 <div 
-                  className="bg-hero-600 h-1.5 rounded-full transition-all duration-700 ease-out" 
+                  className="bg-gradient-to-r from-hero-500 to-hero-600 h-1.5 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(230,0,90,0.3)]" 
                   style={{ width: `${calculateProgress()}%` }}
                 ></div>
              </div>
@@ -78,10 +83,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* List */}
-        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto py-6 px-3 space-y-8 custom-scrollbar bg-slate-50/50">
           {Object.entries(groupedModules).map(([category, categoryModules]) => (
             <div key={category}>
-              <h3 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-4 px-3">
+              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-4 flex items-center gap-2">
+                <span className="w-1 h-1 rounded-full bg-hero-300"></span>
                 {category}
               </h3>
               <div className="space-y-1">
@@ -98,14 +104,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         onCloseMobile();
                       }}
                       className={`
-                        w-full text-left px-3 py-3 rounded-lg flex items-start justify-between group transition-all duration-200
+                        w-full text-left px-4 py-3.5 rounded-xl flex items-center justify-between group transition-all duration-200 relative overflow-hidden
                         ${isActive 
-                          ? 'bg-hero-50 text-hero-900' 
-                          : 'text-slate-600 hover:bg-slate-50'}
+                          ? 'bg-white shadow-sm border border-slate-100 z-10' 
+                          : 'text-slate-500 hover:bg-white hover:text-slate-700 hover:shadow-sm border border-transparent'}
                       `}
                     >
-                      <div className="flex items-start gap-3">
-                        <div className={`mt-0.5 transition-colors ${isCompleted ? 'text-green-500' : isActive ? 'text-hero-600' : 'text-slate-300'}`}>
+                      {isActive && (
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-hero-600 rounded-l-xl"></div>
+                      )}
+                      
+                      <div className="flex items-center gap-3.5">
+                        <div className={`
+                            flex-shrink-0 transition-all duration-300
+                            ${isCompleted ? 'text-green-500' : isActive ? 'text-hero-600 scale-110' : 'text-slate-300'}
+                          `}>
                           {isCompleted ? (
                             <CheckCircle className="w-5 h-5 fill-green-50" />
                           ) : isActive ? (
@@ -117,15 +130,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           )}
                         </div>
                         <div className="flex flex-col">
-                          <span className={`text-sm leading-tight ${isActive ? 'font-bold' : 'font-medium'}`}>
+                          <span className={`text-sm leading-tight transition-colors ${isActive ? 'font-bold text-slate-900' : 'font-medium'}`}>
                             {module.title}
                           </span>
-                          <span className="text-[10px] text-slate-400 mt-1 font-medium">
+                          <span className="text-[10px] text-slate-400 mt-1 font-medium flex items-center gap-1">
                             {module.duration}
                           </span>
                         </div>
                       </div>
-                      {isActive && <ChevronRight className="w-4 h-4 text-hero-400 mt-1" />}
+                      
+                      {isActive && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-hero-500 shadow-lg shadow-hero-500/50"></div>
+                      )}
                     </button>
                   );
                 })}
