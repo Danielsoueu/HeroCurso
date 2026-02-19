@@ -10,7 +10,8 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ onSelectCourse, completedModules, totalModules }) => {
-  const progress = Math.round((completedModules.length / totalModules) * 100);
+  // Cap progress at 100 to prevent overflow (e.g., 113%)
+  const progress = Math.min(100, Math.round((completedModules.length / totalModules) * 100));
   const [visualProgress, setVisualProgress] = useState(0);
 
   useEffect(() => {

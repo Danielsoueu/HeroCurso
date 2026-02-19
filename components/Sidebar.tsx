@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, PlayCircle, ArrowLeft, ChevronRight, Lock } from 'lucide-react';
+import { CheckCircle, PlayCircle, ArrowLeft, ChevronRight, Lock, Medal, Sparkles } from 'lucide-react';
 import { modules } from '../data';
 
 interface SidebarProps {
@@ -19,8 +19,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   onBackToHome
 }) => {
-  // Calculate the actual progress value
-  const targetProgress = Math.round((completedModules.length / modules.length) * 100);
+  // Ensure we only count valid modules that exist in the current course list to prevent > 100%
+  const validCompletedCount = completedModules.filter(id => id < modules.length).length;
+  
+  // Calculate the actual progress value, capped at 100
+  const targetProgress = Math.min(100, Math.round((validCompletedCount / modules.length) * 100));
+  const isFinished = targetProgress === 100;
   
   // Use local state to control the visual width for animation purposes
   const [visualProgress, setVisualProgress] = useState(0);
@@ -81,20 +85,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
            </div>
            
            {/* Modern Progress Card */}
-           <div className="mt-6 relative z-10">
-             <div className="flex justify-between items-end mb-2">
-               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Seu Progresso</span>
-               <span className="text-xs font-bold text-hero-600 bg-hero-50 px-2 py-0.5 rounded-full border border-hero-100">{targetProgress}%</span>
-             </div>
-             <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                <div 
-                  className="bg-gradient-to-r from-hero-500 to-hero-600 h-1.5 rounded-full transition-all duration-[1500ms] ease-out shadow-[0_0_10px_rgba(230,0,90,0.3)] relative" 
-                  style={{ width: `${visualProgress}%` }}
-                >
-                  <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+           {isFinished ? (
+             <div className="mt-6 bg-green-50 border border-green-100 rounded-2xl p-4 flex items-center gap-4 relative overflow-hidden group animate-in fade-in slide-in-from-bottom-2 duration-700">
+                <div className="relative z-10 w-10 h-10 rounded-full bg-white border border-green-200 flex items-center justify-center text-green-600 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                    <Medal className="w-5 h-5 fill-current" />
                 </div>
+                <div className="relative z-10">
+                    <div className="text-[10px] font-bold text-green-800 uppercase tracking-widest">Parabéns!</div>
+                    <div className="text-xs font-bold text-green-600">Trilha Concluída</div>
+                </div>
+                {/* Sparkle effect */}
+                <div className="absolute right-0 top-0 w-20 h-20 bg-green-200/20 rounded-full blur-xl -mr-6 -mt-6"></div>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-green-200"></div>
              </div>
-           </div>
+           ) : (
+             <div className="mt-6 relative z-10">
+               <div className="flex justify-between items-end mb-2">
+                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Seu Progresso</span>
+                 <span className="text-xs font-bold text-hero-600 bg-hero-50 px-2 py-0.5 rounded-full border border-hero-100">{targetProgress}%</span>
+               </div>
+               <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-hero-500 to-hero-600 h-1.5 rounded-full transition-all duration-[1500ms] ease-out shadow-[0_0_10px_rgba(230,0,90,0.3)] relative" 
+                    style={{ width: `${visualProgress}%` }}
+                  >
+                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                  </div>
+               </div>
+             </div>
+           )}
         </div>
 
         {/* List */}
