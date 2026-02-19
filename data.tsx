@@ -534,7 +534,7 @@ export const modules: Module[] = [
                  <h4 className="font-bold text-gray-900 text-sm">Execução Técnica (Sistema Serasa)</h4>
                  <p className="text-sm text-gray-600 mt-1 mb-2">Login: 1065*** | Senha: Hero2***</p>
                  <div className="bg-gray-50 p-3 rounded border border-gray-200 text-sm font-mono text-gray-700">
-                   <p>Menu: SISCONVEM > Pendências > Inclusão</p>
+                   <p>Menu: SISCONVEM &gt; Pendências &gt; Inclusão</p>
                    <p>Natureza: 00 - Outras Oper.</p>
                    <p>Data Vencimento: Data da dívida mais ANTIGA.</p>
                    <p>Valor: Soma das mensalidades (máx 3 meses) + multa.</p>
@@ -556,7 +556,7 @@ export const modules: Module[] = [
         
         <InfoBox title="Churn Involuntário" type="hero">
            <p>Após 3 meses sem pagamento e negativação:</p> 
-           <p>Suspender assinatura no Iugu -> Mover para funil "Suspensos" -> Preencher dashboard de Churn.</p>
+           <p>Suspender assinatura no Iugu -&gt; Mover para funil "Suspensos" -&gt; Preencher dashboard de Churn.</p>
         </InfoBox>
       </div>
     )
@@ -577,7 +577,7 @@ export const modules: Module[] = [
             <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide text-blue-600 mb-2">Auditoria Diária (Regra D+10)</h4>
             <p className="text-sm text-gray-600 mb-2">Identificar planos anuais que estão vencidos há 11 dias (D+10) e ninguém viu.</p>
             <ol className="list-decimal list-inside text-xs text-gray-500 space-y-2">
-              <li>Ir na Planilha de Renovações > Aba do mês atual.</li>
+              <li>Ir na Planilha de Renovações &gt; Aba do mês atual.</li>
               <li>Filtrar anuais em aberto (Status "Pending" ou "Vencido").</li>
               <li>Copiar IDs e colar na Planilha de Inadimplentes (Coluna A).</li>
               <li><strong>Crucial:</strong> Verificar duplicidade na última coluna. Não queremos ligar duas vezes pro mesmo cliente no mesmo dia.</li>
@@ -628,7 +628,7 @@ export const modules: Module[] = [
             Exemplo Real: (Fatura: 64C0F64BD... - Oct 16, 2024)<br/>
             <span className="italic text-yellow-800 opacity-75">*Mês em inglês abreviado (Sep, Oct, Nov...) pois o sistema é internacional.</span>
           </div>
-          <p className="text-xs font-bold mt-2">Validação: Após criar a fatura manual, é obrigatório validar no Wagtail ("Contrato > Order > +Add Order") para liberar o onboarding do cliente, caso seja uma renovação.</p>
+          <p className="text-xs font-bold mt-2">Validação: Após criar a fatura manual, é obrigatório validar no Wagtail ("Contrato &gt; Order &gt; +Add Order") para liberar o onboarding do cliente, caso seja uma renovação.</p>
         </InfoBox>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
