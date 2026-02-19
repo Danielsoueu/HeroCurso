@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { ChevronRight, CheckCircle, ArrowLeft, Award } from 'lucide-react';
+import { ChevronRight, CheckCircle, ArrowLeft, Award, Sparkles } from 'lucide-react';
 import { Module } from '../types';
 
 interface ModuleViewerProps {
@@ -8,6 +8,7 @@ interface ModuleViewerProps {
   onComplete: () => void;
   onNext: () => void;
   isLastModule: boolean;
+  onFinishCourse: () => void;
 }
 
 export const ModuleViewer: React.FC<ModuleViewerProps> = ({ 
@@ -15,7 +16,8 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
   isCompleted, 
   onComplete, 
   onNext,
-  isLastModule
+  isLastModule,
+  onFinishCourse
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -92,14 +94,18 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
              <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-slate-200 text-slate-500'}`}>
-                    <Award className="w-6 h-6" />
+                    {isLastModule ? <Sparkles className="w-6 h-6" /> : <Award className="w-6 h-6" />}
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 text-lg">
-                      {isCompleted ? "Módulo Finalizado!" : "Finalize este módulo"}
+                      {isLastModule 
+                        ? (isCompleted ? "Curso Finalizado!" : "Última etapa!") 
+                        : (isCompleted ? "Módulo Finalizado!" : "Finalize este módulo")}
                     </h4>
                     <p className="text-sm text-slate-500">
-                      {isCompleted ? "Continue avançando para dominar o conteúdo." : "Marque como lido para prosseguir."}
+                      {isLastModule 
+                         ? "Parabéns! Você completou toda a trilha de conhecimento." 
+                         : (isCompleted ? "Continue avançando para dominar o conteúdo." : "Marque como lido para prosseguir.")}
                     </p>
                   </div>
                 </div>
@@ -107,14 +113,30 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
                 <button 
                   onClick={() => {
                     if (!isCompleted) onComplete();
-                    if (!isLastModule) onNext();
+                    if (isLastModule) {
+                      onFinishCourse();
+                    } else {
+                      onNext();
+                    }
                   }}
-                  className="group relative overflow-hidden bg-hero-600 hover:bg-hero-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-hero-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] w-full md:w-auto text-center"
+                  className={`
+                    group relative overflow-hidden text-white px-8 py-4 rounded-xl font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] w-full md:w-auto text-center
+                    ${isLastModule ? 'bg-gradient-to-r from-hero-600 to-hero-500 shadow-hero-600/30' : 'bg-hero-600 hover:bg-hero-700 shadow-hero-600/30'}
+                  `}
                 >
                   <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
                   <span className="relative flex items-center justify-center gap-2">
-                    {isLastModule ? 'Concluir Curso' : 'Próximo Módulo'}
-                    {!isLastModule && <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+                    {isLastModule ? (
+                      <>
+                        <Award className="w-4 h-4" />
+                        Concluir Curso
+                      </>
+                    ) : (
+                      <>
+                        Próximo Módulo
+                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
                   </span>
                 </button>
              </div>

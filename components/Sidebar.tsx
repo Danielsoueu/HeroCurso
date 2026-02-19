@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, PlayCircle, ArrowLeft, ChevronRight, Lock } from 'lucide-react';
 import { modules } from '../data';
 
@@ -19,7 +19,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   onBackToHome
 }) => {
-  const calculateProgress = () => Math.round((completedModules.length / modules.length) * 100);
+  // Calculate the actual progress value
+  const targetProgress = Math.round((completedModules.length / modules.length) * 100);
+  
+  // Use local state to control the visual width for animation purposes
+  const [visualProgress, setVisualProgress] = useState(0);
+
+  useEffect(() => {
+    // Add a small delay to ensure the transition triggers visually after mount/update
+    const timer = setTimeout(() => {
+      setVisualProgress(targetProgress);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [targetProgress]);
 
   // Group modules by category
   const groupedModules = modules.reduce((acc, module) => {
@@ -71,13 +84,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
            <div className="mt-6 relative z-10">
              <div className="flex justify-between items-end mb-2">
                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Seu Progresso</span>
-               <span className="text-xs font-bold text-hero-600 bg-hero-50 px-2 py-0.5 rounded-full border border-hero-100">{calculateProgress()}%</span>
+               <span className="text-xs font-bold text-hero-600 bg-hero-50 px-2 py-0.5 rounded-full border border-hero-100">{targetProgress}%</span>
              </div>
              <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                 <div 
-                  className="bg-gradient-to-r from-hero-500 to-hero-600 h-1.5 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(230,0,90,0.3)]" 
-                  style={{ width: `${calculateProgress()}%` }}
-                ></div>
+                  className="bg-gradient-to-r from-hero-500 to-hero-600 h-1.5 rounded-full transition-all duration-[1500ms] ease-out shadow-[0_0_10px_rgba(230,0,90,0.3)] relative" 
+                  style={{ width: `${visualProgress}%` }}
+                >
+                  <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                </div>
              </div>
            </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, Search } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { Sidebar } from './components/Sidebar';
 import { ModuleViewer } from './components/ModuleViewer';
 import { Home } from './components/Home';
@@ -29,7 +30,7 @@ const App = () => {
 
   const handleComplete = () => {
     if (!completedModules.includes(activeModuleIndex)) {
-      setCompletedModules([...completedModules, activeModuleIndex]);
+      setCompletedModules(prev => [...prev, activeModuleIndex]);
     }
   };
 
@@ -39,9 +40,49 @@ const App = () => {
     }
   };
 
+  const handleFinishCourse = () => {
+    // Ensure the last module is marked completed before finishing
+    handleComplete();
+    
+    // Trigger Confetti
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    const randomInRange = (min: number, max: number) => {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval: any = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      
+      confetti({
+        ...defaults, 
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+        colors: ['#e6005a', '#f43f78', '#fb7199', '#ffffff'] // Hero colors
+      });
+      confetti({
+        ...defaults, 
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+        colors: ['#e6005a', '#f43f78', '#fb7199', '#ffffff']
+      });
+    }, 250);
+
+    // Redirect to home after confetti so user can see "Concluído" badge
+    setTimeout(() => {
+      setView('HOME');
+    }, 3000);
+  };
+
   const handleSelectCourse = (courseId: string) => {
-    // In a real app, this would load different modules based on ID.
-    // For now, we only have one active course.
     if (courseId === 'financeiro') {
       setView('COURSE');
     }
@@ -113,6 +154,7 @@ const App = () => {
             onComplete={handleComplete}
             onNext={handleNext}
             isLastModule={activeModuleIndex === modules.length - 1}
+            onFinishCourse={handleFinishCourse}
           />
         )}
 
