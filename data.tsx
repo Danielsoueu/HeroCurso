@@ -556,7 +556,7 @@ export const modules: Module[] = [
         
         <InfoBox title="Churn Involuntário" type="hero">
            <p>Após 3 meses sem pagamento e negativação:</p> 
-           <p>Suspender assinatura no Iugu &rarr; Mover para funil "Suspensos" &rarr; Preencher dashboard de Churn.</p>
+           <p>Suspender assinatura no Iugu -&gt; Mover para funil "Suspensos" -&gt; Preencher dashboard de Churn.</p>
         </InfoBox>
       </div>
     )
