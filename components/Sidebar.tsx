@@ -98,18 +98,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         onCloseMobile();
                       }}
                       className={`
-                        w-full text-left px-3 py-3 rounded-lg flex items-start justify-between group transition-all duration-200 border
+                        w-full text-left px-3 py-3 rounded-lg flex items-start justify-between group transition-all duration-200
                         ${isActive 
-                          ? 'bg-hero-50 border-hero-100 text-hero-900 shadow-sm' 
-                          : 'border-transparent text-slate-600 hover:bg-slate-50'}
+                          ? 'bg-hero-50 text-hero-900' 
+                          : 'text-slate-600 hover:bg-slate-50'}
                       `}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`mt-0.5 transition-colors ${isActive ? 'text-hero-600' : isCompleted ? 'text-green-500' : 'text-slate-300'}`}>
-                          {isActive ? (
-                            <PlayCircle className="w-5 h-5 fill-hero-100" />
-                          ) : isCompleted ? (
+                        <div className={`mt-0.5 transition-colors ${isCompleted ? 'text-green-500' : isActive ? 'text-hero-600' : 'text-slate-300'}`}>
+                          {isCompleted ? (
                             <CheckCircle className="w-5 h-5 fill-green-50" />
+                          ) : isActive ? (
+                            <PlayCircle className="w-5 h-5 fill-hero-50" />
                           ) : (
                             <div className="w-5 h-5 rounded-full border-2 border-slate-200 group-hover:border-slate-300 flex items-center justify-center text-[10px] font-bold">
                               {module.id}
