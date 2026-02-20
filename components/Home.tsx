@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { PlayCircle, Clock, ChevronRight, Lock, TrendingUp, ShieldCheck, Award, Star, Sparkles } from 'lucide-react';
+import { PlayCircle, Clock, ChevronRight, Lock, TrendingUp, ShieldCheck, Award, Star, Sparkles, Search } from 'lucide-react';
 import { courses } from '../data';
 import { Course } from '../types';
 
 interface HomeProps {
   onSelectCourse: (courseId: string) => void;
+  onOpenWiki: () => void;
   completedModules: number[];
   totalModules: number;
 }
 
-export const Home: React.FC<HomeProps> = ({ onSelectCourse, completedModules, totalModules }) => {
+export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, completedModules, totalModules }) => {
   // Cap progress at 100 to prevent overflow (e.g., 113%)
   const progress = Math.min(100, Math.round((completedModules.length / totalModules) * 100));
   const [visualProgress, setVisualProgress] = useState(0);
@@ -59,6 +60,13 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, completedModules, to
                  >
                    Explorar Trilhas
                    <ChevronRight className="w-4 h-4" />
+                 </button>
+                 <button 
+                   onClick={onOpenWiki}
+                   className="px-8 py-4 rounded-2xl bg-white text-slate-600 font-bold text-sm hover:bg-slate-50 border border-slate-200 transition-all hover:scale-105 shadow-sm flex items-center gap-2"
+                 >
+                   Wiki Hero
+                   <Search className="w-4 h-4" />
                  </button>
               </div>
             </div>

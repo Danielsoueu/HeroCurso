@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, PlayCircle, ArrowLeft, ChevronRight, Lock, Medal, Sparkles } from 'lucide-react';
+import { CheckCircle, PlayCircle, ArrowLeft, ChevronRight, Lock, Medal, Sparkles, RotateCcw } from 'lucide-react';
 import { modules } from '../data';
 
 interface SidebarProps {
@@ -9,6 +9,7 @@ interface SidebarProps {
   isOpen: boolean;
   onCloseMobile: () => void;
   onBackToHome: () => void;
+  onResetCourse: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
@@ -17,7 +18,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveModule, 
   isOpen,
   onCloseMobile,
-  onBackToHome
+  onBackToHome,
+  onResetCourse
 }) => {
   // Ensure we only count valid modules that exist in the current course list to prevent > 100%
   const validCompletedCount = completedModules.filter(id => id < modules.length).length;
@@ -86,14 +88,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
            
            {/* Modern Progress Card */}
            {isFinished ? (
-             <div className="mt-6 bg-green-50 border border-green-100 rounded-2xl p-4 flex items-center gap-4 relative overflow-hidden group animate-in fade-in slide-in-from-bottom-2 duration-700">
-                <div className="relative z-10 w-10 h-10 rounded-full bg-white border border-green-200 flex items-center justify-center text-green-600 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                    <Medal className="w-5 h-5 fill-current" />
+             <div className="mt-6 bg-green-50 border border-green-100 rounded-2xl p-4 relative overflow-hidden group animate-in fade-in slide-in-from-bottom-2 duration-700">
+                <div className="flex items-center gap-4 relative z-10">
+                  <div className="w-10 h-10 rounded-full bg-white border border-green-200 flex items-center justify-center text-green-600 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                      <Medal className="w-5 h-5 fill-current" />
+                  </div>
+                  <div>
+                      <div className="text-[10px] font-bold text-green-800 uppercase tracking-widest">Parabéns!</div>
+                      <div className="text-xs font-bold text-green-600">Trilha Concluída</div>
+                  </div>
                 </div>
-                <div className="relative z-10">
-                    <div className="text-[10px] font-bold text-green-800 uppercase tracking-widest">Parabéns!</div>
-                    <div className="text-xs font-bold text-green-600">Trilha Concluída</div>
-                </div>
+                
+                {/* Restart Button */}
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onResetCourse();
+                  }}
+                  className="mt-3 w-full flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-wider text-green-700 bg-white/60 hover:bg-white border border-green-200 rounded-lg py-1.5 transition-all hover:shadow-sm relative z-10"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  Reiniciar Trilha
+                </button>
+
                 {/* Sparkle effect */}
                 <div className="absolute right-0 top-0 w-20 h-20 bg-green-200/20 rounded-full blur-xl -mr-6 -mt-6"></div>
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-green-200"></div>

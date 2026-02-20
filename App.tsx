@@ -4,9 +4,10 @@ import confetti from 'canvas-confetti';
 import { Sidebar } from './components/Sidebar';
 import { ModuleViewer } from './components/ModuleViewer';
 import { Home } from './components/Home';
+import { Wiki } from './components/Wiki';
 import { modules } from './data';
 
-type ViewState = 'HOME' | 'COURSE';
+type ViewState = 'HOME' | 'COURSE' | 'WIKI';
 
 const App = () => {
   const [view, setView] = useState<ViewState>('HOME');
@@ -82,11 +83,22 @@ const App = () => {
     }, 3000);
   };
 
+  const handleResetCourse = () => {
+    if (window.confirm("Tem certeza que deseja reiniciar o progresso do curso? Todo o histórico de conclusão será apagado.")) {
+      setCompletedModules([]);
+      setActiveModuleIndex(0);
+    }
+  };
+
   const handleSelectCourse = (courseId: string) => {
     if (courseId === 'financeiro') {
       setView('COURSE');
     }
   };
+
+  if (view === 'WIKI') {
+    return <Wiki onBack={() => setView('HOME')} />;
+  }
 
   return (
     <div className="flex h-screen bg-white font-sans text-gray-800 overflow-hidden selection:bg-hero-100 selection:text-hero-900">
@@ -99,6 +111,7 @@ const App = () => {
           isOpen={isSidebarOpen}
           onCloseMobile={() => setIsSidebarOpen(false)}
           onBackToHome={() => setView('HOME')}
+          onResetCourse={handleResetCourse}
         />
       )}
 
@@ -144,6 +157,7 @@ const App = () => {
         {view === 'HOME' ? (
           <Home 
             onSelectCourse={handleSelectCourse} 
+            onOpenWiki={() => setView('WIKI')}
             completedModules={completedModules}
             totalModules={modules.length}
           />
