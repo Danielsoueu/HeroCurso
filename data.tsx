@@ -3,10 +3,11 @@ import {
   Users, Shield, DollarSign, AlertTriangle, FileText, Book, MessageCircle, 
   CheckCircle, ChevronDown, Zap, BarChart3, Lock, Target, ClipboardList,
   MousePointer, Calculator, AlertOctagon, Search, RefreshCw, TrendingDown,
-  Lightbulb, HeartHandshake, XOctagon
+  Lightbulb, HeartHandshake, XOctagon, BrainCircuit
 } from 'lucide-react';
 import { Module, FAQCategory, Course } from './types';
 import { InfoBox, ScriptCard, ComparisonRow } from './components/ui/Cards';
+import { Quiz } from './components/ui/Quiz';
 
 export const courses: Course[] = [
   {
@@ -37,73 +38,146 @@ export const courses: Course[] = [
 
 export const faqs: FAQCategory[] = [
   {
-    category: "Valores e Cobranças",
+    category: "Valores, Cobranças e Inadimplência",
     items: [
-      { q: "Por que o valor mudou? (Quando há reajuste)", a: "O valor foi reajustado com base no índice IPCA conforme previsto contratualmente." },
-      { q: "Eu ainda tenho aquele desconto do ano passado?", a: "Clientes Hero: o desconto não se mantém, porém podemos facilitar o pagamento em até 2x no PIX ou boleto. Clientes Parceiros: o desconto permanece ativo." },
-      { q: "Já vai cobrar agora? É automático?", a: "Não. A renovação não é automática. Enviamos um link de pagamento para consiga realizar o pagamento dentro do prazo." },
-      { q: "Posso pagar mensal ao invés de anual?", a: "Sim, porém o desconto do plano anual não se mantém no plano mensal." },
-      { q: "Quais são as formas de pagamento?", a: "Anual parcelado: até 12x no cartão de crédito. Anual à vista: boleto, PIX ou cartão." },
-      { q: "Quero a segunda via da fatura, onde encontrar?", a: "Seu boleto é enviado 7 dias antes do vencimento, diretamente para o e-mail cadastrado. Caso o pagamento esteja programado por cartão de crédito, a cobrança será lançada no dia do vencimento. Em ambos os casos, as informações também estão disponíveis na área do cliente em nosso site (login). O acesso é feito com seu e-mail de cadastro e senha." },
-      { q: "Onde encontro minha nota fiscal?", a: "A nota fiscal e disponibilizada e enviada no seu e-mail de cadastro a partir do primeiro dia útil do mês sequente." },
-      { q: "Quero realizar o pagamento da minha fatura em boleto, pix ou cartão de crédito.", a: "Neste caso será necessário entrar em contato com nosso time especialista financeiro ou suporte em nosso chat para que possam disponibilizar a fatura na modalidade desejada e detalhar sobre seu débito financeiro." },
-      { q: "Como fazer o pagamento na forma mensal?", a: "Neste caso, será necessário entrar em contato com nosso time financeiro ou com o suporte, para que possam avaliar e detalhar como funciona o processo." },
-      { q: "Quero cancelar minha assinatura, como faço?", a: "Com relação à sequência do cancelamento, é necessário o envio do comprovante de alteração fiscal ou de baixa (se for o caso). Após o envio, o cancelamento é imediato. Caso esteja em utilização fiscal, para evitar divergências, é preciso garantir que esse processo seja concluído por seu(ua) contador(a) ou escritório de contabilidade. Se for MEI, a alteração pode ser feita pelo gov.br. Lembrando que também é necessário regularizar débitos, caso haja utilização anterior à data de alteração ou baixa, para evitar cobranças e sanções posteriores." },
-      { q: "Como atualizar meu cartão de crédito?", a: "Precisa entrar em contato com nosso time de financeiro/suporte para que seja enviado uma nova autorização de cadastro para que seja atualizado em sistema." },
-      { q: "Como negociar meus débitos?", a: "Precisa entrar em contato com nosso time de financeiro para avaliar seu caso e negociar o seu débito." }
+      { q: "Por que o valor mudou? (Quando há reajuste)", a: "O valor do plano contratado é revisto a cada renovação. O reajuste é feito com base no índice do IGPM (FGV) ocorrido no período. Caso o índice do IGPM seja negativo, será adotado o IPCA (IBGE)." },
+      { q: "Já vai cobrar agora? É automático?", a: "Sim. Ao final do prazo de vigência, o contrato é automaticamente renovado por igual período, exceto se houver um aviso formal com antecedência mínima de 30 dias. A renovação é feita de forma automática. Para facilitar a transação do novo ciclo, enviamos um link para que você consiga realizar o pagamento dentro do prazo." },
+      { q: "O cancelamento é automático se eu parar de pagar?", a: "Não. A falta de pagamento não encerra a assinatura e o contrato segue válido. A inadimplência gera juros, multa e pode levar à negativação do CPF ou CNPJ. Para cancelar, é necessário formalizar a solicitação no e-mail ajuda@companyhero.com e enviar o comprovante de alteração ou baixa do endereço." },
+      { q: "Posso continuar usando o endereço mesmo sem pagar?", a: "Se o endereço continuar vinculado ao seu CNPJ sem uma assinatura ativa, haverá risco de desativação do endereço, possível irregularidade no CNPJ caso o endereço seja removido, e cobrança automática de multa e juros, além de negativação financeira." },
+      { q: "Quais são as multas e juros por atraso?", a: "Após o primeiro dia de atraso, o contratante deverá pagar juros de 1% ao mês (0,033% ao dia). Para atrasos inferiores a 30 dias, ocorre a aplicação de multa de 3% sobre o valor contratado. Após 30 dias de atraso, a multa é de 10% sobre o valor contratado, com atualização monetária pelo IGPM/FGV." },
+      { q: "Quero a segunda via da fatura, onde encontrar?", a: "Seu boleto é enviado 7 dias antes do vencimento para o e-mail cadastrado. Caso o pagamento seja por cartão, a cobrança será lançada no dia do vencimento. As informações também estão disponíveis na área do cliente (https://www.companyhero.com/login) utilizando seu e-mail e senha." },
+      { q: "Como negociar meus débitos?", a: "É necessário entrar em contato com nosso time financeiro para avaliar seu caso e negociar o débito pendente." }
     ]
   },
   {
     category: "Contrato e Obrigação de Renovar",
     items: [
-      { q: "A renovação é obrigatória?", a: "Não. Porém, só conseguimos cancelar se o endereço não estiver mais vinculado ao CNPJ." },
-      { q: "Se eu não renovar, o endereço deixa de valer na mesma hora?", a: "Não. Se o endereço seguir em uso, e não for efetuado o pagamento, o sistema aplica juros e multa." },
-      { q: "Preciso assinar um novo contrato?", a: "Não. O contrato atual permanece válido." },
-      { q: "Posso encerrar o plano antes do vencimento?", a: "Sim, porém não há estorno dos valores pagos." }
+      { q: "A renovação é obrigatória?", a: "Não. Porém, o cancelamento só pode ser efetuado se o endereço da Company Hero não estiver mais vinculado ao seu CNPJ na Receita Federal." },
+      { q: "Se eu não renovar, o endereço deixa de valer na mesma hora?", a: "Não. Se o endereço seguir em uso e o pagamento não for efetuado, o sistema aplica juros e multa." },
+      { q: "Preciso assinar um novo contrato?", a: "Não. O contrato atual permanece válido em caso de renovação." },
+      { q: "Posso encerrar o plano antes do vencimento?", a: "Sim. No entanto, a Company Hero reserva-se o direito de não reembolsar planos anuais. Em casos onde a empresa estender flexibilidade, será cobrada uma multa de 10% sobre o valor restante referente ao plano contratado, com os impostos sendo abatidos." }
     ]
   },
   {
     category: "Atualizações e Dados Cadastrais",
     items: [
-      { q: "Preciso atualizar meus dados para renovar?", a: "Sim. Se e-mail, telefone ou responsável financeiro mudaram, é necessário informar. Sem contato válido, podem ocorrer juros e multa por atraso." }
+      { q: "Preciso atualizar meus dados para renovar?", a: "Sim. Se o seu e-mail, telefone ou o responsável financeiro mudaram, é necessário nos informar. Sem um contato válido, podem ocorrer juros e multas por atraso caso você não receba as comunicações." }
     ]
   },
   {
-    category: "Negociação e Retenção",
+    category: "Cancelamento, Negociação e Retenção",
     items: [
-      { q: "O que é necessário para efetivar o cancelamento da assinatura?", a: "Conforme previsto em contrato, o cancelamento deve ser solicitado com 30 dias de antecedência e acompanhado do comprovante de alteração de endereço ou de baixa do CNPJ. Assim que receber esse documento, basta nos encaminhar no e-mail ajuda@companyhero.com, junto à solicitação de cancelamento." },
-      { q: "Cancelei minha assinatura, preciso pagar os débitos pendentes?", a: "Sim. As cobranças continuam devidas até que recebamos o comprovante de alteração ou baixa do CNPJ. Isso porque o serviço segue ativo e disponível enquanto o endereço estiver vinculado. Após a desvinculação e solicitação de cancelamento no e-mail ajuda@companyhero.com, conseguimos efetivar o cancelamento." },
-      { q: "Não usei o endereço, tenho direito a reembolso ou estorno?", a: "Resposta: O estorno é realizado apenas para cancelamentos solicitados em até 7 dias após a contratação, conforme o Código de Defesa do Consumidor. Nos planos anuais, cancelados antes de 12 meses, não é devido reembolso, já que o serviço permanece ativo e disponível durante o período contratado." },
-      { q: "O cancelamento é automático se eu parar de pagar?", a: "Resposta: Não. A falta de pagamento não encerra a assinatura. O contrato segue válido e a inadimplência gera juros, multa e pode levar à negativação do CPF ou CNPJ. Para cancelar, é necessário formalizar a solicitação e enviar o comprovante de alteração ou baixa do endereço para o e-mail ajuda@companyhero.com." },
-      { q: "Por que estou recebendo cobranças se não estou usando o serviço?", a: "Caso o seu CNPJ esteja com o nosso endereço vinculado na Receita Federal não podemos seguir com o cancelamento pois o serviço esta sendo utilizado. Enquanto o endereço da Company Hero estiver vinculado ao seu CNPJ na Receita Federal, o serviço permanece ativo e sob nossa responsabilidade. Por isso, só conseguimos seguir com o cancelamento após o envio do comprovante de alteração de endereço ou de baixa do CNPJ no e-mail ajuda@companyhero.com." }
-    ]
-  },
-  {
-    category: "Comunicação e Suporte",
-    items: [
-      { q: "Esse número é da Company Hero mesmo?", a: "Sim. Podemos enviar as informações por e-mail. A fatura está disponível no site e no app PJ Hero." }
+      { q: "Quero cancelar minha assinatura, como faço?", a: "Conforme contrato, o cancelamento deve ser solicitado com 30 dias de antecedência para o e-mail ajuda@companyhero.com, acompanhado obrigatoriamente do comprovante de alteração de endereço ou de baixa do CNPJ. Se for MEI, a alteração pode ser feita pelo portal gov.br." },
+      { q: "Cancelei minha assinatura, preciso pagar os débitos pendentes?", a: "Sim. As cobranças continuam devidas até que a Company Hero receba o comprovante de alteração ou baixa do CNPJ, pois o serviço segue ativo e disponível enquanto o endereço estiver vinculado." },
+      { q: "Não usei o endereço, tenho direito a reembolso ou estorno?", a: "O reembolso integral é realizado apenas para cancelamentos solicitados em até 7 dias após a contratação original (Código de Defesa do Consumidor). Em planos anuais cancelados antes de 12 meses, não é devido reembolso padrão, já que o serviço esteve ativo e disponível." },
+      { q: "Por que estou recebendo cobranças se não estou usando o serviço?", a: "Enquanto o endereço da Company Hero estiver vinculado ao seu CNPJ na Receita Federal, o serviço permanece ativo perante os órgãos públicos e sob nossa responsabilidade. Só podemos seguir com o cancelamento (e a interrupção das cobranças) após o envio do comprovante de desvinculação." }
     ]
   },
   {
     category: "Métodos de Pagamento",
     items: [
-      { q: "Posso trocar o cartão agora na renovação?", a: "Sim. O link permite cadastrar um novo cartão." },
-      { q: "Posso dividir no cartão?", a: "Anual à vista: pagamento único (boleto/PIX/cartão). Anual parcelado: até 12x no cartão." },
-      { q: "Posso parcelar por outras formas?", a: "PIX/Boleto: até 2x. Cartão: até 12x (com alteração de valor)." }
+      { q: "Quais são as formas de pagamento disponíveis?", a: "Para o plano anual à vista, aceitamos boleto, PIX ou cartão de crédito em pagamento único. Para o plano anual parcelado, aceitamos em até 12x no cartão de crédito." },
+      { q: "Posso pagar mensal ao invés de anual?", a: "Sim, porém o desconto aplicado no plano anual não se mantém no plano mensal. Para alterar a forma de pagamento, entre em contato com nosso time financeiro ou suporte." },
+      { q: "Posso parcelar por outras formas?", a: "PIX e Boleto podem ser parcelados em até 2x. Cartão de crédito em até 12x (com alteração de valor)." },
+      { q: "Quero realizar o pagamento da fatura em boleto, PIX ou cartão. Como faço?", a: "Entre em contato com nosso time financeiro ou suporte via chat para que a fatura seja disponibilizada na modalidade desejada." },
+      { q: "Posso trocar o cartão agora na renovação?", a: "Sim. O link de pagamento enviado permite que você cadastre um novo cartão." },
+      { q: "Como atualizar meu cartão de crédito fora da renovação?", a: "Entre em contato com o time financeiro ou de suporte para que seja enviada uma nova autorização de cadastro, permitindo a atualização no sistema." }
     ]
   },
   {
-    category: "Dúvidas comuns de clientes vindos de contadores parceiros",
+    category: "Dúvidas Comuns de Clientes de Contadores Parceiros",
     items: [
-      { q: "Não era com meu contador? Por que agora é com a Company Hero?", a: "O contador parceiro fez apenas a contratação inicial, mas a gestão, manutenção e renovação do endereço fiscal sempre foram responsabilidade da Company Hero, proprietária e administradora do endereço. Por isso, a partir do segundo ano, a renovação é feita diretamente conosco." },
-      { q: "O que é exatamente a Company Hero?", a: "A Company Hero é a empresa que fornece e administra endereços fiscais e comerciais, garantindo documentação válida, conformidade jurídica e suporte ao uso do endereço no seu CNPJ. Nós disponibilizamos um endereço fiscal para que você vinculasse ao seu CNPJ." },
-      { q: "Esse endereço não é vitalício? Eu já não paguei no primeiro ano?", a: "Não. O endereço fiscal funciona por assinatura anual, como um aluguel. O valor pago no primeiro ano cobria apenas 12 meses. Para continuar usando o endereço legalmente, é necessário renovar." },
-      { q: "Por que eu tenho que pagar novamente se é o mesmo endereço?", a: "Porque o serviço inclui: manutenção jurídica, infraestrutura do endereço, emissão de documentos válidos, uso contínuo do endereço no CNPJ, responsabilidade legal perante órgãos públicos, suporte e atendimento. O serviço só é válido enquanto a assinatura está ativa." },
-      { q: "Meu contador falou que ficava tudo por conta deles. Eu preciso fazer algo?", a: "A contabilidade continua com seu contador; o endereço fiscal é responsabilidade da Company Hero. Nada complicado, você só precisa realizar a renovação com a gente." },
-      { q: "Vocês vão avisar meu contador sobre a renovação?", a: "A renovação é entre você e a Company Hero. Podemos avisar caso você queira, mas não é obrigatório." },
-      { q: "Se eu não renovar com vocês, meu contador pode renovar por mim?", a: "Não. A renovação só pode ser feita diretamente com a Company Hero, empresa que administra o endereço." },
-      { q: "Posso continuar usando o endereço mesmo sem pagar?", a: "Se o endereço continuar vinculado ao seu CNPJ sem uma assinatura ativa, haverá: possível irregularidade no CNPJ caso o endereço seja removido, risco de desativação do endereço, cobrança automática de multa e juros, além de negativação em casos que o financeiro não seja regularizado." }
+      { q: "Não era com meu contador? Por que agora é com a Company Hero?", a: "O contador parceiro fez apenas a contratação inicial. A gestão, manutenção e renovação do endereço fiscal sempre foram responsabilidade da Company Hero, que é a proprietária e administradora do endereço. A partir do segundo ano, a renovação é feita diretamente conosco." },
+      { q: "O que é exatamente a Company Hero?", a: "Somos a empresa que fornece e administra endereços fiscais e comerciais, garantindo a documentação válida, conformidade jurídica e suporte ao uso do endereço no seu CNPJ." },
+      { q: "Esse endereço não é vitalício? Eu já não paguei no primeiro ano?", a: "Não. O endereço fiscal funciona por assinatura anual, como um aluguel. O valor pago no primeiro ano cobria apenas 12 meses de uso." },
+      { q: "Por que eu tenho que pagar novamente se é o mesmo endereço?", a: "A assinatura mantém ativos serviços essenciais, como: manutenção jurídica, infraestrutura do endereço, emissão de documentos válidos, uso contínuo do endereço no CNPJ e responsabilidade legal perante órgãos públicos." },
+      { q: "Meu contador falou que ficava tudo por conta deles. Eu preciso fazer algo?", a: "A contabilidade da sua empresa continua com o seu contador, mas o endereço fiscal é de responsabilidade da Company Hero. Você só precisa realizar a renovação da assinatura diretamente conosco." },
+      { q: "Vocês vão avisar meu contador sobre a renovação?", a: "A renovação é uma tratativa entre você e a Company Hero. Podemos avisar seu contador caso você queira, mas isso não é obrigatório." }
     ]
+  },
+  {
+    category: "Comunicação, Suporte e Dúvidas Adicionais",
+    items: [
+      { q: "Esse número é da Company Hero mesmo?", a: "Sim. Além do WhatsApp, podemos enviar as informações por e-mail, e sua fatura oficial sempre estará disponível no site e no app PJ Hero." },
+      { q: "Quais são os limites para recebimento de correspondências?", a: "O cliente tem direito ao recebimento de até 50 envelopes mensais (medida máxima de 324x229mm) e até 2 caixas mensais (medida máxima de 500x500mm). As correspondências são recebidas apenas em dias úteis, das 09h às 18h." },
+      { q: "Vocês escaneiam minhas correspondências?", a: "Serão escaneadas apenas correspondências tipo carta, limitadas a 10 páginas por correspondência. O escaneamento ocorre somente mediante autorização prévia do contratante na plataforma. Não escaneamos pacotes, caixas ou cartões." },
+      { q: "Posso cancelar ou reagendar a locação de uma Sala de Reunião?", a: "Sim, os cancelamentos ou reagendamentos podem ser feitos sem custo adicional até 2 (duas) horas antes do horário agendado. Se faltar menos de 2 horas para a reserva, não será possível alterar ou cancelar, e o valor será cobrado integralmente." }
+    ]
+  }
+];
+
+export const quizQuestions = [
+  {
+    question: "O cliente parou de pagar e abandonou o endereço. O contrato é cancelado automaticamente?",
+    options: ["Sim, após 30 dias.", "Não. A responsabilidade é ativa e a cobrança é devida.", "Sim, o sistema baixa.", "Talvez, depende do analista."],
+    correctIndex: 1,
+    explanation: "O cancelamento não é automático. Sem o comprovante de baixa na Receita, a Hero continua responsável juridicamente pelo endereço."
+  },
+  {
+    question: "Qual o índice oficial de reajuste anual dos contratos?",
+    options: ["IPCA sempre.", "Salário Mínimo.", "IGPM (FGV) ou IPCA se negativo.", "Taxa Selic."],
+    correctIndex: 2,
+    explanation: "Utilizamos o IGPM acumulado. Se ele for negativo, utilizamos o IPCA para garantir que o valor não diminua."
+  },
+  {
+    question: "Qual a multa aplicada para atrasos SUPERIORES a 30 dias?",
+    options: ["2% fixo.", "10% sobre o valor + correção.", "5% sem juros.", "Não aplicamos multa."],
+    correctIndex: 1,
+    explanation: "Após 30 dias, a multa sobe para 10% do valor contratado, além da atualização monetária."
+  },
+  {
+    question: "O que é OBRIGATÓRIO para cancelar a assinatura e parar as cobranças?",
+    options: ["Pedir no WhatsApp.", "Comprovante de alteração/baixa do CNPJ.", "Apenas não pagar.", "Ligar para o contador."],
+    correctIndex: 1,
+    explanation: "O serviço só é encerrado quando recebemos o comprovante oficial de que o endereço não está mais vinculado ao CNPJ."
+  },
+  {
+    question: "A renovação automática ocorre se não houver aviso prévio. Qual o prazo do aviso?",
+    options: ["7 dias.", "15 dias.", "30 dias de antecedência.", "60 dias."],
+    correctIndex: 2,
+    explanation: "O contrato prevê renovação automática se não houver manifestação contrária com 30 dias de antecedência."
+  },
+  {
+    question: "Cliente pagou plano anual e quer cancelar após 6 meses. Ele tem reembolso?",
+    options: ["Sim, integral.", "Sim, proporcional.", "Não, apenas em até 7 dias da compra.", "Sim, se reclamar muito."],
+    correctIndex: 2,
+    explanation: "O reembolso só é devido em até 7 dias (CDC). Planos anuais cancelados antes do fim não geram reembolso do saldo restante."
+  },
+  {
+    question: "Posso parcelar o boleto de renovação?",
+    options: ["Não, boleto é só à vista.", "Sim, em até 2x.", "Sim, em 12x.", "Sim, em 6x."],
+    correctIndex: 1,
+    explanation: "PIX e Boleto podem ser facilitados em até 2x. Para mais parcelas, apenas no cartão de crédito (com juros)."
+  },
+  {
+    question: "Qual o limite mensal de correspondências (cartas)?",
+    options: ["Ilimitado.", "10 cartas.", "50 envelopes mensais.", "100 envelopes."],
+    correctIndex: 2,
+    explanation: "O contrato prevê gestão de até 50 envelopes mensais e 2 caixas pequenas."
+  },
+  {
+    question: "Qual o prazo para cancelar uma reserva de Sala de Reunião sem custo?",
+    options: ["1 hora antes.", "2 horas antes.", "24 horas antes.", "Não pode cancelar."],
+    correctIndex: 1,
+    explanation: "Cancelamentos ou reagendamentos podem ser feitos sem custo até 2 horas antes do horário agendado."
+  },
+  {
+    question: "A Company Hero escaneia encomendas (caixas)?",
+    options: ["Sim, abrimos tudo.", "Não, apenas cartas (até 10 pág).", "Só se o cliente pagar extra.", "Sim, tiramos foto da caixa."],
+    correctIndex: 1,
+    explanation: "Escaneamos apenas conteúdo de cartas/documentos mediante autorização. Não abrimos nem escaneamos encomendas/caixas."
+  },
+  {
+    question: "Se o cliente usar o endereço sem pagar, o que acontece?",
+    options: ["Nada.", "Cancelamos o contrato na hora.", "Gera dívida, juros e negativação.", "Mandamos a polícia."],
+    correctIndex: 2,
+    explanation: "O uso do endereço sem contrapartida financeira gera inadimplência, multas, juros e eventual negativação do CNPJ."
+  },
+  {
+    question: "Qual a ordem correta para Upgrade de Mensal para Anual?",
+    options: ["Cancela Mensal -> Cria Anual.", "Cria Anual -> Espera Pagar -> Cancela Mensal.", "Edita o valor do mensal.", "Cria boleto avulso."],
+    correctIndex: 1,
+    explanation: "Para evitar churn indevido, primeiro garante-se o pagamento do novo contrato anual, para só depois suspender o mensal."
   }
 ];
 

@@ -1,12 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { Search, MessageCircle, ChevronDown, HelpCircle, Zap, ArrowLeft, Sparkles } from 'lucide-react';
-import { faqs } from '../data';
+import { Search, MessageCircle, ChevronDown, HelpCircle, Zap, ArrowLeft, Sparkles, BrainCircuit } from 'lucide-react';
+import { faqs, quizQuestions } from '../data';
+import { Quiz } from './ui/Quiz';
 
 interface WikiProps {
   onBack: () => void;
 }
 
 export const Wiki: React.FC<WikiProps> = ({ onBack }) => {
+  const [view, setView] = useState<'FAQ' | 'QUIZ'>('FAQ');
   const [faqSearch, setFaqSearch] = useState('');
   const [openFaqIndex, setOpenFaqIndex] = useState<string | null>(null);
 
@@ -27,6 +29,37 @@ export const Wiki: React.FC<WikiProps> = ({ onBack }) => {
   const toggleFaq = (id: string) => {
     setOpenFaqIndex(openFaqIndex === id ? null : id);
   };
+
+  if (view === 'QUIZ') {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col">
+        {/* Quiz Header */}
+        <div className="bg-white border-b border-slate-200 sticky top-0 z-30">
+          <div className="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+             <button 
+              onClick={() => setView('FAQ')}
+              className="flex items-center gap-2 text-slate-500 hover:text-hero-600 font-bold text-sm transition-colors group"
+            >
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+              Voltar para FAQ
+            </button>
+            <div className="flex items-center gap-2">
+               <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
+                  <BrainCircuit className="w-5 h-5" />
+               </div>
+               <span className="font-bold text-slate-900 text-lg tracking-tight">Quiz de Retenção</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto p-6">
+           <div className="max-w-4xl mx-auto py-8">
+              <Quiz questions={quizQuestions} onExit={() => setView('FAQ')} />
+           </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -67,6 +100,26 @@ export const Wiki: React.FC<WikiProps> = ({ onBack }) => {
              </p>
           </div>
 
+          {/* Quiz Call to Action Banner */}
+          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl p-8 mb-16 text-white shadow-xl shadow-purple-200 relative overflow-hidden group cursor-pointer hover:shadow-2xl hover:scale-[1.01] transition-all duration-300" onClick={() => setView('QUIZ')}>
+             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+             <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-12 -mb-12 blur-2xl"></div>
+             
+             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex-1 text-center md:text-left">
+                   <div className="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+                      <BrainCircuit className="w-3.5 h-3.5" />
+                      Desafio do Conhecimento
+                   </div>
+                   <h3 className="text-2xl font-bold mb-2">Está afiado nas regras?</h3>
+                   <p className="text-purple-100 text-sm max-w-md">Teste seus conhecimentos sobre retenção, cancelamento e multas com nosso Quiz interativo de 12 perguntas.</p>
+                </div>
+                <button className="bg-white text-purple-600 px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:bg-purple-50 transition-colors whitespace-nowrap">
+                   Iniciar Quiz Agora
+                </button>
+             </div>
+          </div>
+
           {/* Search Bar */}
           <div className="relative max-w-2xl mx-auto mb-16 group sticky top-24 z-20">
              <div className="absolute -inset-1 bg-gradient-to-r from-hero-400 to-blue-400 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
@@ -80,7 +133,6 @@ export const Wiki: React.FC<WikiProps> = ({ onBack }) => {
                   className="w-full px-4 py-3 bg-transparent text-slate-800 placeholder-slate-400 font-medium outline-none text-lg"
                   value={faqSearch}
                   onChange={(e) => setFaqSearch(e.target.value)}
-                  autoFocus
                 />
                 {faqSearch && (
                   <button onClick={() => setFaqSearch('')} className="mr-3 text-slate-400 hover:text-slate-600 text-xs font-bold uppercase">
