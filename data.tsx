@@ -3,7 +3,8 @@ import {
   Users, Shield, DollarSign, AlertTriangle, FileText, Book, MessageCircle, 
   CheckCircle, ChevronDown, Zap, BarChart3, Lock, Target, ClipboardList,
   MousePointer, Calculator, AlertOctagon, Search, RefreshCw, TrendingDown,
-  Lightbulb, HeartHandshake, XOctagon, BrainCircuit, Phone, Calendar, Clock
+  Lightbulb, HeartHandshake, XOctagon, BrainCircuit, Phone, Calendar, Clock,
+  PauseCircle
 } from 'lucide-react';
 import { Module, FAQCategory, Course } from './types';
 import { InfoBox, ScriptCard, ComparisonRow } from './components/ui/Cards';
@@ -510,7 +511,15 @@ export const modules: Module[] = [
                <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center font-bold text-gray-500 text-xs">CARTÃO</div>
                <div>
                  <h5 className="font-bold text-gray-900">Troca de Cartão Recusada</h5>
-                 <p className="text-sm text-gray-600 mt-1">Cliente faz direto no site. Se der erro, geralmente é bloqueio do emissor. Se precisar, removemos manualmente no Iugu ("Remover Forma de Pagamento") para forçar ele a inserir um novo. Faturas no cartão são geradas 1 dia antes do vencimento.</p>
+                 <p className="text-sm text-gray-600 mt-1">
+                   A atualização do cartão deve ser realizada diretamente pelo cliente no site. Caso ocorra erro durante o processo, isso normalmente está relacionado a bloqueios ou recusas por parte do banco emissor.
+                 </p>
+                 <p className="text-sm text-gray-600 mt-2">
+                   Nessas situações, é necessário que o cliente acione o suporte ou entre em contato com o time financeiro para que seja realizado o cadastro de um novo cartão e a devida regularização da forma de pagamento.
+                 </p>
+                 <p className="text-xs font-bold text-hero-600 mt-2 border-t border-gray-100 pt-2">
+                   Importante: as faturas no cartão são geradas automaticamente 1 dia antes da data de vencimento.
+                 </p>
                </div>
              </div>
              <div className="flex gap-4 pt-4">
@@ -523,15 +532,7 @@ export const modules: Module[] = [
            </div>
          </div>
          
-         <InfoBox title="Processo Crítico: Upgrade (Mensal -> Anual)" type="warning">
-            <p className="mb-2 text-sm font-medium">Muitos erros ocorrem aqui. Ao migrar um cliente do plano mensal para o anual, siga a ordem RIGOROSAMENTE:</p>
-            <ol className="list-decimal list-inside font-bold text-sm space-y-2 bg-white p-3 rounded border border-yellow-200 text-gray-700">
-              <li>Crie a nova assinatura anual no Iugu (não edite a mensal).</li>
-              <li>Aguarde o primeiro pagamento da assinatura anual ser confirmado.</li>
-              <li>SOMENTE APÓS o pagamento, suspenda/remova a assinatura antiga (mensal).</li>
-            </ol>
-            <p className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded border border-red-100"><strong>Por que?</strong> Suspender a assinatura antiga antes do pagamento da nova gera um "Churn Indevido" (Cancelamento) nas métricas da empresa, afetando o bônus de todos.</p>
-         </InfoBox>
+         {/* REMOVIDO: Processo Crítico: Upgrade (Mensal -> Anual) */}
       </div>
     )
   },
@@ -584,54 +585,22 @@ export const modules: Module[] = [
 
         <div>
           <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-hero-600" />
+            <Shield className="w-5 h-5 text-gray-400" />
             Protocolo de Negativação (Serasa)
           </h3>
-          <p className="text-sm text-gray-500 mb-6">Ação crítica e legal. Só deve ser feita com certeza absoluta de uso do endereço.</p>
-
-          <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-white shadow-sm">
-               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-bold text-sm text-gray-600">1</div>
-               <div>
-                 <h4 className="font-bold text-gray-900 text-sm">Pré-Requisitos (Obrigatórios)</h4>
-                 <ul className="list-disc list-inside text-sm text-gray-600 mt-2 space-y-1">
-                   <li>90 dias de atraso (3 mensalidades completas).</li>
-                   <li><strong>Prova de Vida:</strong> Print do cartão CNPJ ativo no site da Receita Federal constando nosso endereço. Salve isso!</li>
-                   <li><strong>Aviso Prévio:</strong> Enviar e-mail/WhatsApp de "Pré-Serasa" 24h antes e obter confirmação de leitura ou tentativa comprovada de contato.</li>
-                 </ul>
-               </div>
+          
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm mb-4">
+              <PauseCircle className="w-4 h-4" /> EM PAUSA
             </div>
-
-            <div className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-white shadow-sm">
-               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-hero-600 flex items-center justify-center font-bold text-sm text-white">2</div>
-               <div>
-                 <h4 className="font-bold text-gray-900 text-sm">Execução Técnica (Sistema Serasa)</h4>
-                 <p className="text-sm text-gray-600 mt-1 mb-2">Login: 1065*** | Senha: Hero2***</p>
-                 <div className="bg-gray-50 p-3 rounded border border-gray-200 text-sm font-mono text-gray-700">
-                   <p>Menu: SISCONVEM &gt; Pendências &gt; Inclusão</p>
-                   <p>Natureza: 00 - Outras Oper.</p>
-                   <p>Data Vencimento: Data da dívida mais ANTIGA.</p>
-                   <p>Valor: Soma das mensalidades (máx 3 meses) + multa.</p>
-                 </div>
-                 <p className="text-xs text-red-500 mt-2 font-bold">ATENÇÃO: Nunca negativar valor cheio de plano anual se não passou 1 ano de uso. Negativar apenas o valor PROPORCIONAL aos meses utilizados.</p>
-               </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-white shadow-sm">
-               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center font-bold text-sm text-green-700">3</div>
-               <div>
-                 <h4 className="font-bold text-gray-900 text-sm">Pós-Negativação e Baixa</h4>
-                 <p className="text-sm text-gray-600 mt-1">Registrar no HubSpot: "Negativado no valor de R$xxxx na data de 00/00/00".</p>
-                 <p className="text-sm text-gray-600 mt-1"><strong>Baixa:</strong> Obrigatória por lei em até 5 dias úteis após o pagamento da dívida. Se não baixarmos, a Company Hero pode ser processada por danos morais.</p>
-               </div>
-            </div>
+            <p className="text-gray-600 text-sm max-w-md mx-auto">
+              O protocolo de negativação via Serasa encontra-se temporariamente suspenso ("em pausa nesse momento"). 
+              Aguarde novas orientações operacionais antes de seguir com este processo.
+            </p>
           </div>
         </div>
         
-        <InfoBox title="Churn Involuntário" type="hero">
-           <p>Após 3 meses sem pagamento e negativação:</p> 
-           <p>Suspender assinatura no Iugu &rarr; Mover para funil "Suspensos" &rarr; Preencher dashboard de Churn.</p>
-        </InfoBox>
+        {/* REMOVIDO: InfoBox title="Churn Involuntário" */}
       </div>
     )
   },
@@ -892,20 +861,8 @@ export const modules: Module[] = [
         <p className="text-sm text-gray-600">Não improvise na hora da crise. Use os scripts validados.</p>
         
         <div className="space-y-6">
-          <div>
-            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-              <XOctagon className="w-4 h-4"/> Objeção 1: "Quero cancelar" (Inadimplente ou não)
-            </h4>
-            <div className="mb-4">
-              <p className="text-sm text-gray-700"><span className="font-bold text-hero-600">Regra de Ferro:</span> Só cancelamos com comprovante. Sem comprovante, o serviço continua ativo (e cobrando).</p>
-            </div>
-            <ScriptCard 
-              title="Script de Retenção"
-              script={`Poxa, que pena que pensa em cancelar. Tem algum motivo específico que queira compartilhar? As vezes conseguimos ajustar o plano.\n\nPara seguirmos com o cancelamento oficial, precisamos garantir que sua empresa esteja segura juridicamente. Por isso, é necessário que o CNPJ não esteja mais vinculado ao nosso endereço.\n\nPor favor, me envie o cartão CNPJ atualizado (com o novo endereço) ou o comprovante de baixa na Receita. Assim que receber, encerro sua assinatura e paro as cobranças futuras na hora!`}
-            />
-          </div>
-
-          <div className="w-full h-px bg-gray-200"></div>
+          
+          {/* REMOVIDO: Objeção 1: "Quero cancelar" */}
           
           <div>
              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
