@@ -3,7 +3,7 @@ import {
   Users, Shield, DollarSign, AlertTriangle, FileText, Book, MessageCircle, 
   CheckCircle, ChevronDown, Zap, BarChart3, Lock, Target, ClipboardList,
   MousePointer, Calculator, AlertOctagon, Search, RefreshCw, TrendingDown,
-  Lightbulb, HeartHandshake, XOctagon, BrainCircuit
+  Lightbulb, HeartHandshake, XOctagon, BrainCircuit, Phone, Calendar, Clock
 } from 'lucide-react';
 import { Module, FAQCategory, Course } from './types';
 import { InfoBox, ScriptCard, ComparisonRow } from './components/ui/Cards';
@@ -637,48 +637,187 @@ export const modules: Module[] = [
   },
   {
     id: 5,
-    title: "Auditoria e Higiene de Base",
+    title: "Mapeamento Operacional Estratégico",
     category: "Gestão",
     icon: <ClipboardList className="w-5 h-5" />,
-    duration: "30 min",
+    duration: "45 min",
     content: (
-      <div className="space-y-6">
-        <h3 className="font-bold text-lg text-gray-900">O Efeito Borboleta dos Dados</h3>
-        <p className="text-gray-600 text-sm italic border-l-4 border-gray-300 pl-4">A "Planilha Mestre" é o coração da operação. Um dado errado aqui pode significar cobrar um cliente cancelado ou deixar de cobrar um ativo.</p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white p-5 rounded-xl border border-gray-200 hover:border-blue-300 transition-colors shadow-sm">
-            <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide text-blue-600 mb-2">Auditoria Diária (Regra D+10)</h4>
-            <p className="text-sm text-gray-600 mb-2">Identificar planos anuais que estão vencidos há 11 dias (D+10) e ninguém viu.</p>
-            <ol className="list-decimal list-inside text-xs text-gray-500 space-y-2">
-              <li>Ir na Planilha de Renovações &gt; Aba do mês atual.</li>
-              <li>Filtrar anuais em aberto (Status "Pending" ou "Vencido").</li>
-              <li>Copiar IDs e colar na Planilha de Inadimplentes (Coluna A).</li>
-              <li><strong>Crucial:</strong> Verificar duplicidade na última coluna. Não queremos ligar duas vezes pro mesmo cliente no mesmo dia.</li>
-            </ol>
+      <div className="space-y-8">
+        <p className="text-gray-600 text-sm italic border-l-4 border-hero-200 pl-4 bg-hero-50/20 p-4 rounded-r-lg">
+          Este documento apresenta uma visão aprofundada das jornadas de Renovações e Cobrança (C. Hero / MEV). Ele mapeia o ciclo de vida do cliente em momentos críticos, detalhando as réguas de contato, os gargalos operacionais e as estratégias de contenção de perda de receita (Churn).
+        </p>
+
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <RefreshCw className="w-6 h-6 text-purple-600" />
+            1. A Jornada de Renovações: Prevenção e Negociação
+          </h3>
+          <p className="text-sm text-gray-600 mb-6">
+            A equipe de Renovações opera sob uma janela de tempo restrita e crucial: o próprio mês de vencimento do contrato. A intensidade e o formato da atuação mudam dinamicamente conforme a data limite se aproxima, exigindo respostas rápidas e investigativas dos analistas.
+          </p>
+
+          <h4 className="font-bold text-gray-800 text-base mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-gray-400"/>
+            Régua de Relacionamento e Escalonamento de Contato
+          </h4>
+          <p className="text-sm text-gray-600 mb-4">
+            A estratégia de comunicação é desenhada para aumentar a tração de forma gradual, combinando canais de acordo com a urgência (D = Dia do Vencimento):
+          </p>
+          
+          <div className="space-y-4 mb-8">
+             <div className="flex gap-4 group">
+                <div className="w-16 flex-shrink-0 text-right font-bold text-green-600 text-sm pt-1">D-3</div>
+                <div className="border-l-2 border-green-200 pl-4 pb-2 group-hover:border-green-400 transition-colors">
+                   <h5 className="font-bold text-sm text-gray-800">Ações Preventivas</h5>
+                   <p className="text-xs text-gray-500 mt-1">O foco aqui é a conveniência. O cliente recebe um lembrete amigável via Treble (WhatsApp/Mensageria). Em D-2, a comunicação é reforçada por meio de um SMS, garantindo que a informação chegue mesmo sem internet.</p>
+                </div>
+             </div>
+             <div className="flex gap-4 group">
+                <div className="w-16 flex-shrink-0 text-right font-bold text-blue-600 text-sm pt-1">D0</div>
+                <div className="border-l-2 border-blue-200 pl-4 pb-2 group-hover:border-blue-400 transition-colors">
+                   <h5 className="font-bold text-sm text-gray-800">O Dia "Zero"</h5>
+                   <p className="text-xs text-gray-500 mt-1">No vencimento, o lembrete é incisivo e direto, utilizando uma combinação simultânea de Treble e SMS para garantir a visualização.</p>
+                </div>
+             </div>
+             <div className="flex gap-4 group">
+                <div className="w-16 flex-shrink-0 text-right font-bold text-orange-600 text-sm pt-1">D+2</div>
+                <div className="border-l-2 border-orange-200 pl-4 pb-2 group-hover:border-orange-400 transition-colors">
+                   <h5 className="font-bold text-sm text-gray-800">Recuperação Imediata</h5>
+                   <p className="text-xs text-gray-500 mt-1">A partir daqui, o tom muda de "lembrete" para "cobrança de pagamento". A esteira é acionada em D+2, D+4, D+7 e D+10. O nível de atrito aumenta, e a equipe passa a empregar o Treble, o SMS e também as Ligações Telefônicas (garantindo um contato humano para entender a falta de pagamento).</p>
+                </div>
+             </div>
+             <div className="flex gap-4 group">
+                <div className="w-16 flex-shrink-0 text-right font-bold text-red-600 text-sm pt-1">Fim Mês</div>
+                <div className="border-l-2 border-red-200 pl-4 pb-2 group-hover:border-red-400 transition-colors">
+                   <h5 className="font-bold text-sm text-gray-800">Fechamento (Conversão Tática)</h5>
+                   <p className="text-xs text-gray-500 mt-1">Para os clientes que chegam ao final do mês sem renovar, a estratégia muda para a conversão tática. É ativada a régua PROMO, oferecendo condições especiais via Treble e Ligações, atuando como a última tentativa de retenção ativa antes da transição de esteira.</p>
+                </div>
+             </div>
           </div>
-          <div className="bg-white p-5 rounded-xl border border-gray-200 hover:border-purple-300 transition-colors shadow-sm">
-             <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide text-purple-600 mb-2">Fechamento Mensal</h4>
-             <p className="text-sm text-gray-600 mb-2">Arquivamento de dados para não travar a planilha (que já é pesada).</p>
-             <ul className="list-disc list-inside text-xs text-gray-500 space-y-2">
-               <li>Copiar pagamentos do mês anterior (tudo que foi "Pago").</li>
-               <li>Colar Especial (Apenas Valores) na aba HISTÓRICO. Isso remove as fórmulas pesadas.</li>
-               <li>Limpar esses dados da aba DATABASE para deixá-la leve.</li>
-               <li>Mover "Indevidos" (erros de lançamento) para a aba de Auditoria de Erros.</li>
-             </ul>
+
+          <h4 className="font-bold text-gray-800 text-base mb-4 mt-8 border-b border-gray-100 pb-2 flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-gray-400"/>
+            Cenário de Conversão e o Risco de ARR
+          </h4>
+          <p className="text-sm text-gray-600 mb-4">A volumetria de planos Anuais no mês apresenta um cenário de contrastes:</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+             <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+               <h5 className="text-green-800 font-bold text-sm flex items-center gap-2 mb-2"><CheckCircle className="w-4 h-4"/> O Cenário Ideal (45%)</h5>
+               <p className="text-xs text-green-700 leading-relaxed">
+                 Atualmente, 45% dos pagamentos ocorrem no modelo "No Touch". São clientes engajados que renovam sem a necessidade de intervenção humana da equipe, o que é altamente positivo para a eficiência operacional.
+               </p>
+             </div>
+             <div className="bg-red-50 p-4 rounded-lg border border-red-100">
+               <h5 className="text-red-800 font-bold text-sm flex items-center gap-2 mb-2"><AlertOctagon className="w-4 h-4"/> O Gargalo e Risco (55%)</h5>
+               <p className="text-xs text-red-700 leading-relaxed mb-2">
+                 Os 55% restantes dependem das réguas de cobrança e do esforço humano. O grande ponto de atenção é que aproximadamente <strong className="underline decoration-red-400">20% dessa base representa um risco iminente de Churn</strong>.
+               </p>
+               <div className="text-[10px] bg-white/50 p-2 rounded text-red-800 font-bold border border-red-200">
+                  IMPACTO: R$ 5,5 Milhões em ARR sob risco em 2026.
+               </div>
+               <p className="text-[10px] text-red-600 mt-2 italic">A equação operacional é clara e implacável: Menos tempo dedicado à base = Menor taxa de conversão.</p>
+             </div>
           </div>
-          <div className="md:col-span-2 bg-white p-5 rounded-xl border border-gray-200 hover:border-green-300 transition-colors shadow-sm">
-            <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide text-green-600 mb-2">Checklist Semanal (Higiene de Dados)</h4>
-            <ul className="list-disc list-inside text-sm text-gray-600 space-y-2">
-              <li><strong>Caça aos #REF:</strong> Limpar células com <code>#N/A</code>, <code>#REF</code> ou "não localizado". Se a fórmula quebrou, corrija manualmente consultando o Iugu.</li>
-              <li><strong>Congelamento de Pagos:</strong> A cada 15 dias, filtrar status "pago", copiar e colar valores (remover fórmula) e escrever "pago" (texto estático). <span className="text-red-500 font-bold text-xs ml-1">Importante: Se a automação do Iugu rodar e o cliente sumir da API, perdemos o histórico se não estiver estático na planilha.</span></li>
-              <li><strong>Varredura de Novos Devedores:</strong> Fazer PROC na aba de assinaturas mensais ativas e trazer quem não consta na auditoria mas já devia estar lá.</li>
-            </ul>
+
+          <h4 className="font-bold text-gray-800 text-base mb-4 mt-8 border-b border-gray-100 pb-2 flex items-center gap-2">
+             <Search className="w-4 h-4 text-gray-400"/>
+             A Fase de Investigação e Convencimento
+          </h4>
+          <p className="text-sm text-gray-600 mb-4">Os analistas que dedicam mais tempo às ligações realizam um verdadeiro trabalho de inteligência comercial. Essa etapa exige:</p>
+          <ul className="space-y-2 text-sm text-gray-600 bg-gray-50 p-5 rounded-lg border border-gray-100">
+             <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-hero-400 mt-1.5"></div> Mapeamento do perfil do cliente e entendimento do seu uso atual.</li>
+             <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-hero-400 mt-1.5"></div> Identificação do contador responsável (o decisor técnico).</li>
+             <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-hero-400 mt-1.5"></div> Descoberta de oportunidades de Cross-sell (venda de produtos adicionais que façam sentido para o momento da empresa).</li>
+             <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-hero-400 mt-1.5"></div> <strong>Para clientes com cupom:</strong> É necessário um passo extra para verificar se o contador parceiro atrelado àquele cupom segue ativo na base e, a partir disso, fazer as pontes de comunicação entre Contador e Cliente.</li>
+          </ul>
+
+          <h4 className="font-bold text-gray-800 text-base mb-4 mt-8 border-b border-gray-100 pb-2 flex items-center gap-2">
+             <MessageCircle className="w-4 h-4 text-gray-400"/>
+             Principais Objeções e Desafios de Argumentação
+          </h4>
+          <p className="text-sm text-gray-600 mb-4">Durante a negociação, o time lida com fricções que exigem roteiros de contorno bem estruturados:</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+             <div className="border border-gray-200 rounded-lg p-3 hover:border-hero-300 transition-colors">
+               <strong className="text-gray-800 text-xs uppercase block mb-1">Falta de Confiança</strong>
+               <p className="text-xs text-gray-600">"Não confio / Acho que é golpe." (Exige reforço de marca e prova social).</p>
+             </div>
+             <div className="border border-gray-200 rounded-lg p-3 hover:border-hero-300 transition-colors">
+               <strong className="text-gray-800 text-xs uppercase block mb-1">Desalinhamento de Produto</strong>
+               <p className="text-xs text-gray-600">"O que é a Company Hero? / Achei que era um serviço vitalício." (Exige reeducação sobre o modelo de assinatura).</p>
+             </div>
+             <div className="border border-gray-200 rounded-lg p-3 hover:border-hero-300 transition-colors">
+               <strong className="text-gray-800 text-xs uppercase block mb-1">Terceirização da Decisão</strong>
+               <p className="text-xs text-gray-600">"Meu contador é quem sabe / quem resolve isso." (Exige mudança de foco para o decisor técnico).</p>
+             </div>
+             <div className="border border-gray-200 rounded-lg p-3 hover:border-hero-300 transition-colors">
+               <strong className="text-gray-800 text-xs uppercase block mb-1">Desconexão B2B2C</strong>
+               <p className="text-xs text-gray-600">Quando o contador diz "Eu sou apenas o contador, fale com meu cliente" ou "Não sei quem é esse cliente". (Exige investigação para reconectar as partes).</p>
+             </div>
           </div>
         </div>
-        
-        <InfoBox title="Regra Visual da Planilha (Não ignore)" type="hero">
-           <p>Linhas coloridas em <strong>"Rosinha Hero" (#fce7f3)</strong> indicam alterações manuais recentes e validadas por um supervisor. Respeite a codificação de cores para não auditar o mesmo cliente duas vezes ou sobrescrever uma negociação especial.</p>
+
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-6 h-6 text-orange-600" />
+            2. A Jornada de Cobrança (C. Hero / MEV): Gestão da Inadimplência
+          </h3>
+          <p className="text-sm text-gray-600 mb-6">
+            Quando os esforços iniciais falham, o cliente entra na esteira de Cobrança. Esta equipe atua de forma cirúrgica: assume os clientes de planos mensais a partir de D+1 do vencimento, e os clientes de planos anuais de competências anteriores que não foram resolvidos pelo time de Renovações. A comunicação padronizada em toda a régua utiliza Treble, E-mails e Ligações.
+          </p>
+
+          <h4 className="font-bold text-gray-800 text-base mb-6 border-b border-gray-100 pb-2 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-gray-400"/>
+            O Ciclo de Envelhecimento da Dívida (Aging)
+          </h4>
+
+          <div className="relative border-l-4 border-gray-200 ml-4 space-y-8 py-2">
+             <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-white border-4 border-gray-300"></div>
+                <h5 className="font-bold text-gray-900 text-sm">Fase Inicial (01 a 29 dias)</h5>
+                <p className="text-xs text-gray-500 mt-1">Tentativas intensivas de contato logo após o atraso.</p>
+                <div className="mt-2 bg-red-50 border border-red-100 p-2 rounded text-[10px] text-red-700 font-bold inline-block">
+                   🚨 Alerta "Tudo MEI": Política Tolerância Zero. Churn decretado aqui se não houver pagamento.
+                </div>
+             </div>
+             <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-white border-4 border-yellow-400"></div>
+                <h5 className="font-bold text-gray-900 text-sm">Fase Intermediária (30 a 60 dias)</h5>
+                <p className="text-xs text-gray-500 mt-1">O cliente segue recebendo a régua de cobrança padrão, com alertas crescentes sobre as consequências da inadimplência.</p>
+             </div>
+             <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-white border-4 border-orange-500"></div>
+                <h5 className="font-bold text-gray-900 text-sm">Fase Pré-Serasa (61 a 89 dias)</h5>
+                <p className="text-xs text-gray-500 mt-1">Momento de notificação crítica. O cliente é avisado que as sanções legais e restrições de crédito estão iminentes.</p>
+             </div>
+             <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-white border-4 border-red-600"></div>
+                <h5 className="font-bold text-gray-900 text-sm">Fase de Suspensão (+90 dias)</h5>
+                <p className="text-xs text-gray-500 mt-1">Ação punitiva. Os serviços são oficialmente suspensos. Se o cliente utiliza o serviço de Endereço (Company Hero), ocorre a inclusão nos cadastros do Serasa.</p>
+             </div>
+             <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-white border-4 border-slate-700"></div>
+                <h5 className="font-bold text-gray-900 text-sm">Cobrança Terceirizada (90 a 179 dias)</h5>
+                <p className="text-xs text-gray-500 mt-1">A empresa cessa os esforços internos. Os clientes suspensos são repassados para assessorias de cobrança especializadas. É neste marco que o Churn por inadimplência é oficialmente contabilizado para a base geral.</p>
+             </div>
+             <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-white border-4 border-slate-900"></div>
+                <h5 className="font-bold text-gray-900 text-sm">Fase Extrajudicial (+180 dias)</h5>
+                <p className="text-xs text-gray-500 mt-1">Se a assessoria não obtiver sucesso, os clientes retornam "para casa", mas saem do escopo comercial/cobrança e entram para tratativa interna do setor Jurídico, focada em recuperação de ativos de difícil recebimento.</p>
+             </div>
+          </div>
+        </div>
+
+        <InfoBox title="A Regra de Ouro: O Pipeline de Retenção" type="hero">
+          <p className="font-bold text-slate-800 text-sm mb-2">Protocolo de Segurança Transversal</p>
+          <p className="text-sm text-slate-700 mb-3">
+            Existe um protocolo de segurança transversal a todas as etapas acima, seja em D-3 de Renovação ou no D+60 de Cobrança: <strong>A Solicitação de Cancelamento</strong>.
+          </p>
+          <div className="bg-white/60 p-3 rounded border border-hero-200">
+             <p className="text-sm text-hero-800 italic">
+               "Se, em qualquer interação, através de qualquer canal, o cliente verbalizar o desejo de cancelar, todo o fluxo de cobrança ou renovação é pausado imediatamente. O cliente é retirado das réguas automatizadas e direcionado exclusivamente para o Pipeline de Retenção, onde uma analista especializada assumirá o caso com foco em salvar a conta e entender a causa raiz da insatisfação."
+             </p>
+          </div>
         </InfoBox>
       </div>
     )
