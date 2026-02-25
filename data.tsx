@@ -866,7 +866,7 @@ export const modules: Module[] = [
           
           <div>
              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-               <DollarSign className="w-4 h-4"/> Objeção 2: Reembolsos (Anual Parcelado)
+               <DollarSign className="w-4 h-4"/> Objeção 1: Reembolsos (Anual Parcelado)
              </h4>
              <p className="text-sm text-gray-600 mb-2">Cliente pagou 3 parcelas de 12 e quer cancelar e parar de pagar as outras 9.</p>
              <ScriptCard 
@@ -879,7 +879,7 @@ export const modules: Module[] = [
 
           <div>
             <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-               <FileText className="w-4 h-4"/> Objeção 3: "Só pago no Boleto"
+               <FileText className="w-4 h-4"/> Objeção 2: "Só pago no Boleto"
             </h4>
             <p className="text-sm text-gray-600 mb-2">Cliente mensal que odeia cartão de crédito.</p>
             <ScriptCard 
@@ -892,7 +892,7 @@ export const modules: Module[] = [
 
           <div>
              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-               <Users className="w-4 h-4"/> Objeção 4: "Meu contador disse que não preciso pagar"
+               <Users className="w-4 h-4"/> Objeção 3: "Meu contador disse que não preciso pagar"
             </h4>
             <ScriptCard 
               title="Script Educativo"

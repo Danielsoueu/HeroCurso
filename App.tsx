@@ -144,8 +144,8 @@ const App = () => {
             </div>
             <div className="flex items-center gap-4">
                <div className="text-right hidden xl:block">
-                 <div className="text-sm font-bold text-gray-900">Olá, Herói</div>
-                 <div className="text-xs text-gray-500">Financeiro & CX</div>
+                 <div className="text-sm font-bold text-gray-900">Olá, Hero!</div>
+                 <div className="text-xs text-gray-500">CX</div>
                </div>
                <div className="w-8 h-8 rounded-full bg-hero-100 border border-hero-200 flex items-center justify-center text-hero-700 font-bold text-xs">
                  CH

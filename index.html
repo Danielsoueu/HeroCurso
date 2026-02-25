@@ -7,11 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Asap:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
     <style>
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Asap', sans-serif;
       }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
@@ -33,6 +33,10 @@
       tailwind.config = {
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['Asap', 'sans-serif'],
+              'script': ['"Pinyon Script"', 'cursive'],
+            },
             colors: {
               hero: {
                 50: '#fff0f5', // Very light pink
@@ -51,9 +55,6 @@
             boxShadow: {
               'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
               'card': '0 10px 40px -10px rgba(0, 0, 0, 0.08)'
-            },
-            fontFamily: {
-              'script': ['"Pinyon Script"', 'cursive'],
             },
             animation: {
               blob: "blob 7s infinite",
