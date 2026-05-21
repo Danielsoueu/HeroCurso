@@ -871,15 +871,25 @@ export const modules: Module[] = [
           </div>
         </div>
 
-        <InfoBox title="Faturas Manuais (Intranet)" type="warning">
-          <p className="mb-3 text-sm">Usadas para 2ª via, correção de juros, bugs no Iugu ou unificação de dívidas. O preenchimento da descrição deve ser rigoroso para rastreio futuro.</p>
-          <div className="bg-white/50 p-3 rounded border border-yellow-300/50 text-xs font-mono text-yellow-900 mb-2">
-            Padrão Obrigatório de Descrição:<br/>
-            (Fatura: ID_DA_ULTIMA_FATURA_ORIGINAL - Mês Dia, Ano)<br/>
-            Exemplo Real: (Fatura: 64C0F64BD... - Oct 16, 2024)<br/>
-            <span className="italic text-yellow-800 opacity-75">*Mês em inglês abreviado (Sep, Oct, Nov...) pois o sistema é internacional.</span>
+        <InfoBox title="Cupons da Operação" type="hero">
+          <p className="text-sm mb-4 text-slate-700">
+            Durante os atendimentos e negociações com os clientes, você pode utilizar cupons para facilitar conversões e fechar acordos de sucesso.
+          </p>
+          <div className="bg-white/90 p-4 rounded-xl border border-pink-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+            <div>
+              <span className="text-xs font-bold text-pink-600 uppercase tracking-wider block mb-1">Central de Cupons</span>
+              <p className="text-xs text-slate-500">Acesse nossa plataforma unificada para consultar e gerenciar todos os cupons ativos que utilizamos em nossa rotina.</p>
+            </div>
+            <a 
+              href="https://fin-hero-gray.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-hero-600 hover:bg-hero-700 text-white font-bold rounded-xl text-xs transition-all duration-200 hover:scale-105 shadow-sm hover:shadow shadow-hero-500/10 shrink-0"
+            >
+              <span>Acessar Cupons da Operação</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
-          <p className="text-xs font-bold mt-2">Validação: Após criar a fatura manual, é obrigatório validar no Wagtail ("Contrato &gt; Order &gt; +Add Order") para liberar o onboarding do cliente, caso seja uma renovação.</p>
         </InfoBox>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
