@@ -4,7 +4,7 @@ import {
   CheckCircle, ChevronDown, Zap, BarChart3, Lock, Target, ClipboardList,
   MousePointer, Calculator, AlertOctagon, Search, RefreshCw, TrendingDown,
   Lightbulb, HeartHandshake, XOctagon, BrainCircuit, Phone, Calendar, Clock,
-  PauseCircle
+  PauseCircle, ExternalLink
 } from 'lucide-react';
 import { Module, FAQCategory, Course } from './types';
 import { InfoBox, ScriptCard, ComparisonRow } from './components/ui/Cards';
@@ -801,6 +801,75 @@ export const modules: Module[] = [
       <div className="space-y-8">
         <h3 className="font-bold text-lg text-gray-900">Exceções que viram Regra</h3>
         <p className="text-sm text-gray-600">Nem tudo é automático. Aqui estão os processos manuais que salvam a operação.</p>
+
+        {/* RESOURCE CARDS WITH MAXIMUM FOCUS/HIGHLIGHT */}
+        <div className="bg-gradient-to-r from-rose-500/10 to-pink-500/10 border border-pink-200/60 p-6 rounded-2xl shadow-sm mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="bg-pink-600 text-white rounded-full p-1.5 flex items-center justify-center shadow-lg shadow-pink-500/20">
+              <Book className="w-4 h-4" />
+            </span>
+            <div>
+              <h4 className="font-extrabold text-sm text-gray-900 tracking-tight uppercase">📚 Guias Operacionais e Manuais Oficiais <span className="text-pink-600 font-extrabold">(Notion)</span></h4>
+              <p className="text-xs text-gray-500">Documentação oficial e obrigatória para consulta instantânea sobre faturas e ferramentas.</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a 
+              href="https://www.notion.so/companyhero/Guia-operacional-do-Hero-OS-2c052622d2198017b858f0b30e0ce8cd?source=copy_link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative bg-white border border-gray-200 hover:border-pink-500 hover:shadow-xl p-5 rounded-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-pink-500 group-hover:bg-pink-600 transition-colors"></div>
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-pink-50 text-pink-600 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Sistema</span>
+                    <span className="text-gray-400 group-hover:text-pink-500 transition-colors"><ExternalLink className="w-4 h-4 inline" /></span>
+                  </div>
+                  <h5 className="font-bold text-gray-900 group-hover:text-pink-600 transition-colors text-sm">
+                    Guia Operacional do Hero OS
+                  </h5>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    O manual completo para a gestão, configurações e operação diária no sistema oficial Hero OS.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-pink-600 group-hover:text-pink-700 transition-colors pt-2 border-t border-slate-50">
+                <span>Ir para o Notion</span>
+                <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </a>
+
+            <a 
+              href="https://www.notion.so/companyhero/Emiss-o-de-faturas-Iugu-20a52622d21980b5a96bc95adfa904c5?source=copy_link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative bg-white border border-gray-200 hover:border-pink-500 hover:shadow-xl p-5 rounded-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-pink-500 group-hover:bg-pink-600 transition-colors"></div>
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-pink-50 text-pink-600 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Faturamento</span>
+                    <span className="text-gray-400 group-hover:text-pink-500 transition-colors"><ExternalLink className="w-4 h-4 inline" /></span>
+                  </div>
+                  <h5 className="font-bold text-gray-900 group-hover:text-pink-600 transition-colors text-sm">
+                    Emissão de Faturas no Iugu
+                  </h5>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    Instruções passo a passo para faturamento correto, geração de boletos, pix, cartões e tratativa de faturas manuais.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-pink-600 group-hover:text-pink-700 transition-colors pt-2 border-t border-slate-50">
+                <span>Ir para o Notion</span>
+                <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </a>
+          </div>
+        </div>
 
         <InfoBox title="Faturas Manuais (Intranet)" type="warning">
           <p className="mb-3 text-sm">Usadas para 2ª via, correção de juros, bugs no Iugu ou unificação de dívidas. O preenchimento da descrição deve ser rigoroso para rastreio futuro.</p>
