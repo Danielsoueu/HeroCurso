@@ -5,22 +5,38 @@ import { Sidebar } from './components/Sidebar';
 import { ModuleViewer } from './components/ModuleViewer';
 import { Home } from './components/Home';
 import { Wiki } from './components/Wiki';
-import { modules } from './data';
+import { financeiroModules, renovacaoModules, courses } from './data';
 
 type ViewState = 'HOME' | 'COURSE' | 'WIKI';
 
 const App = () => {
   const [view, setView] = useState<ViewState>('HOME');
+  const [activeCourseId, setActiveCourseId] = useState<string>('financeiro');
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
-  const [completedModules, setCompletedModules] = useState<number[]>([]);
+  const [completedModules, setCompletedModules] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Dynamic modules list computed based on current course
+  const modules = activeCourseId === 'financeiro' ? financeiroModules : renovacaoModules;
 
   // Load state from local storage on mount
   useEffect(() => {
     const savedCompleted = localStorage.getItem('hero_academy_completed');
     if (savedCompleted) {
-      setCompletedModules(JSON.parse(savedCompleted));
+      try {
+        const parsed = JSON.parse(savedCompleted);
+        // Map any old number arrays (from former course 'financeiro') to string representation
+        const sanitized = parsed.map((item: any) => {
+          if (typeof item === 'number') {
+            return `financeiro_${item}`;
+          }
+          return String(item);
+        });
+        setCompletedModules(sanitized);
+      } catch (e) {
+        setCompletedModules([]);
+      }
     }
   }, []);
 
@@ -30,8 +46,9 @@ const App = () => {
   }, [completedModules]);
 
   const handleComplete = () => {
-    if (!completedModules.includes(activeModuleIndex)) {
-      setCompletedModules(prev => [...prev, activeModuleIndex]);
+    const key = `${activeCourseId}_${activeModuleIndex}`;
+    if (!completedModules.includes(key)) {
+      setCompletedModules(prev => [...prev, key]);
     }
   };
 
@@ -84,14 +101,16 @@ const App = () => {
   };
 
   const handleResetCourse = () => {
-    if (window.confirm("Tem certeza que deseja reiniciar o progresso do curso? Todo o histórico de conclusão será apagado.")) {
-      setCompletedModules([]);
+    if (window.confirm("Tem certeza que deseja reiniciar o progresso deste curso? Todo o histórico de conclusão deste curso será apagado.")) {
+      setCompletedModules(prev => prev.filter(key => !key.startsWith(`${activeCourseId}_`)));
       setActiveModuleIndex(0);
     }
   };
 
   const handleSelectCourse = (courseId: string) => {
-    if (courseId === 'financeiro') {
+    if (courseId === 'financeiro' || courseId === 'renovacao') {
+      setActiveCourseId(courseId);
+      setActiveModuleIndex(0);
       setView('COURSE');
     }
   };
@@ -99,6 +118,10 @@ const App = () => {
   if (view === 'WIKI') {
     return <Wiki onBack={() => setView('HOME')} />;
   }
+
+  const activeCourse = courses.find(c => c.id === activeCourseId) || courses[0];
+  const courseTitle = activeCourse.title; 
+  const courseSubtitle = activeCourseId === 'financeiro' ? "Trilha Avançada • Financeiro" : "Trilha de Sucesso • Renovação";
 
   return (
     <div className="flex h-screen bg-white font-sans text-gray-800 overflow-hidden selection:bg-hero-100 selection:text-hero-900">
@@ -112,6 +135,10 @@ const App = () => {
           onCloseMobile={() => setIsSidebarOpen(false)}
           onBackToHome={() => setView('HOME')}
           onResetCourse={handleResetCourse}
+          modules={modules}
+          courseId={activeCourseId}
+          courseTitle={courseTitle}
+          courseSubtitle={courseSubtitle}
         />
       )}
 
@@ -122,7 +149,7 @@ const App = () => {
         {view === 'COURSE' && (
           <div className="lg:hidden h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-20 shrink-0">
              <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
-               <Menu className="w-6 h-6" />
+                <Menu className="w-6 h-6" />
              </button>
              <span className="font-bold text-gray-800">Hero Academy</span>
              <div className="w-10"></div> {/* Spacer */}
@@ -145,7 +172,7 @@ const App = () => {
             <div className="flex items-center gap-4">
                <div className="text-right hidden xl:block">
                  <div className="text-sm font-bold text-gray-900">Olá, Hero!</div>
-                 <div className="text-xs text-gray-500">CX</div>
+                 <div className="text-xs text-slate-500">CX</div>
                </div>
                <div className="w-8 h-8 rounded-full bg-hero-100 border border-hero-200 flex items-center justify-center text-hero-700 font-bold text-xs">
                  CH
@@ -159,16 +186,16 @@ const App = () => {
             onSelectCourse={handleSelectCourse} 
             onOpenWiki={() => setView('WIKI')}
             completedModules={completedModules}
-            totalModules={modules.length}
           />
         ) : (
           <ModuleViewer 
             module={modules[activeModuleIndex]}
-            isCompleted={completedModules.includes(activeModuleIndex)}
+            isCompleted={completedModules.includes(`${activeCourseId}_${activeModuleIndex}`)}
             onComplete={handleComplete}
             onNext={handleNext}
             isLastModule={activeModuleIndex === modules.length - 1}
             onFinishCourse={handleFinishCourse}
+            courseId={activeCourseId}
           />
         )}
 

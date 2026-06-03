@@ -4,7 +4,7 @@ import {
   CheckCircle, ChevronDown, Zap, BarChart3, Lock, Target, ClipboardList,
   MousePointer, Calculator, AlertOctagon, Search, RefreshCw, TrendingDown,
   Lightbulb, HeartHandshake, XOctagon, BrainCircuit, Phone, Calendar, Clock,
-  PauseCircle, ExternalLink
+  PauseCircle, ExternalLink, Video, Smartphone, Bot
 } from 'lucide-react';
 import { Module, FAQCategory, Course } from './types';
 import { InfoBox, ScriptCard, ComparisonRow } from './components/ui/Cards';
@@ -24,7 +24,7 @@ export const courses: Course[] = [
     title: "Renovação & Retenção",
     description: "Estratégias para garantir a continuidade do cliente na base.",
     icon: <RefreshCw className="w-8 h-8" />,
-    status: 'construction',
+    status: 'active',
     color: 'from-violet-500 to-purple-600'
   },
   {
@@ -276,7 +276,7 @@ const FAQComponent = () => {
   );
 };
 
-export const modules: Module[] = [
+export const financeiroModules: Module[] = [
   {
     id: 1,
     title: "Identidade e Tom de Voz",
@@ -998,6 +998,618 @@ export const modules: Module[] = [
     duration: "Reference",
     content: (
       <FAQComponent />
+    )
+  }
+];
+
+// O simulador de formulário local foi substituído pelo formulário oficial de Retenção integrado ao HubSpot.
+
+export const renovacaoModules: Module[] = [
+  {
+    id: 1,
+    title: "A Área e as Etapas HubSpot",
+    category: "Operação HubSpot",
+    icon: <Users className="w-5 h-5" />,
+    duration: "30 min",
+    content: (
+      <div className="space-y-8">
+        <div>
+          <h3 className="font-bold text-xl text-gray-950 mb-2">Visão Geral e Contexto de Transição</h3>
+          <p className="text-sm text-gray-600 leading-relaxed font-medium">
+            Nossa área de Renovação e Retenção é responsável por garantir a permanência de clientes que possuem serviços de 
+            <strong> Escritório Virtual (EV) e Comercial</strong> em nossa base por mais um ano. Os planos são cobrados anualmente 
+            e o acompanhamento próximo é essencial para a saúde financeira da base.
+          </p>
+        </div>
+
+        <InfoBox title="🚀 Evolução Operacional" type="info">
+          <p className="text-xs leading-relaxed text-slate-700">
+            Estamos transformando a operação de renovações para ganhar eficiência e efetividade, substituindo o uso da antiga Google Sheets por um funil de tickets automatizado dentro do HubSpot (<strong className="text-hero-600 font-bold">Hub Renovações</strong>).
+          </p>
+          <ul className="list-disc list-inside text-xs mt-3 space-y-1 text-slate-600">
+            <li><strong>Modelo de Contrato:</strong> Planos anuais com vencimentos agrupados entre os dias 7 e 27 de cada mês.</li>
+            <li><strong>Público-alvo das Comunicações:</strong> Clientes Company Hero (Foco principal: Não MEV. Assinaturas do Chile, EUA e Peru possuem fluxos restritos/específicos).</li>
+          </ul>
+        </InfoBox>
+
+        <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-6">
+          <h4 className="font-bold text-slate-900 text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
+            <Target className="w-4 h-4 text-pink-500" />
+            🎯 Diretrizes Estratégicas
+          </h4>
+          <div className="space-y-4 text-xs leading-relaxed text-slate-600">
+            <div className="border-l-2 border-pink-500 pl-3">
+              <strong className="text-slate-900 block mb-0.5">Missão:</strong>
+              Garantir a continuidade e satisfação dos nossos clientes, promovendo uma experiência positiva e próxima no processo de renovação do escritório virtual, com foco em relacionamento, eficiência e resultado.
+            </div>
+            <div className="border-l-2 border-pink-500 pl-3">
+              <strong className="text-slate-900 block mb-0.5">Visão:</strong>
+              Ser reconhecida como uma área estratégica e confiável, que contribui diretamente para o crescimento sustentável da empresa por meio da fidelização de clientes e excelência no atendimento.
+            </div>
+            <div className="border-l-2 border-pink-500 pl-3">
+              <strong className="text-slate-900 block mb-0.5">Valores:</strong>
+              Foco em resultados | Transparência | Trabalho em equipe | Proatividade | Melhoria contínua.
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-slate-50 border border-slate-100 rounded-xl p-5">
+          <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">Links Úteis da Operação</h4>
+          <p className="text-xs text-slate-500 mb-4">Acesse as ferramentas centrais da operação no dia-a-dia:</p>
+          <div className="flex flex-wrap gap-4">
+            <a 
+              href="https://app.hubspot.com/" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="inline-flex items-center gap-2 text-xs font-bold bg-white text-slate-800 border border-slate-200 hover:border-slate-300 hover:text-slate-900 p-3 rounded-xl transition-all"
+            >
+              📋 Pipe de Tickets (HubSpot)
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
+            <a 
+              href="https://fin-hero-gray.vercel.app/" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="inline-flex items-center gap-2 text-xs font-bold bg-white text-slate-800 border border-slate-200 hover:border-slate-300 hover:text-slate-900 p-3 rounded-xl transition-all"
+            >
+              📊 Dashboard de Resultados (Metabase)
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-bold text-base text-gray-950 mb-3 flex items-center gap-2">
+            <ClipboardList className="w-5 h-5 text-pink-500" />
+            Etapas do Funil de Tickets (HubSpot) e Suas Automações
+          </h3>
+          <p className="text-sm text-gray-600 leading-relaxed font-medium mb-4">
+            O fluxo de trabalho no HubSpot foi desenhado para mitigar erros manuais e garantir réguas de comunicação precisas. Toda a base é atualizada automaticamente todo dia útil às 8h com o status da assinatura e da fatura.
+          </p>
+
+          <div className="space-y-4">
+            <div className="border border-slate-200 rounded-xl p-4 bg-white/50">
+              <strong className="text-slate-900 text-sm block mb-1">1. Contrato a Renovar</strong>
+              <p className="text-xs text-slate-600 mb-2">
+                Lista total de assinaturas a renovar com links de faturas em aberto. Os cards aqui recebem comunicações automáticas de acordo com a régua de renovação de 10 dias de antecedência.
+              </p>
+              <div className="text-[10px] bg-slate-100 p-2 rounded-lg text-slate-600 font-bold max-w-sm">
+                Automação: Status Paga ➡️ Move automaticamente para Contrato Renovado.
+              </div>
+            </div>
+
+            <div className="border border-slate-200 rounded-xl p-4 bg-white/50">
+              <strong className="text-slate-900 text-sm block mb-1">2. Atuar Manualmente</strong>
+              <p className="text-xs text-slate-600 mb-2">
+                Cards com alguma falha de sincronização automática ou que demandam checagem humana de validade de faturas.
+              </p>
+              <div className="text-[10px] bg-slate-100 p-2 rounded-lg text-slate-600 font-bold max-w-sm">
+                Sincronismo: Atualizado automaticamente a cada 1 hora útil pelo HubSpot.
+              </div>
+            </div>
+
+            <div className="border border-slate-200 rounded-xl p-4 bg-white/50">
+              <strong className="text-slate-900 text-sm block mb-1">3. Em Negociação</strong>
+              <p className="text-xs text-slate-600 mb-2">
+                Cards em que houve retorno do cliente e o operador iniciou uma conversa de retenção ativa, facilitação de faturas ou ajuste de prazos.
+              </p>
+              <div className="text-[10px] bg-slate-100 p-2 rounded-lg text-slate-600 font-bold max-w-sm">
+                Automação: Status Paga ➡️ Move automaticamente para Contrato Renovado.
+              </div>
+            </div>
+
+            <div className="border border-slate-200 rounded-xl p-4 bg-green-50/50 border-green-200">
+              <strong className="text-green-900 text-sm block mb-1">4. Contrato Renovado 🎉</strong>
+              <p className="text-xs text-green-800">
+                O sucesso operacional final: assinatura foi paga e o novo período anual de escritório virtual já está contratado e faturado.
+              </p>
+            </div>
+
+            <div className="border border-slate-200 rounded-xl p-4 bg-red-50/50 border-red-200">
+              <strong className="text-red-900 text-sm block mb-1">5. Contrato Não Renovado 😢</strong>
+              <p className="text-xs text-red-800">
+                Cancelamento decretado. O cliente optou por não seguir de forma definitiva. É obrigatório criar uma tarefa manual para o cancelamento oficial de serviços no sistema interno e bloquear acessos.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <InfoBox title="⚠️ Considerações Operacionais Importantes" type="warning">
+          <ul className="text-xs space-y-2 text-slate-700">
+            <li><strong>Liberdade de Negociação:</strong> O time tem autonomia para negociar descontos ou parcelamentos específicos, mas deve persistir sempre no valor integral do plano anual para preservar o ARR.</li>
+            <li><strong>Exceções Importantes:</strong> Assinaturas do Chile, EUA e Peru possuem fluxos jurídicos e fiscais totalmente restritos. Sempre direcione o caso ao líder de atendimento antes de prometer alterações.</li>
+          </ul>
+        </InfoBox>
+
+        <div className="border-t border-slate-100 pt-8">
+          <h4 className="font-bold text-slate-900 text-sm mb-4">💬 Perguntas Frequentes (FAQ)</h4>
+          <div className="space-y-4">
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+              <h5 className="font-bold text-slate-900 text-xs mb-1">"O cliente renovou, mas o card não moveu automaticamente, o que fazer?"</h5>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                Verifique se o ID da fatura de renovação gerada no Iugu está preenchido corretamente no ticket correspondente no HubSpot. Se estiver em branco ou incorreto, as automações automáticas falharão. Aguarde a sincronização de 1h ou mude manualmente se for urgente.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+              <h5 className="font-bold text-slate-900 text-xs mb-1">"Como lidar com a objeção 'Quero cancelar porque não uso o endereço fiscal'?"</h5>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                Mantenha-se firme nas razões de segurança jurídica. Relembre o cliente que o encerramento do contrato requer a alteração do endereço da empresa na Junta comercial, caso contrário ocorrem multas da prefeitura e bloqueio do CNPJ junto à Receita Federal. Ofereça migração para planos mais simples como última instância.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+              <h5 className="font-bold text-slate-900 text-xs mb-1">"O plano anual de renovação pode ser parcelado no boleto?"</h5>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                Não. A política oficial da Company Hero não permite parcelamento de planos anuais via boleto bancário por risco de inadimplência extrema. Alternativas viáveis são parcelamento no cartão de crédito em até 12x ou pagamento sob desconto substancial à vista via PIX/Boleto.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 2,
+    title: "Régua de Comunicação",
+    category: "Comunicação",
+    icon: <MessageCircle className="w-5 h-5" />,
+    duration: "45 min",
+    content: (
+      <div className="space-y-8">
+        <div>
+          <h3 className="font-bold text-xl text-gray-950 mb-2">Comunicação Omnichannel Automatizada</h3>
+          <p className="text-sm text-gray-600 leading-relaxed font-medium">
+            Entender as regras e as réguas de contato é o que diferencia o operador de excelência de uma cobrança robótica. Para garantir máxima eficácia, nosso sistema dispara simultaneamente as comunicações oficiais por e-mail e mensagens no WhatsApp de forma programada pelo HubSpot.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
+            <h4 className="font-bold text-slate-800 text-xs uppercase mb-2 flex items-center gap-1.5">
+              <MessageCircle className="w-4 h-4 text-pink-500" />
+              WhatsApp (Treble)
+            </h4>
+            <p className="text-xs text-slate-500 leading-relaxed font-medium">
+              Envio instantâneo focado em agilidade. As mensagens guiam o cliente diretamente para a fatura aberta e o botão facilitado de PIX ou cartão de crédito.
+            </p>
+          </div>
+          <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
+            <h4 className="font-bold text-slate-800 text-xs uppercase mb-2 flex items-center gap-1.5">
+              <FileText className="w-4 h-4 text-pink-500" />
+              E-mail Formal
+            </h4>
+            <p className="text-xs text-slate-500 leading-relaxed font-medium">
+              Uma comunicação corporativa estruturada, contendo a Nota Fiscal emitida de forma prévia ou recibos relacionados, formalizando o próximo período.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-bold text-slate-900 text-sm mb-4">💳 Atualização de Cartões na Iugu</h4>
+          <p className="text-xs text-slate-500 mb-4">
+            Clientes sob plano recorrente no cartão que apresentam faturas recusadas precisam recadastrar suas credenciais ou vincular um cartão alternativo. Encaminhe o script abaixo para instruí-los:
+          </p>
+          <ScriptCard 
+            title="Script de Cadastro/Troca de Cartão Recusado"
+            script={`Olá! Percebemos uma pequena recusa bancária na tentativa de cobrança automática da sua renovação anual.\n\nPara garantir que o serviço de escritório virtual e recepção de correspondências siga sem bloqueios, criamos um link seguro para que você faça o recadastramento ou insira um novo cartão diretamente em sua área de cliente. Veja como é rápido e seguro:\n\n🔗 Clique aqui para atualizar seu cartão: [LINK_IUGU]\n\nAssim que confirmar o novo cartão, a tentativa de faturamento será processada instantaneamente.`}
+          />
+        </div>
+
+        <div>
+          <h4 className="font-bold text-slate-900 text-sm mb-4 flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-gray-400" />
+            Cronograma Detalhado da Régua de Comunicação (Boleto / PIX)
+          </h4>
+          <p className="text-xs text-slate-500 mb-6">A régua de comunicação rege os disparos automatizados desde a antecedência até o atraso terminal:</p>
+
+          <div className="relative border-l-2 border-slate-200 ml-4 space-y-8 pb-4">
+            <div className="relative pl-8">
+              <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-slate-900 border-4 border-white"></div>
+              <div className="flex items-center gap-2 mb-1">
+                 <strong className="text-xs font-bold bg-slate-100 text-slate-800 px-2.5 py-1 rounded-full font-mono">D-10</strong>
+                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Lembrete Preventivo</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                Primeiro aviso amigável avisando sobre o encerramento do ciclo de 12 meses e disponibilizando em anexo no e-mail a fatura do novo ciclo.
+              </p>
+            </div>
+
+            <div className="relative pl-8">
+              <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-slate-900 border-4 border-white"></div>
+              <div className="flex items-center gap-2 mb-1">
+                 <strong className="text-xs font-bold bg-slate-100 text-slate-800 px-2.5 py-1 rounded-full font-mono">D-3</strong>
+                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Penúltimo Alerta</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                WhatsApp e e-mail enfatizando a data iminente de vencimento e orientando formas de fechamento com facilidade de pagamento parcelado em cartão.
+              </p>
+            </div>
+
+            <div className="relative pl-8">
+              <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-pink-500 border-4 border-white"></div>
+              <div className="flex items-center gap-2 mb-1">
+                 <strong className="text-xs font-bold bg-pink-100 text-pink-800 px-2.5 py-1 rounded-full font-mono">D0</strong>
+                 <span className="text-xs font-bold text-pink-600 uppercase tracking-wider font-mono">Sem tolerância - Data Limite</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                Envio focado na liquidação imediata da fatura de renovação. Fornece botão de PIX copia-e-cola diretamente no WhatsApp.
+              </p>
+            </div>
+
+            <div className="relative pl-8">
+              <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-orange-500 border-4 border-white"></div>
+              <div className="flex items-center gap-2 mb-1">
+                 <strong className="text-xs font-bold bg-orange-100 text-orange-850 px-2.5 py-1 rounded-full font-mono">D+2, D+4, D+7, D+10</strong>
+                 <span className="text-xs font-bold text-orange-600 uppercase tracking-wider font-mono">Cobranças Ativas Recorrentes</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                Notificação de quebras de contrato. O tom passa a incluir advertências explícitas sobre suspensão provisória e devolução/bloqueio de encomendas oficiais no endereço da empresa.
+              </p>
+            </div>
+
+            <div className="relative pl-8">
+              <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-red-600 border-4 border-white"></div>
+              <div className="flex items-center gap-2 mb-1">
+                 <strong className="text-xs font-bold bg-red-100 text-red-800 px-2.5 py-1 rounded-full font-mono">D+29 / Fim do Mês</strong>
+                 <span className="text-xs font-bold text-red-600 uppercase tracking-wider font-mono">Esteira Tática de Campanha PROMO</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                Para as fatias remanescentes de clientes inadimplentes correndo sério risco de Churn involuntário terminal, aplicamos de forma supervisionada nossos cupons de desconto locais (disponíveis publicamente no Metabase/Dashboard) para viabilizar acordos financeiros pontuais.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 3,
+    title: "Solicitação de Cancelamento",
+    category: "Retenção",
+    icon: <Users className="w-5 h-5" />,
+    duration: "40 min",
+    content: (
+      <div className="space-y-8">
+        <div>
+          <h3 className="font-bold text-xl text-gray-950 mb-2">Procedimento de Envio para Retenção</h3>
+          <p className="text-sm text-gray-600 leading-relaxed font-medium">
+            Se mesmo após os nossos scripts normais de contorne de objeções o cliente mantiver de forma irredutível a intenção de rescindir o aluguel do escritório virtual, o operador do suporte secundário ou cobrança deve proceder com a abertura oficial de cancelamento da esteira para envio imediato ao time focado de Retenção.
+          </p>
+        </div>
+
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
+          <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">⚠️ Regra Estrutural Inviolável</h4>
+          <p className="text-xs text-slate-600 leading-relaxed font-medium">
+            Nunca decrete o cancelamento de uma assinatura de escritório virtual de forma autônoma sem antes esgotar as tentativas de repasse ao setor focado de retenção. Contornar a quebra do ARR é essencial para o caixa corporativo.
+          </p>
+        </div>
+
+        <div className="bg-gradient-to-r from-hero-50 to-pink-50 border border-hero-100/80 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
+          <div className="space-y-1">
+            <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <ClipboardList className="w-5 h-5 text-hero-600 animate-pulse" />
+              Formulário Oficial de Cancelamento (Retenção)
+            </h4>
+            <p className="text-xs text-slate-600 font-medium max-w-xl leading-relaxed">
+              Clique no botão ao lado para preencher o formulário oficial de cancelamento da esteira de retenção diretamente no HubSpot da Company Hero.
+            </p>
+          </div>
+          <a 
+            href="https://bwsd8.share.hsforms.com/2iwv8vOWWQh6dyElkUfTW0Q"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3.5 bg-hero-600 hover:bg-hero-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:scale-[1.03] shadow-md shadow-hero-600/10"
+          >
+            Acessar Formulário Oficial
+            <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm">
+          <div className="flex items-center gap-2">
+            <Video className="w-5 h-5 text-hero-600" />
+            <h4 className="font-bold text-slate-900 text-sm">
+              Guia Visual: Como realizar um cancelamento
+            </h4>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed font-medium">
+            Siga as diretrizes do guia visual abaixo para entender os fluxos operacionais de cancelamento de forma assertiva:
+          </p>
+          <div className="relative rounded-xl overflow-hidden border border-slate-200/60 bg-slate-50 flex items-center justify-center p-1">
+            <a href="https://gifyu.com/image/bIQ6P" target="_blank" rel="noopener noreferrer" className="block w-full text-center">
+              <img 
+                src="https://s13.gifyu.com/images/bIQ6P.gif" 
+                alt="Como realizar um cancelamento" 
+                className="w-full h-auto max-h-[480px] object-contain rounded-lg mx-auto"
+                referrerPolicy="no-referrer"
+              />
+            </a>
+          </div>
+        </div>
+
+        <div className="border-t border-slate-100 pt-6">
+          <h4 className="font-bold text-slate-900 text-sm mb-3">Resumo dos Passos do Operador</h4>
+          <ol className="list-decimal list-inside text-xs leading-relaxed space-y-2 text-slate-600 font-medium">
+            <li>Faça o contorno do problema raiz trazendo as objeções de regularidade (Receita Federal, alteração de CNPJ na Junta, custos cartoriais).</li>
+            <li>Insira as propostas táticas de renovação supervisionadas (faturamento à vista sob desconto substancial e condições diferenciadas).</li>
+            <li>Gere o ticket preenchendo o formulário oficial no link de Retenção acima.</li>
+            <li>Acompanhe o encerramento seguro apenas se o time de retenção sinalizar com a inatividade total de acordos.</li>
+          </ol>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 4,
+    title: "Processos Manuais e 3C+",
+    category: "Operação 3C+",
+    icon: <Smartphone className="w-5 h-5" />,
+    duration: "50 min",
+    content: (
+      <div className="space-y-8 animate-in fade-in duration-500">
+        <div>
+          <h3 className="font-bold text-xl text-gray-950 mb-2">Processos Manuais e Gestão na Plataforma 3C+</h3>
+          <p className="text-sm text-gray-600 leading-relaxed font-semibold">
+            Este módulo serve como o guia definitivo para a execução, configuração e monitoramento de acionamentos em massa (SMS, Discador Automático e URA Reversa) utilizando a ferramenta 3C+ (Plus). Seguir estas diretrizes mitiga falhas de importação e garante a eficiência da operação.
+          </p>
+        </div>
+
+        {/* SECÇÃO 1: SMS */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <Smartphone className="w-5 h-5 text-hero-600" />
+            <h4 className="font-bold text-slate-900 text-base">📱 1. Como Disparar SMS em Massa</h4>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+            O disparo de SMS é utilizado para comunicações rápidas diretamente na tela do celular do cliente. Todo disparo passa por uma auditoria interna da plataforma antes do envio.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-3">
+              <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <ClipboardList className="w-4 h-4 text-hero-500" />
+                ⚙️ Passo a Passo para o Disparo:
+              </h5>
+              <ol className="list-decimal list-inside text-xs leading-relaxed space-y-2 text-slate-600 font-medium">
+                <li><strong className="text-slate-800">Acessar a aba:</strong> No menu lateral esquerdo da 3C+, clique em "Disparos" &gt; "SMS".</li>
+                <li><strong className="text-slate-800">Configuração Inicial:</strong> Nomeie o disparo de forma clara para controle interno, selecione a data e o horário desejados para a entrega.</li>
+                <li><strong className="text-slate-800">Adicionar lista de contatos:</strong> Clique em "Adicionar Lista" e selecione o seu arquivo de mailing em formato CSV (separado por vírgulas).</li>
+                <li><strong className="text-slate-800">Ajuste do arquivo:</strong> Escolha o separador e o delimitador corretos conforme o seu arquivo. Se a planilha contiver títulos nas colunas, marque a opção "A primeira linha é um cabeçalho" e clique em "Enviar Arquivo".</li>
+                <li><strong className="text-slate-800">Verificar colunas:</strong> Confirme se o sistema identificou corretamente os cabeçalhos. Garanta que a coluna correspondente aos números de telefone esteja categorizada no tipo correto do sistema. Clique em "Próximo".</li>
+                <li><strong className="text-slate-800">Montar a mensagem:</strong> Personalize o texto utilizando as variáveis disponíveis do seu mailing (ex: <code className="bg-slate-100 px-1 py-0.5 rounded text-hero-600 border border-slate-200 font-mono text-[10px]">{"{{nome}}"}</code>).</li>
+                <li><strong className="text-slate-800">Revisão e Envio:</strong> Verifique o resumo geral e, se tudo estiver correto, clique em "Enviar" para realizar o disparo.</li>
+              </ol>
+            </div>
+
+            <div className="space-y-4">
+              <InfoBox title="⚠️ Regras Críticas e Considerações Práticas:" type="warning">
+                <ul className="list-disc list-inside space-y-2 text-xs text-amber-900 font-medium leading-relaxed">
+                  <li><strong className="text-amber-955">Aprovação / SLA:</strong> Após clicar em enviar, o lote de SMS entra em análise pelo time de atendimento da plataforma, que possui um prazo de até <span className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200 font-bold text-amber-950">1 dia útil</span> para aprovação ou recusa. Planeje os disparos com antecedência.</li>
+                  <li><strong className="text-amber-955">Limite de Caracteres:</strong> A mensagem não pode exceder <span className="underline font-bold">160 caracteres</span>.</li>
+                  <li><strong className="text-amber-955">Restrição de Formatação:</strong> <span className="font-bold text-red-700">Nunca</span> utilize formatações especiais, palavras em negrito ou emojis no corpo do SMS. Isso quebra a codificação e causa falha imediata no envio.</li>
+                  <li><strong className="text-amber-955">Saldo:</strong> Valide se o saldo financeiro disponível na conta é igual ou superior ao número total de contatos da lista antes de concluir.</li>
+                </ul>
+              </InfoBox>
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm">
+            <div className="flex items-center gap-2">
+              <Video className="w-5 h-5 text-hero-600" />
+              <h4 className="font-bold text-slate-900 text-sm">
+                🎬 Importação de SMS (Guia Animado)
+              </h4>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+              Assista ao fluxo de processamento e subida de mailing de SMS em lotes na plataforma 3C+:
+            </p>
+            <div className="relative rounded-xl overflow-hidden border border-slate-200/60 bg-slate-50 flex items-center justify-center p-1">
+              <a href="https://alo.3cplusnow.com/hubfs/Knowledge%20Base%20Import/Lista+SMS-1.gif" target="_blank" rel="noopener noreferrer" className="block w-full text-center">
+                <img 
+                  src="https://alo.3cplusnow.com/hubfs/Knowledge%20Base%20Import/Lista+SMS-1.gif" 
+                  alt="Importação de SMS na 3C+" 
+                  className="w-full h-auto max-h-[480px] object-contain rounded-lg mx-auto"
+                  referrerPolicy="no-referrer"
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* SECÇÃO 2: DISCADOR */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <Phone className="w-5 h-5 text-hero-600 animate-pulse" />
+            <h4 className="font-bold text-slate-900 text-base">📞 2. Como Importar Listas e Gerenciar o Discador Automático (Ligações)</h4>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+            Anexe mailings válidos para o discador inteligente distribuir chamadas de voz de renovações sem gargalos.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-3">
+              <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-1.5">
+                <FileText className="w-4 h-4 text-hero-500" />
+                📐 Regras Cruciais de Formatação do Mailing (CSV)
+              </h5>
+              <div className="space-y-3 text-xs leading-relaxed text-slate-600 font-medium">
+                <div className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 bg-hero-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                  <p><strong className="text-slate-800">Formato Obrigatório:</strong> O arquivo precisa marcar extensão <span className="font-mono bg-slate-105 border px-1 rounded text-hero-600 border-slate-150">.CSV</span> exclusivamente.</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 bg-hero-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                  <p><strong className="text-slate-800">Estrutura de Telefone:</strong> A lista deve conter DDD + Telefone organizados em colunas válidas.</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 bg-hero-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                  <p><strong className="text-slate-800">O Dígito 9:</strong> Sempre inclua o dígito 9 para números celulares.</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 bg-hero-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                  <p><strong className="text-slate-800">O Código 55:</strong> <span className="font-bold text-red-650">Não utilize</span> o código do país (55) antes do DDD. O número deve começar direto pelo DDD (ex: 11999999999).</p>
+                </div>
+              </div>
+
+              <div className="mt-4 p-3.5 bg-red-50 border border-red-100 rounded-xl space-y-1">
+                <h6 className="font-bold text-[10px] text-red-800 tracking-wider uppercase flex items-center gap-1">
+                  <AlertOctagon className="w-3.5 h-3.5 text-red-500" />
+                  Alerta do Separador (Semicolon vs Comma)
+                </h6>
+                <p className="text-[10px] text-red-700 leading-normal font-semibold">
+                  Ferramentas como o Excel costumam converter arquivos .xlsx para .csv utilizando o ponto e vírgula ( <code className="font-mono bg-white px-0.5 border">;</code> ) como separador, enquanto o padrão esperado pela 3C+ é a vírgula ( <code className="font-mono bg-white px-0.5 border">,</code> ). Se o mapeamento de colunas falhar na pré-visualização, abra o arquivo e corrija o separador antes de tentar subir novamente.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-3 flex flex-col justify-between">
+              <div>
+                <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-1.5">
+                  <Zap className="w-4 h-4 text-hero-500" />
+                  ⚙️ Passo a Passo para Inserir a Lista
+                </h5>
+                <ol className="list-decimal list-inside text-xs leading-relaxed space-y-2 text-slate-600 font-medium">
+                  <li><strong className="text-slate-800">Campanha Existente:</strong> Vá no menu <strong className="text-slate-800">Voz &gt; Discador</strong> e localize a fila desejada (Ex: “Renovação D+10”).</li>
+                  <li>Clique em <strong className="text-slate-800">"Nova Lista"</strong>.</li>
+                  <li>Faça o upload do arquivo CSV higienizado.</li>
+                  <li><strong className="text-slate-800">Peso da Lista:</strong> Se houver mais de uma lista ativa na mesma campanha, configure o "peso". Listas com peso maior terão prioridade na fila de discagem automática do sistema.</li>
+                </ol>
+              </div>
+
+              <div className="p-4 bg-slate-50 border border-slate-150 rounded-xl space-y-1.5">
+                <h6 className="font-bold text-xs text-slate-900">📈 Configuração de Novas Campanhas, Monitoramento e Auditoria:</h6>
+                <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
+                  <strong className="text-slate-700">Criar Campanha:</strong> Caso precise iniciar uma campanha do zero, vá em Voz &gt; Discador &gt; Criar Nova Campanha, defina o nome, horários de operação permitidos para ligar e as qualificações pós-chamada (disposições de tabulação).<br />
+                  <strong className="text-slate-700">Pausas e Horários:</strong> Configure os intervalos obrigatórios dos operadores e monitore se alguém esqueceu de deslogar ao final do turno para não queimar leads fora do horário.<br />
+                  <strong className="text-slate-700">Reciclagem de Listas:</strong> Utilize a função de reciclagem para fazer o discador tentar ligar automaticamente de novo apenas para os contatos que deram status de "Não Atendido" ou "Caixa Postal" em horários alternativos.<br />
+                  <strong className="text-slate-700">Modo Espião (Spy) e Gravações:</strong> Supervisores podem escutar as chamadas em tempo real usando o modo Spy ou extrair o histórico detalhado com arquivos de áudio em Relatórios para auditorias de conformidade e treinamentos do time.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SECÇÃO 3: URA REVERSA */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <Bot className="w-5 h-5 text-hero-600 animate-pulse" />
+            <h4 className="font-bold text-slate-900 text-base">🤖 3. Como Configurar e Rodar a URA Reversa (Voz + WhatsApp)</h4>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+            A URA Reversa realiza chamadas de voz automáticas e, se o cliente atende e digita a opção "1", a plataforma dispara um fluxo de texto via Treble para o WhatsApp dele.
+          </p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-1 p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-4">
+              <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-1.5">
+                <RefreshCw className="w-4 h-4 text-hero-500" />
+                ⚙️ Configuração do Fluxo da URA na Campanha:
+              </h5>
+              <ol className="list-decimal list-inside text-xs leading-relaxed space-y-2.5 text-slate-600 font-medium">
+                <li>Acesse a campanha de renovação desejada ou crie uma nova em <strong className="text-slate-800">Voz &gt; Discador</strong>.</li>
+                <li>Clique em <strong className="text-slate-800">"Configuração da Campanha"</strong> e navegue até a aba <strong className="text-slate-800">"Estratégia"</strong>.</li>
+                <li>Localize o campo <strong className="text-slate-800">"Limite de Canais de URA"</strong> e defina a quantidade de canais simultâneos autorizados para rodar de acordo com a capacidade do time.</li>
+                <li>Salve as alterações e retorne à tela principal da campanha.</li>
+                <li>O painel habilitará um novo campo chamado <strong className="text-slate-800">"Listas URA"</strong>. Clique nele e faça o upload do seu mailing clicando em <strong className="text-slate-800">"+ Nova Lista"</strong>.</li>
+              </ol>
+            </div>
+
+            <div className="lg:col-span-2 p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-4">
+              <div className="space-y-1">
+                <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                  <Target className="w-4 h-4 text-hero-500" />
+                  🗺️ Mapeamento Crítico de Filas de Destino
+                </h5>
+                <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">
+                  Quando o cliente digita "1" na ligação de voz e responde a mensagem enviada pela Treble no WhatsApp, ele entra na nossa caixa de atendimento humano. É mandatório associar a campanha à fila correta de acordo com a régua para garantir que o cliente caia no time correto:
+                </p>
+              </div>
+
+              <div className="overflow-x-auto rounded-xl border border-slate-100 shadow-sm">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-100 text-[10px] uppercase font-bold text-slate-700">
+                      <th className="px-4 py-3">Contexto / Motivo do Acionamento</th>
+                      <th className="px-4 py-3">Fila de Destino Correta</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-slate-600 font-medium whitespace-nowrap">
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-4 py-3 font-semibold text-slate-700">Lembrete de Vencimento</td>
+                      <td className="px-4 py-3">
+                        <span className="bg-pink-50 text-pink-700 px-2 rounded-md py-0.5 border border-pink-100 font-bold block w-fit text-[10px]">
+                          Fila - Renovação
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-4 py-3 font-semibold text-slate-700">Vencimento Hoje</td>
+                      <td className="px-4 py-3">
+                        <span className="bg-pink-50 text-pink-700 px-2 rounded-md py-0.5 border border-pink-100 font-bold block w-fit text-[10px]">
+                          Fila - Renovação
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-4 py-3 font-semibold text-slate-700">Quebra de Acordo</td>
+                      <td className="px-4 py-3">
+                        <span className="bg-orange-50 text-orange-700 px-2 rounded-md py-0.5 border border-orange-100 font-bold block w-fit text-[10px]">
+                          Fila - Central Retenção
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-4 py-3 font-semibold text-slate-700">Vencido há pouco tempo (Até 30 dias)</td>
+                      <td className="px-4 py-3">
+                        <span className="bg-orange-50 text-orange-700 px-2 rounded-md py-0.5 border border-orange-100 font-bold block w-fit text-[10px]">
+                          Fila - Central Retenção
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-4 py-3 font-semibold text-slate-700">Vencido há mais de 30 dias</td>
+                      <td className="px-4 py-3">
+                        <span className="bg-amber-50 text-amber-700 px-2 rounded-md py-0.5 border border-amber-100 font-bold block w-fit text-[10px]">
+                          Fila - Inadimplentes (Antiga fila Financeiro)
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-4 py-3 font-semibold text-slate-700">Cliente será suspenso em breve</td>
+                      <td className="px-4 py-3">
+                        <span className="bg-red-50 text-red-700 px-2 rounded-md py-0.5 border border-red-100 font-bold block w-fit text-[10px]">
+                          Fila - Cancelamento e Retenção
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     )
   }
 ];

@@ -10,6 +10,7 @@ interface ModuleViewerProps {
   onNext: () => void;
   isLastModule: boolean;
   onFinishCourse: () => void;
+  courseId?: string;
 }
 
 export const ModuleViewer: React.FC<ModuleViewerProps> = ({ 
@@ -18,7 +19,8 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
   onComplete, 
   onNext,
   isLastModule,
-  onFinishCourse
+  onFinishCourse,
+  courseId
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   
@@ -201,8 +203,8 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-               {/* Assistir Apresentação button - only for Module 1 */}
-               {module.id === 1 && hasSeenIntro && (
+               {/* Assistir Apresentação button - only for Module 1 of financeiro course */}
+               {courseId === 'financeiro' && module.id === 1 && hasSeenIntro && (
                  <button 
                    onClick={() => setShowVideoModal(true)}
                    className="px-4 py-2.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-2 border bg-white border-slate-200 hover:border-hero-200 hover:text-hero-600 text-slate-600 hover:shadow-md"
@@ -235,7 +237,7 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-6 py-12">
           
-          {module.id === 1 && !hasSeenIntro ? (
+          {courseId === 'financeiro' && module.id === 1 && !hasSeenIntro ? (
             // INTRO SPLASH BLOCKER (Only shown on Module 1 the first time, preventing material from showing beforehand)
             <div className="py-12 md:py-20 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-8 duration-700 max-w-2xl mx-auto">
               <div className="relative mb-10 group">

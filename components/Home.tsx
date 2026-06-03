@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { PlayCircle, Clock, ChevronRight, Lock, TrendingUp, ShieldCheck, Award, Star, Sparkles, Search } from 'lucide-react';
-import { courses } from '../data';
+import { courses, financeiroModules, renovacaoModules } from '../data';
 import { Course } from '../types';
 
 interface HomeProps {
   onSelectCourse: (courseId: string) => void;
   onOpenWiki: () => void;
-  completedModules: number[];
-  totalModules: number;
+  completedModules: string[];
 }
 
-export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, completedModules, totalModules }) => {
-  // Cap progress at 100 to prevent overflow (e.g., 113%)
-  const progress = Math.min(100, Math.round((completedModules.length / totalModules) * 100));
+export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, completedModules }) => {
+  // Total modules in both active courses
+  const totalModulesCount = financeiroModules.length + renovacaoModules.length;
+  const progress = Math.min(100, Math.round((completedModules.length / totalModulesCount) * 100));
   const [visualProgress, setVisualProgress] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setVisualProgress(progress), 300);
     return () => clearTimeout(timer);
   }, [progress]);
+
+  // Calculate specific course progress
+  const financeiroCompleted = completedModules.filter(k => k.startsWith('financeiro_')).length;
+  const financeiroProgress = Math.min(100, Math.round((financeiroCompleted / financeiroModules.length) * 100));
+
+  const renovacaoCompleted = completedModules.filter(k => k.startsWith('renovacao_')).length;
+  const renovacaoProgress = Math.min(100, Math.round((renovacaoCompleted / renovacaoModules.length) * 100));
 
   return (
     <div className="flex-1 bg-white overflow-y-auto">
@@ -33,7 +40,7 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
             
             {/* Left Content */}
             <div className="flex-1 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white border border-hero-100 text-hero-600 text-[11px] font-extrabold uppercase tracking-widest mb-8 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white border border-hero-100 text-hero-600 text-[11px] font-extrabold uppercase tracking-widest mb-8 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-700 font-mono">
                 <Sparkles className="w-3.5 h-3.5 fill-hero-600" />
                 <span>Hero Academy</span>
               </div>
@@ -93,14 +100,14 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
                   <div className="space-y-5 mb-8">
                     {/* Primary Bar */}
                     <div className="space-y-2">
-                      <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
-                        <span>Performance</span>
+                      <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
+                        <span>Progresso Geral</span>
                         <span>{progress}%</span>
                       </div>
                       <div className="h-3 bg-slate-100 rounded-full w-full overflow-hidden">
                         <div 
                           className="h-full bg-gradient-to-r from-hero-500 to-hero-400 rounded-full transition-all duration-[1500ms] ease-out shadow-[0_0_15px_rgba(230,0,90,0.4)] relative" 
-                          style={{ width: `${Math.max(visualProgress, 10)}%` }}
+                          style={{ width: `${Math.max(visualProgress, 5)}%` }}
                         >
                           <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                         </div> 
@@ -109,14 +116,14 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
                     
                     {/* Secondary Bar */}
                     <div className="space-y-2">
-                       <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
+                       <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
                         <span>Soft Skills</span>
-                        <span>{(visualProgress * 0.8).toFixed(0)}%</span>
+                        <span>{Math.round(Math.max(visualProgress * 0.9, 10))}%</span>
                       </div>
                       <div className="h-3 bg-slate-100 rounded-full w-full overflow-hidden">
                         <div 
                           className="h-full bg-gradient-to-r from-purple-500 to-purple-400 rounded-full transition-all duration-[1500ms] ease-out delay-100" 
-                          style={{ width: `${Math.max(visualProgress * 0.7, 5)}%` }}
+                          style={{ width: `${Math.max(visualProgress * 0.8, 10)}%` }}
                         ></div>
                       </div>
                     </div>
@@ -124,7 +131,7 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
 
                   <div className="flex items-center gap-3 pt-6 border-t border-slate-100/50">
                      <div className="flex-1">
-                        <div className="text-xs font-bold text-slate-400 uppercase">Time</div>
+                        <div className="text-xs font-bold text-slate-400 uppercase font-mono">Time</div>
                         <div className="text-slate-900 font-bold">Hero</div>
                      </div>
                      <ShieldCheck className="w-8 h-8 text-hero-200" />
@@ -147,8 +154,7 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {courses.map((course) => {
-              const isFinanceiro = course.id === 'financeiro';
-              const courseProgress = isFinanceiro ? progress : 0;
+              const courseProgress = course.id === 'financeiro' ? financeiroProgress : course.id === 'renovacao' ? renovacaoProgress : 0;
               const hasStarted = courseProgress > 0;
               const isCompleted = courseProgress === 100;
 
@@ -159,7 +165,7 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
                   className={`
                     group bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500
                     flex flex-col relative overflow-hidden isolate
-                    ${course.status !== 'active' ? 'opacity-80' : 'cursor-pointer hover:-translate-y-2'}
+                    ${course.status !== 'active' ? 'opacity-85' : 'cursor-pointer hover:-translate-y-2'}
                   `}
                 >
                   {/* Hover Gradient Background */}
@@ -177,14 +183,14 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
                      </div>
 
                      {course.status !== 'active' && (
-                        <div className="flex items-center gap-1.5 bg-slate-100 text-slate-500 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                        <div className="flex items-center gap-1.5 bg-slate-100 text-slate-500 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider font-mono">
                           <Lock className="w-3 h-3" />
                           Em Breve
                         </div>
                       )}
 
                       {course.status === 'active' && isCompleted && (
-                        <div className="flex items-center gap-1.5 bg-green-50 text-green-600 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-green-100">
+                        <div className="flex items-center gap-1.5 bg-green-50 text-green-600 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-green-100 font-mono">
                           <Award className="w-3 h-3" />
                           Concluído
                         </div>
@@ -205,7 +211,7 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
                     <div className="mt-auto pt-6 border-t border-slate-50">
                       {hasStarted ? (
                         <div className="space-y-3">
-                           <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider">
+                           <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider font-mono">
                             <span className="text-slate-400">Seu Progresso</span>
                             <span className="text-hero-600">{courseProgress}%</span>
                           </div>
@@ -221,9 +227,9 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
                         </div>
                       ) : (
                         <div className="flex items-center justify-between">
-                           <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1.5 rounded-lg">
+                           <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1.5 rounded-lg font-mono">
                               <Clock className="w-3.5 h-3.5" />
-                              <span>4h estimado</span>
+                              <span>{course.id === 'financeiro' ? '4h' : '2h'} estimado</span>
                            </div>
                            <button className="w-10 h-10 rounded-full bg-hero-50 text-hero-600 flex items-center justify-center group-hover:bg-hero-600 group-hover:text-white transition-all duration-300">
                               <PlayCircle className="w-5 h-5" />
