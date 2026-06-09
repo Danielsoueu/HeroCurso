@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertCircle, CheckCircle, XCircle, MessageSquare, Info, Zap, Quote } from 'lucide-react';
 
-export const InfoBox = ({ title, children, type = 'info' }: { title?: string, children?: React.ReactNode, type?: 'info' | 'warning' | 'success' | 'error' | 'hero' }) => {
+export const InfoBox = ({ title, children, type = 'info' }: { title?: string, children?: React.ReactNode, type?: 'info' | 'warning' | 'success' | 'error' | 'hero' | string }) => {
   const styles = {
     info: {
       bg: "bg-blue-50/50",
@@ -40,7 +40,7 @@ export const InfoBox = ({ title, children, type = 'info' }: { title?: string, ch
     }
   };
 
-  const currentStyle = styles[type];
+  const currentStyle = styles[type as keyof typeof styles] || styles.info;
 
   const icons = {
     info: <Info className="w-5 h-5" />,
@@ -50,6 +50,8 @@ export const InfoBox = ({ title, children, type = 'info' }: { title?: string, ch
     hero: <Zap className="w-5 h-5" />
   };
 
+  const currentIcon = icons[type as keyof typeof icons] || icons.info;
+
   return (
     <div className={`relative overflow-hidden rounded-xl border ${currentStyle.border} ${currentStyle.bg} shadow-sm group hover:shadow-md transition-shadow duration-300`}>
       {/* Colored Left Bar */}
@@ -58,7 +60,7 @@ export const InfoBox = ({ title, children, type = 'info' }: { title?: string, ch
       <div className="p-5 pl-7">
         <div className="flex items-start gap-3">
           <div className={`mt-0.5 flex-shrink-0 ${currentStyle.icon}`}>
-            {icons[type]}
+            {currentIcon}
           </div>
           <div className="flex-1">
             {title && (

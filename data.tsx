@@ -1,10 +1,10 @@
 import React from 'react';
 import { 
-  Users, Shield, DollarSign, AlertTriangle, FileText, Book, MessageCircle, 
+  Users, Shield, DollarSign, AlertTriangle, FileText, Book, MessageCircle, AlertCircle,
   CheckCircle, ChevronDown, Zap, BarChart3, Lock, Target, ClipboardList,
   MousePointer, Calculator, AlertOctagon, Search, RefreshCw, TrendingDown,
   Lightbulb, HeartHandshake, XOctagon, BrainCircuit, Phone, Calendar, Clock,
-  PauseCircle, ExternalLink, Video, Smartphone, Bot
+  PauseCircle, ExternalLink, Video, Smartphone, Bot, Mail
 } from 'lucide-react';
 import { Module, FAQCategory, Course } from './types';
 import { InfoBox, ScriptCard, ComparisonRow } from './components/ui/Cards';
@@ -1607,6 +1607,881 @@ export const renovacaoModules: Module[] = [
                 </table>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 5,
+    title: "Gestão de WhatsApp (Treble)",
+    category: "Operação WhatsApp",
+    icon: <MessageCircle className="w-5 h-5" />,
+    duration: "60 min",
+    content: (
+      <div className="space-y-8 animate-in fade-in duration-500">
+        <div>
+          <h3 className="font-bold text-xl text-gray-950 mb-2">Módulo 5: Gestão e Operação de WhatsApp via Treble</h3>
+          <p className="text-sm text-gray-600 leading-relaxed font-semibold">
+            Este módulo detalha o funcionamento técnico da API do WhatsApp Business através da ferramenta Treble, cobrindo as regras da Meta, a criação de mensagens estruturadas (HSM) e o procedimento operacional padrão (POP) de contingência para disparos com falha.
+          </p>
+        </div>
+
+        {/* LINK DA DOCUMENTAÇÃO OFICIAL */}
+        <div className="bg-gradient-to-r from-hero-50 to-pink-50 border border-hero-100/80 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
+          <div className="space-y-1">
+            <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <Book className="w-5 h-5 text-hero-600 animate-pulse" />
+              Documentação Oficial Treble
+            </h4>
+            <p className="text-xs text-slate-600 font-medium max-w-xl leading-relaxed">
+              📚 Guia Oficial da Treble: consulte a Central de Ajuda Treble para obter informações mais detalhadas e realizar pesquisas complementares diretamente nas referências do fabricante.
+            </p>
+          </div>
+          <a 
+            href="https://help.treble.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-hero-600 hover:bg-hero-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:scale-[1.03] shadow-md shadow-hero-600/10"
+          >
+            Acessar Guia Treble
+            <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
+
+        {/* 1. CONCEITOS ESSENCIAIS */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <Shield className="w-5 h-5 text-hero-600" />
+            <h4 className="font-bold text-slate-900 text-base">💡 1. Conceitos Essenciais do WhatsApp Business API</h4>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+            Para operar a ferramenta sem riscos de bloqueio da linha da empresa, o time precisa dominar duas regras fundamentais da Meta:
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-3">
+              <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <Bot className="w-4 h-4 text-hero-500" />
+                O que são Templates HSM?
+              </h5>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                Os <strong className="text-slate-800">HSM (Highly Structured Messages)</strong> são modelos de mensagens pré-aprovados pela Meta. Eles são obrigatórios para iniciar conversas com clientes que nunca falaram com a empresa ou que estão há <strong className="text-slate-800">mais de 24 horas inativos</strong>.
+              </p>
+              <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+                <strong className="text-slate-700">Por que existem?</strong> A Meta exige a aprovação prévia para prevenir spam, garantir a qualidade da comunicação comercial e proteger a privacidade do usuário da rede.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-3">
+              <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <Clock className="w-4 h-4 text-hero-500" />
+                A Janela de Mensagens de 24 Horas
+              </h5>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                Quando um cliente responde a qualquer mensagem enviada pela Company Hero, uma <strong className="text-slate-800">"janela de atendimento"</strong> oficial de 24 horas inicia-se de imediato.
+              </p>
+              <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 space-y-2 text-[10px] font-semibold text-slate-500 leading-normal">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                  <p><strong className="text-slate-700">Dentro da Janela:</strong> Envio de texto livre, arquivos ou mídias liberados sem templates HSM.</p>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                  <p><strong className="text-slate-700">Fora da Janela (Expirada):</strong> Janela fecha, sendo obrigatório disparar template HSM estruturado e homologado pela Meta.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. CATEGORIAS DE TEMPLATES HSM */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <ClipboardList className="w-5 h-5 text-hero-600" />
+            <h4 className="font-bold text-slate-900 text-base">🗂️ 2. Categorias de Templates HSM</h4>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+            A Meta classifica e analisa todos os templates submetidos de acordo com quatro finalidades principais:
+          </p>
+
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm bg-white">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-700">
+                  <th className="px-5 py-4">Categoria</th>
+                  <th className="px-5 py-4">Tipo de Conteúdo</th>
+                  <th className="px-5 py-4">Nível de Rigor / SLA da Meta</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-slate-600 font-medium whitespace-nowrap">
+                <tr className="hover:bg-slate-50/50">
+                  <td className="px-5 py-4 font-bold text-blue-700">
+                    <span className="bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-md text-[10px]">Utility (Utilidade)</span>
+                  </td>
+                  <td className="px-5 py-4 font-semibold text-slate-800">Faturas, alertas de sistema, atualização de conta, confirmação de registro.</td>
+                  <td className="px-5 py-4 text-slate-500">Processo de aprovação intermediário.</td>
+                </tr>
+                <tr className="hover:bg-slate-50/50">
+                  <td className="px-5 py-4 font-bold text-pink-700">
+                    <span className="bg-pink-50 border border-pink-100 px-2.5 py-0.5 rounded-md text-[10px]">Service (Serviço)</span>
+                  </td>
+                  <td className="px-5 py-4 font-semibold text-slate-800">Notificações de atendimento ao cliente, updates de envio, lembretes de compromisso.</td>
+                  <td className="px-5 py-4 text-slate-500">Processo de aprovação intermediário.</td>
+                </tr>
+                <tr className="hover:bg-slate-50/50">
+                  <td className="px-5 py-4 font-bold text-amber-700">
+                    <span className="bg-amber-50 border border-amber-100 px-2.5 py-0.5 rounded-md text-[10px]">Marketing</span>
+                  </td>
+                  <td className="px-5 py-4 font-semibold text-slate-800">Promoções, ofertas, carrosséis interativos, convites para eventos e novidades.</td>
+                  <td className="px-5 py-4 text-slate-500">Mais rigoroso. Exige opção explícita de opt-out (descadastramento).</td>
+                </tr>
+                <tr className="hover:bg-slate-50/50">
+                  <td className="px-5 py-4 font-bold text-violet-700">
+                    <span className="bg-violet-50 border border-violet-100 px-2.5 py-0.5 rounded-md text-[10px]">Authentication</span>
+                  </td>
+                  <td className="px-5 py-4 font-semibold text-slate-800">Códigos de segurança (OTP), validação de login, redefinição de senhas.</td>
+                  <td className="px-5 py-4 text-slate-500">Aprovação quase instantânea.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* 3. COMO CRIAR E CONFIGURAR HSM NO TREBLE */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <RefreshCw className="w-5 h-5 text-hero-600" />
+            <h4 className="font-bold text-slate-900 text-base">⚙️ 3. Como Criar e Configurar HSM no Treble</h4>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-3">
+              <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <FileText className="w-4 h-4 text-hero-500" />
+                Passo a Passo da Criação:
+              </h5>
+              <ol className="list-decimal list-inside text-xs leading-relaxed space-y-2 text-slate-600 font-medium">
+                <li>Navegue até a seção de <strong className="text-slate-800">Templates HSM</strong> dentro do Treble e clique em "Novo Template".</li>
+                <li>Defina um nome de identificação claro, selecione o idioma e escolha a categoria correspondente.</li>
+                <li>Estruture o esqueleto dividindo em três blocos disponíveis:
+                  <ul className="list-disc list-inside pl-4 mt-1 space-y-1 text-[10px]">
+                    <li><strong className="text-slate-800">Header:</strong> Cabeçalho (pode ser texto ou mídia).</li>
+                    <li><strong className="text-slate-800">Body:</strong> O corpo principal da mensagem.</li>
+                    <li><strong className="text-slate-800">Footer:</strong> Rodapé da mensagem (geralmente usado para assinaturas ou links de opt-out).</li>
+                  </ul>
+                </li>
+                <li>Clique em <strong className="text-slate-800">"Criar Template"</strong> para submeter à Meta.</li>
+              </ol>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-3">
+                <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider border-b border-slate-100 pb-2">
+                  ⏳ Prazo de Aprovação &amp; Monitoramento:
+                </h5>
+                <p className="text-xs text-slate-500 font-semibold">
+                  Atualmente, o processo de validação foi automatizado e a aprovação costuma ser quase instantânea. Basta atualizar a página do Treble para conferir o status:
+                </p>
+                <div className="flex flex-wrap gap-2 text-[10px]">
+                  <span className="bg-green-50 text-green-700 border border-green-200 font-bold px-2 py-1 rounded-lg">🟢 Aprovado: Pronto para uso imediato</span>
+                  <span className="bg-amber-50 text-amber-700 border border-amber-200 font-bold px-2 py-1 rounded-lg">🟡 Pendente: Em análise pela Meta</span>
+                  <span className="bg-red-50 text-red-700 border border-red-200 font-bold px-2 py-1 rounded-lg">🔴 Rejeitado: Violou as políticas da rede</span>
+                </div>
+                <div className="p-3 bg-slate-50 text-[10px] text-slate-600 rounded-xl leading-relaxed font-semibold border">
+                  ⚠️ <strong className="text-slate-850">Nota de Edição:</strong> Ao clicar no ícone de Editar em um template ativo, você só poderá rodar alterações no conteúdo do texto (<em className="text-slate-850">Body</em>). Não é permitido modificar o nome, a categoria ou o idioma de um HSM já criado.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* SINTAXE DE VARIÁVEIS */}
+          <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-3">
+            <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+              <FileText className="w-4 h-4 text-hero-500" />
+              🔧 Regras de Sintaxe para Uso de Variáveis
+            </h5>
+            <p className="text-xs text-slate-600 font-medium leading-relaxed">
+              As variáveis inserem dados dinâmicos do banco de dados (como nome do cliente, data ou links) na estrutura fixa da mensagem.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <div className="mt-1 w-1.5 h-1.5 rounded-full bg-hero-500 shrink-0"></div>
+                  <p className="text-xs text-slate-700"><strong className="text-slate-850">Sintaxe Obrigatória:</strong> A variável deve estar sempre envolta por chaves duplas: <span className="bg-slate-100 text-hero-600 px-1 py-0.5 rounded font-mono text-[10px]">{"{{nome_variavel}}"}</span>.</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="mt-1 w-1.5 h-1.5 rounded-full bg-hero-500 shrink-0"></div>
+                  <p className="text-xs text-slate-700"><strong className="text-slate-850">Formatação Correta:</strong> Escreva o nome da tag sempre em letras minúsculas, de forma clara, descritiva e sem espaços ou caracteres especiais.</p>
+                </div>
+              </div>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-150 relative">
+                <h6 className="font-bold text-[10px] text-slate-400 absolute top-2 right-3 uppercase tracking-wider">Como Usar</h6>
+                <p className="text-xs font-mono font-medium text-slate-705 italic pt-2">
+                  "Olá, <span className="text-hero-600 font-bold">{"{{nome}}"}</span>! A fatura do seu escritório virtual vence em <span className="text-hero-600 font-bold">{"{{data_vencimento}}"}</span>."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. FORMAS DE ENVIO OUTBOUND */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <Zap className="w-5 h-5 text-hero-600 animate-pulse" />
+            <h4 className="font-bold text-slate-900 text-base">🚀 4. Formas de Envio Outbound (Disparos Ativos)</h4>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+            Ao concluir a montagem de uma conversa outbound no Treble, o operador possui quatro métodos para dispará-la:
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-semibold">
+            <div className="p-4 bg-white border rounded-2xl shadow-sm text-center space-y-1">
+              <div className="mx-auto w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-hero-600 mb-2">1</div>
+              <h5 className="font-bold text-slate-800 text-xs">Integração CRM</h5>
+              <p className="text-[10px] text-slate-500 leading-relaxed">Disparo automatizado via gatilhos da régua do HSM HubSpot.</p>
+            </div>
+            <div className="p-4 bg-white border rounded-2xl shadow-sm text-center space-y-1">
+              <div className="mx-auto w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-hero-600 mb-2">2</div>
+              <h5 className="font-bold text-slate-800 text-xs">Via API</h5>
+              <p className="text-[10px] text-slate-500 leading-relaxed">Integração direta de código para automação avançada de sistemas.</p>
+            </div>
+            <div className="p-4 bg-white border rounded-2xl shadow-sm text-center space-y-1">
+              <div className="mx-auto w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-hero-600 mb-2">3</div>
+              <h5 className="font-bold text-slate-800 text-xs">Inserção Manual</h5>
+              <p className="text-[10px] text-slate-500 leading-relaxed">O operador digita o número e preenche os campos manualmente no Treble.</p>
+            </div>
+            <div className="p-4 bg-white border rounded-2xl shadow-sm text-center space-y-1">
+              <div className="mx-auto w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-hero-600 mb-2">4</div>
+              <h5 className="font-bold text-slate-800 text-xs">Upload de CSV</h5>
+              <p className="text-[10px] text-slate-500 leading-relaxed">Disparo massivo de mailings de acionamento em lote.</p>
+            </div>
+          </div>
+
+          <div className="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-6">
+            <div className="border-b border-slate-150 pb-3">
+              <h5 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <Target className="w-5 h-5 text-hero-600 animate-pulse" />
+                📋 Passo a Passo Detalhado: Disparo de Mensagens via Upload de CSV
+              </h5>
+              <p className="text-xs text-slate-500 font-medium mt-1">
+                Siga as etapas abaixo para realizar o envio massivo de conversas outbound de forma assertiva e sem falhas sistêmicas.
+              </p>
+            </div>
+
+            {/* Pré-requisitos */}
+            <div className="p-4 bg-amber-50/60 border border-amber-100 rounded-xl">
+              <h6 className="font-bold text-xs text-amber-900 flex items-center gap-1.5 uppercase tracking-wide">
+                <AlertTriangle className="w-4 h-4 text-amber-500" />
+                Pré-requisitos
+              </h6>
+              <p className="text-xs text-amber-800 font-semibold mt-1">
+                Antes de iniciar o disparo, você precisa ter uma conversa outbound já criada no Treble.
+              </p>
+            </div>
+
+            {/* Stepper */}
+            <div className="space-y-6 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+              
+              {/* Passo 1 */}
+              <div className="relative pl-8 space-y-2">
+                <div className="absolute left-0 top-0.5 w-7 h-7 bg-pink-100 text-hero-600 rounded-full flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                  1
+                </div>
+                <h6 className="font-bold text-slate-850 text-xs">Passo 1: Acessar a Seção de Envio</h6>
+                <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                  Você tem duas formas de acessar a seção de envio de conversas:
+                </p>
+                <ul className="list-disc list-inside text-xs text-slate-600 space-y-1 pl-2 font-semibold">
+                  <li><span className="text-slate-800 font-bold">Ao criar a conversa:</span> Selecione o botão <span className="bg-slate-100 px-1 py-0.5 border rounded">Criar Conversa</span> e depois <span className="bg-slate-100 px-1 py-0.5 border rounded">Enviar a conversa agora (Outbound)</span>.</li>
+                  <li><span className="text-slate-800 font-bold">Da visualização de conversas:</span> Clique no botão <span className="bg-slate-100 px-1 py-0.5 border rounded">Enviar</span> na conversa desejada.</li>
+                </ul>
+              </div>
+
+              {/* Passo 2 */}
+              <div className="relative pl-8 space-y-2">
+                <div className="absolute left-0 top-0.5 w-7 h-7 bg-pink-100 text-hero-600 rounded-full flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                  2
+                </div>
+                <h6 className="font-bold text-slate-850 text-xs">Passo 2: Selecionar a Aba de Upload de Arquivo</h6>
+                <p className="text-xs text-slate-600 font-semibold">
+                  Na visualização de envio de conversa, clique na aba <span className="bg-slate-100 px-1.5 py-0.5 border rounded text-slate-800 font-bold">Upload de arquivo</span>.
+                </p>
+              </div>
+
+              {/* Passo 3 */}
+              <div className="relative pl-8 space-y-4">
+                <div className="absolute left-0 top-0.5 w-7 h-7 bg-pink-100 text-hero-600 rounded-full flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                  3
+                </div>
+                <div className="space-y-4">
+                  <h6 className="font-bold text-slate-850 text-xs">Passo 3: Preparar o Arquivo CSV</h6>
+                  
+                  {/* Baixar o Modelo Correto */}
+                  <div className="bg-slate-50 border rounded-xl p-4 space-y-2">
+                    <h6 className="font-bold text-slate-800 text-[11px] block uppercase tracking-wider">📥 Baixar o Modelo Correto</h6>
+                    <p className="text-xs text-slate-600 font-medium">No painel esquerdo, você encontrará dois links úteis:</p>
+                    <ul className="list-disc list-inside text-xs text-slate-600 space-y-1.5 pl-2 font-semibold">
+                      <li><span className="text-slate-800 font-bold">Baixar exemplo:</span> Permite baixar um arquivo CSV de exemplo com os números de telefone.</li>
+                      <li><span className="text-slate-800 font-bold">Baixar CSV [nome da sua conversa]:</span> Permite baixar um modelo de arquivo CSV com a estrutura de variáveis da sua conversa.</li>
+                    </ul>
+                  </div>
+
+                  {/* Estrutura Obrigatória */}
+                  <div className="space-y-2 pt-1">
+                    <h6 className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-hero-500"></span>
+                      Estrutura Obrigatória do CSV
+                    </h6>
+                    <p className="text-xs text-slate-600 font-medium">
+                      A estrutura das colunas em seu arquivo CSV é muito importante para garantir que a conversa seja enviada corretamente. A estrutura básica de colunas obrigatórias é:
+                    </p>
+                    <div className="overflow-x-auto rounded-xl border border-slate-150 max-w-lg bg-slate-50 p-3">
+                      <table className="w-full text-left text-xs font-mono">
+                        <thead>
+                          <tr className="border-b text-[10px] uppercase font-bold text-slate-500">
+                            <th className="pb-1.5 pr-4">country_code</th>
+                            <th className="pb-1.5 pr-4">cellphone</th>
+                            <th className="pb-1.5 pr-4">name</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y text-[11px] text-slate-600">
+                          <tr>
+                            <td className="py-1.5 pr-4">55</td>
+                            <td className="py-1.5 pr-4">11999999999</td>
+                            <td className="py-1.5 pr-4">Felipe</td>
+                          </tr>
+                          <tr>
+                            <td className="py-1.5 pr-4">55</td>
+                            <td className="py-1.5 pr-4">11988888888</td>
+                            <td className="py-1.5 pr-4">Camila</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-[10px] text-slate-500 font-semibold">
+                      ⚠️ As colunas <strong className="text-slate-750">country_code</strong> e <strong className="text-slate-755">cellphone</strong> são estritamente obrigatórias.
+                    </p>
+                  </div>
+
+                  {/* Incluir Variáveis Personalizadas */}
+                  <div className="space-y-2 pt-2">
+                    <h6 className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-hero-500"></span>
+                      Incluir Variáveis Personalizadas
+                    </h6>
+                    <p className="text-xs text-slate-600 font-medium">
+                      Se sua conversa possui variáveis, você deve adicionar colunas correspondentes no CSV. Por exemplo, se você tem variáveis como <code className="bg-slate-100 text-hero-600 px-1 py-0.5 rounded font-mono text-[10px]">{"{{email}}"}</code> e <code className="bg-slate-100 text-hero-600 px-1 py-0.5 rounded font-mono text-[10px]">{"{{data_ultima_compra}}"}</code>, seu CSV deve ter esta estrutura:
+                    </p>
+                    <div className="overflow-x-auto rounded-xl border border-slate-150 max-w-2xl bg-slate-50 p-3">
+                      <table className="w-full text-left text-xs font-mono">
+                        <thead>
+                          <tr className="border-b text-[10px] uppercase font-bold text-slate-500">
+                            <th className="pb-1.5 pr-4">cellphone</th>
+                            <th className="pb-1.5 pr-4">country_code</th>
+                            <th className="pb-1.5 pr-4">nome_cliente</th>
+                            <th className="pb-1.5 pr-4">email</th>
+                            <th className="pb-1.5 pr-4">data_ultima_compra</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y text-[11px] text-slate-600">
+                          <tr>
+                            <td className="py-1.5 pr-4">1234567</td>
+                            <td className="py-1.5 pr-4">58</td>
+                            <td className="py-1.5 pr-4">João</td>
+                            <td className="py-1.5 pr-4">joao@gmail.com</td>
+                            <td className="py-1.5 pr-4">2024-01-01</td>
+                          </tr>
+                          <tr>
+                            <td className="py-1.5 pr-4">1234568</td>
+                            <td className="py-1.5 pr-4">58</td>
+                            <td className="py-1.5 pr-4 font-semibold text-slate-805">Maria</td>
+                            <td className="py-1.5 pr-4">maria@gmail.com</td>
+                            <td className="py-1.5 pr-4">2024-02-01</td>
+                          </tr>
+                          <tr>
+                            <td className="py-1.5 pr-4">1234569</td>
+                            <td className="py-1.5 pr-4">58</td>
+                            <td className="py-1.5 pr-4">Pedro</td>
+                            <td className="py-1.5 pr-4">pedro@gmail.com</td>
+                            <td className="py-1.5 pr-4">2024-03-01</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="p-3 bg-red-50 border border-red-100 rounded-xl">
+                      <p className="text-[10px] text-red-800 leading-relaxed font-semibold">
+                        ❌ <strong className="text-red-955">Importante:</strong> Os nomes das colunas devem corresponder exatamente aos nomes das variáveis que você definiu no fluxo de conversa do Treble. Se não corresponderem, a conversa não será enviada corretamente.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Passo 4 */}
+              <div className="relative pl-8 space-y-2">
+                <div className="absolute left-0 top-0.5 w-7 h-7 bg-pink-100 text-hero-600 rounded-full flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                  4
+                </div>
+                <h6 className="font-bold text-slate-850 text-xs">Passo 4: Fazer Upload do Arquivo</h6>
+                <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                  Clique no botão <span className="bg-slate-100 px-1 py-0.5 border rounded text-slate-850 font-bold">Selecionar arquivo</span> para fazer upload do seu arquivo CSV.
+                </p>
+              </div>
+
+              {/* Passo 5 */}
+              <div className="relative pl-8 space-y-2">
+                <div className="absolute left-0 top-0.5 w-7 h-7 bg-pink-100 text-hero-600 rounded-full flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                  5
+                </div>
+                <h6 className="font-bold text-slate-850 text-xs">Passo 5: Escolher o Método de Envio</h6>
+                <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                  Depois de adicionar os usuários que receberão a conversa, você pode escolher um dos seguintes métodos de envio:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                  <div className="p-3 bg-slate-50 border rounded-xl text-xs font-medium space-y-1">
+                    <p className="text-slate-900 font-bold flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                      <Zap className="w-3.5 h-3.5 text-hero-500 animate-pulse" /> Enviar agora
+                    </p>
+                    <p className="text-slate-500 text-[10px] leading-relaxed">Esta opção permitirá que você envie a conversa imediatamente.</p>
+                  </div>
+                  <div className="p-3 bg-slate-50 border rounded-xl text-xs font-medium space-y-1">
+                    <p className="text-slate-900 font-bold flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                      <Clock className="w-3.5 h-3.5 text-hero-500" /> Enviar no melhor horário de resposta
+                    </p>
+                    <p className="text-slate-500 text-[10px] leading-relaxed">Esta opção permitirá que você envie a conversa no melhor horário de resposta por contato e país.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Passo 6 */}
+              <div className="relative pl-8 space-y-2">
+                <div className="absolute left-0 top-0.5 w-7 h-7 bg-pink-100 text-hero-600 rounded-full flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                  6
+                </div>
+                <h6 className="font-bold text-slate-850 text-xs">Passo 6: Enviar a Conversa</h6>
+                <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                  Selecione o método de envio e clique no botão <span className="bg-hero-600 text-white px-2 py-0.5 rounded text-[11px] font-bold">Enviar conversa</span>. A conversa será enviada com sucesso para todos os contatos do seu arquivo CSV.
+                </p>
+              </div>
+            </div>
+
+            {/* Dicas Importantes */}
+            <div className="pt-4 border-t border-slate-150">
+              <InfoBox title="💡 Dicas Importantes:" type="hero">
+                <ul className="list-disc list-inside text-xs text-slate-705 font-semibold space-y-1 pl-1">
+                  <li>Sempre baixe o modelo de CSV específico da sua conversa para evitar erros.</li>
+                  <li>Verifique se os nomes das colunas de variáveis correspondem exatamente aos nomes definidos na conversa.</li>
+                  <li>As colunas <code className="bg-white/80 px-1 py-0.2 rounded font-mono text-[10px]">country_code</code> e <code className="bg-white/80 px-1 py-0.2 rounded font-mono text-[10px]">cellphone</code> são sempre obrigatórias.</li>
+                </ul>
+              </InfoBox>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. POP – CONFERÊNCIA E REENVIO DE DISPAROS NA TREBLE */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <ClipboardList className="w-5 h-5 text-hero-600 animate-pulse" />
+            <h4 className="font-bold text-slate-900 text-base">📋 5. POP – Conferência e Reenvio de Disparos na Treble</h4>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Objetivos */}
+            <div className="lg:col-span-4">
+              <div className="p-5 rounded-2xl border border-slate-200 bg-white/70 shadow-sm space-y-2 h-full flex flex-col justify-center">
+                <h5 className="font-bold text-slate-850 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                  <Target className="w-4 h-4 text-hero-500" />
+                  🧩 Objetivo:
+                </h5>
+                <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                  Garantir que todos os clientes da base recebam os lembretes cruciais de renovação de suas assinaturas anuais, auditando o painel da Treble e executando reenvios manuais via WhatsApp Web sempre que forem identificadas falhas sistêmicas de entrega.
+                </p>
+              </div>
+            </div>
+
+            {/* Passo a Passo */}
+            <div className="lg:col-span-8 p-5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-4">
+              <h5 className="font-bold text-slate-850 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <RefreshCw className="w-4 h-4 text-hero-500" />
+                ⚙️ Passo a Passo Operacional:
+              </h5>
+              <ol className="list-decimal list-inside text-xs leading-relaxed space-y-2 text-slate-600 font-medium">
+                <li><strong className="text-slate-850">Acesse a Plataforma:</strong> Faça login no painel corporativo do Treble.</li>
+                <li><strong className="text-slate-850">Localize a Régua do Dia:</strong> No menu lateral esquerdo, navegue até o <strong className="text-slate-850">Centro de Métricas</strong>. Utilize os filtros de data para selecionar o dia vigente e filtre pelas conversas outbound realizadas na esteira de renovação.</li>
+                <li><strong className="text-slate-855">Configure a Extração de Dados:</strong> Garanta que o relatório inclua os seguintes campos marcados para exportação: <em className="text-slate-800 font-semibold bg-slate-50 px-1 py-0.5 border rounded">ID da Conversa</em>, <em className="text-slate-800 font-semibold bg-slate-50 px-1 py-0.5 border rounded">Código do País do Usuário</em>, <em className="text-slate-800 font-semibold bg-slate-50 px-1 py-0.5 border rounded">Celular do Usuário</em>, <em className="text-slate-800 font-semibold bg-slate-50 px-1 py-0.5 border rounded">Status da Implantação</em> e <em className="text-slate-800 font-semibold bg-slate-50 px-1 py-0.5 border rounded">Detalhe do Status</em>.</li>
+                <li><strong className="text-slate-850">Exporte o Relatório:</strong> Clique em <strong className="text-slate-850">"Exportar / Baixar relatório"</strong> no canto superior direito e salve o documento no formato Excel ou .CSV.</li>
+                <li><strong className="text-slate-855">Tratamento da Base (Filtro de Falhas):</strong> Abra o arquivo em sua planilha e aplique um filtro na coluna de status da mensagem:
+                  <ul className="list-disc list-inside pl-4 mt-1.5 space-y-1 text-[11px] text-slate-505">
+                    <li>Status <strong className="text-green-650 font-bold">DELIVERED</strong> ➡️ Mensagem entregue com sucesso (Ignorar).</li>
+                    <li>Status <strong className="text-red-650 font-bold">FAILED</strong> ➡️ Mensagem apresentou erro e não chegou ao cliente. Filtre e isole apenas estas linhas.</li>
+                  </ul>
+                </li>
+                <li><strong className="text-slate-850">Execução do Reenvio de Contingência:</strong> Copie a lista de números que falharam. Se o volume for acentuado, utilize uma extensão homologada de envio em massa no WhatsApp Web (ex: WA Web Sender ou similar) configurada na máquina operacional da área.</li>
+                <li><strong className="text-slate-850">Registro Interno:</strong> Após a conclusão dos envios manuais, atualize a planilha de controle interno ou o CRM mudando o status do lead para <strong className="text-slate-800">“Reenviado WhatsApp”</strong> para não gerar duplicidade de acionamento por outros operadores.</li>
+              </ol>
+            </div>
+          </div>
+
+          {/* SCRIPT E CHECKLIST */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ScriptCard 
+              title="Roteiro Padrão de Contingência (WhatsApp Web / Envio Manual)" 
+              script={`📌 Company Hero\nHoje é o vencimento da sua renovação!\n\nOi, tudo bem?\nHoje é o dia da renovação do seu escritório virtual! Para manter seu serviço ativo sem interrupções, é necessário que seja realizado o pagamento da sua assinatura.\n\nPosso enviar a fatura atualizada?\n\nQualquer dúvida, estamos por aqui. 😉`} 
+            />
+
+            <div className="p-5 rounded-2xl border border-slate-200 bg-white/90 shadow-sm flex flex-col justify-between space-y-4">
+              <div>
+                <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                  <CheckCircle className="w-4 h-4 text-hero-500" />
+                  🗂️ Checklist Rápido de Auditoria:
+                </h5>
+                <ul className="space-y-3 pt-2">
+                  <li className="flex items-start gap-2 text-xs text-slate-600 font-semibold">
+                    <input type="checkbox" className="mt-0.5 rounded text-hero-600 focus:ring-hero-500 h-4 w-4 border-slate-200" id="m5_chk_1" />
+                    <label htmlFor="m5_chk_1" className="cursor-pointer">Conferir disparos do dia no Centro de Métricas.</label>
+                  </li>
+                  <li className="flex items-start gap-2 text-xs text-slate-600 font-semibold">
+                    <input type="checkbox" className="mt-0.5 rounded text-hero-600 focus:ring-hero-500 h-4 w-4 border-slate-200" id="m5_chk_2" />
+                    <label htmlFor="m5_chk_2" className="cursor-pointer">Exportar o relatório bruto.</label>
+                  </li>
+                  <li className="flex items-start gap-2 text-xs text-slate-600 font-semibold">
+                    <input type="checkbox" className="mt-0.5 rounded text-hero-600 focus:ring-hero-500 h-4 w-4 border-slate-200" id="m5_chk_3" />
+                    <label htmlFor="m5_chk_3" className="cursor-pointer">Filtrar linhas com status FAILED.</label>
+                  </li>
+                  <li className="flex items-start gap-2 text-xs text-slate-600 font-semibold">
+                    <input type="checkbox" className="mt-0.5 rounded text-hero-600 focus:ring-hero-500 h-4 w-4 border-slate-200" id="m5_chk_4" />
+                    <label htmlFor="m5_chk_4" className="cursor-pointer">Acionar reenvio manual com o texto padrão de contingência.</label>
+                  </li>
+                  <li className="flex items-start gap-2 text-xs text-slate-600 font-semibold">
+                    <input type="checkbox" className="mt-0.5 rounded text-hero-600 focus:ring-hero-500 h-4 w-4 border-slate-200" id="m5_chk_5" />
+                    <label htmlFor="m5_chk_5" className="cursor-pointer">Registrar a conclusão do reenvio no controle interno.</label>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-3.5 bg-amber-50 border border-amber-100 rounded-xl space-y-1">
+                <h6 className="font-bold text-[10px] text-amber-900 tracking-wider uppercase flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-amber-500" />
+                  💡 Dica de Rotina:
+                </h6>
+                <p className="text-[10px] text-amber-800 leading-normal font-semibold">
+                  Programe seu alarme para executar este procedimento de verificação diariamente <span className="underline font-bold text-amber-950">até as 15h</span>. Essa janela garante tempo útil de resposta e engajamento do cliente dentro do mesmo dia útil, impulsionando os resultados de fechamento.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 6,
+    title: "Tutorial do Mail Merge (E-mail)",
+    category: "Operação E-mail",
+    icon: <Mail className="w-5 h-5" />,
+    duration: "45 min",
+    content: (
+      <div className="space-y-8 animate-in fade-in duration-500">
+        <div>
+          <span className="text-[10px] bg-indigo-50 text-indigo-600 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
+            Wiki - Área de Renovação
+          </span>
+          <h3 className="font-bold text-xl text-slate-900 mt-2.5 mb-2 flex items-center gap-2">
+            <Mail className="w-6 h-6 text-indigo-600" />
+            Módulo 6: Tutorial do Mail Merge (Envio de E-mail em Massa)
+          </h3>
+          <p className="text-sm text-slate-600 leading-relaxed font-semibold">
+            Este módulo serve como um guia instrucional para a utilização da extensão Mail Merge para Gmail. Essa ferramenta é utilizada pela nossa área para realizar disparos massivos de e-mails personalizados a partir de bases de dados do Google Sheets (planilhas).
+          </p>
+        </div>
+
+        {/* Links Úteis e Documentação */}
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-6">
+          <div className="border-b border-slate-200 pb-3">
+            <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <ExternalLink className="w-5 h-5 text-indigo-600" />
+              🔗 Links Úteis e Documentação
+            </h4>
+            <p className="text-xs text-slate-500 font-medium mt-1">
+              Consulte a nossa central ou assista direto ao tutorial para acelerar seu aprendizado.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-5 rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                  <Book className="w-4 h-4 text-indigo-500" />
+                  📚 Wiki Oficial do Mail Merge
+                </h5>
+                <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                  Acesse o manual completo e artigos de suporte sobre como utilizar a extensão do Mail Merge para Gmail.
+                </p>
+              </div>
+              <a 
+                href="https://workspace.google.com/marketplace/app/mail_merge_for_gmail/308157790387" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-sm"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Acessar Central de Ajuda e Documentação
+              </a>
+            </div>
+
+            <div className="space-y-2">
+              <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                <Video className="w-4 h-4 text-indigo-500" />
+                🎬 Assista ao tutorial em vídeo
+              </h5>
+              <div className="aspect-video rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-950">
+                <iframe
+                  src="https://www.youtube.com/embed/eDfDZtL_daU"
+                  title="Tutorial Mail Merge para Gmail"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Primeiros Passos */}
+        <div className="p-5 bg-indigo-50/60 border border-indigo-100 rounded-2xl flex items-start gap-3">
+          <Zap className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-0.5 animate-bounce" />
+          <div className="space-y-1">
+            <h4 className="font-bold text-slate-900 text-sm">🚀 Primeiros Passos</h4>
+            <p className="text-xs text-indigo-950 font-semibold leading-relaxed">
+              Antes de começar, certifique-se de que a extensão <strong className="text-indigo-900">Mail Merge for Gmail</strong> está instalada na sua conta corporativa a partir do Google Workspace Marketplace. Com a ferramenta instalada, siga as etapas abaixo para estruturar, personalizar e disparar sua campanha de renovação.
+            </p>
+          </div>
+        </div>
+
+        {/* 1. Estruturação dos Dados */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center text-xs">1</div>
+            <h4 className="font-bold text-slate-900 text-base">📊 1. Estruturação dos Dados no Google Sheets</h4>
+          </div>
+          <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+            A inteligência do Mail Merge depende diretamente da organização da sua planilha. Cada linha do arquivo representará um e-mail individual enviado.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div className="p-4 bg-red-50/60 border border-red-100 rounded-xl space-y-1">
+                <h5 className="font-bold text-xs text-red-900 flex items-center gap-1.5 uppercase tracking-wide">
+                  <AlertCircle className="w-4 h-4 text-red-600" />
+                  Requisito Mínimo
+                </h5>
+                <p className="text-xs text-red-800 font-semibold leading-normal">
+                  Para rodar qualquer campanha, é obrigatório ter uma coluna dedicada exclusivamente aos e-mails dos destinatários (geralmente configurada na <span className="underline font-bold text-red-950">Coluna A</span>).
+                </p>
+              </div>
+
+              <div className="p-4 bg-emerald-50/60 border border-emerald-100 rounded-xl space-y-1">
+                <h5 className="font-bold text-xs text-emerald-900 flex items-center gap-1.5 uppercase tracking-wide">
+                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                  Colunas de Personalização
+                </h5>
+                <p className="text-xs text-emerald-800 font-semibold leading-normal">
+                  Você pode adicionar quantas colunas de dados desejar à direita (ex: <span className="font-bold text-emerald-950">Nome, Empresa, Valor da Fatura, Link da Fatura, Data de Vencimento</span>). Essas informações serão resgatadas pelo sistema para tornar o e-mail único para cada cliente.
+                </p>
+              </div>
+            </div>
+
+            {/* Google Sheets Mockup Card */}
+            <div className="p-5 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-3">
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-200 rounded-md">Visualização Google Sheets (Ideal)</span>
+              <div className="overflow-x-auto rounded-lg border border-slate-150">
+                <table className="w-full text-left border-collapse text-[10px] font-mono">
+                  <thead>
+                    <tr className="bg-emerald-50/60 border-b border-slate-150 text-emerald-900 font-bold">
+                      <th className="px-3 py-1.5 border-r border-slate-150 text-center"></th>
+                      <th className="px-3 py-1.5 border-r border-slate-150">A (Email)</th>
+                      <th className="px-3 py-1.5 border-r border-slate-150">B (Nome)</th>
+                      <th className="px-3 py-1.5">C (Empresa)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y text-slate-600 font-semibold whitespace-nowrap bg-white">
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-2 py-1.5 border-r bg-emerald-50/20 text-center text-slate-400 font-bold">1</td>
+                      <td className="px-3 py-1.5 border-r text-emerald-700 font-bold">cliente1@gmail.com</td>
+                      <td className="px-3 py-1.5 border-r text-slate-805">Felipe</td>
+                      <td className="px-3 py-1.5 text-slate-805">Hero Ltda</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="px-2 py-1.5 border-r bg-emerald-50/20 text-center text-slate-400 font-bold">2</td>
+                      <td className="px-3 py-1.5 border-r text-emerald-700 font-bold">cliente2@gmail.com</td>
+                      <td className="px-3 py-1.5 border-r text-slate-805">Camila</td>
+                      <td className="px-3 py-1.5 text-slate-805">Alpha Co</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-[9px] text-slate-400 italic font-semibold">Cada linha do arquivo representará um e-mail individual enviado.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Customização do Template */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center text-xs">2</div>
+            <h4 className="font-bold text-slate-900 text-base">✍️ 2. Customização do Template de E-mail</h4>
+          </div>
+          <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+            A personalização do corpo do texto ocorre através do uso de <strong className="text-indigo-600 font-bold">Tags de Mesclagem (Merge Tags)</strong>.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-5 border border-slate-200 bg-white rounded-2xl shadow-sm space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <h5 className="font-bold text-slate-850 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                  O que são:
+                </h5>
+                <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                  As merge tags são os nomes exatos das colunas da sua planilha envolvidos por chaves duplas <code className="bg-slate-100 text-indigo-605 px-1 py-0.5 rounded font-mono text-[10px]">{"{{ }}"}</code>.
+                </p>
+                <h5 className="font-bold text-slate-850 text-xs uppercase tracking-wider flex items-center gap-1.5 pt-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                  Como funciona na prática:
+                </h5>
+                <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                  Se a sua planilha possui uma coluna chamada "Nome", para que o sistema puxe o nome do cliente dinamicamente no texto, você deve escrever <code className="bg-indigo-50 text-indigo-600 font-bold px-1.5 py-0.5 rounded font-mono text-xs">{"{{Nome}}"}</code>.
+                </p>
+              </div>
+
+              <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
+                <p className="text-[10px] text-indigo-900 leading-normal font-semibold">
+                  📌 <strong className="font-bold text-indigo-950">Dica Operacional:</strong> Você não precisa digitar as tags manualmente correndo o risco de errar a grafia. O editor do Mail Merge disponibiliza um menu suspenso (dropdown) contendo todos os cabeçalhos identificados na sua planilha para você clicar e inserir diretamente.
+                </p>
+              </div>
+            </div>
+
+            {/* Exemplo visual comparação */}
+            <div className="p-5 border border-slate-200 bg-white/70 rounded-2xl shadow-sm space-y-4">
+              <h5 className="font-bold text-slate-850 text-xs uppercase tracking-wider border-b border-slate-100 pb-2">
+                🔄 Exemplo Visual de Mapeamento
+              </h5>
+
+              <div className="space-y-3 text-xs font-semibold">
+                <div className="flex items-center justify-between p-3 bg-slate-50 border rounded-xl">
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Cabeçalho na planilha</span>
+                    <p className="text-slate-800 font-mono text-[11px] font-bold">Nome</p>
+                  </div>
+                  <div className="text-indigo-600 font-bold font-sans">➡️</div>
+                  <div className="space-y-0.5 text-right">
+                    <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Tag no editor</span>
+                    <p className="text-indigo-600 font-mono text-[11px] bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 font-bold">{"{{Nome}}"}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-slate-50 border rounded-xl">
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Cabeçalho na planilha</span>
+                    <p className="text-slate-800 font-mono text-[11px] font-bold">Empresa</p>
+                  </div>
+                  <div className="text-indigo-600 font-bold font-sans">➡️</div>
+                  <div className="space-y-0.5 text-right">
+                    <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Tag no editor</span>
+                    <p className="text-indigo-600 font-mono text-[11px] bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 font-bold">{"{{Empresa}}"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Personalização do Assunto */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+            <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center text-xs">3</div>
+            <h4 className="font-bold text-slate-900 text-base">✉️ 3. Personalização do Assunto do E-mail</h4>
+          </div>
+          <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+            A personalização não se limita ao corpo do e-mail. Você também pode (e deve) utilizar as Merge Tags no campo de <strong className="text-indigo-600 font-bold">Assunto</strong> para aumentar a taxa de abertura das mensagens de renovação.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            <div className="space-y-4">
+              <div className="p-4 bg-slate-50 border rounded-xl space-y-2 text-xs font-semibold">
+                <span className="text-[9px] text-amber-600 bg-amber-50 px-2 py-0.5 border border-amber-100 rounded-md uppercase tracking-wide">Texto no editor:</span>
+                <div className="p-2.5 bg-white border rounded border-slate-150 font-mono text-slate-850 text-[11px] leading-relaxed select-all">
+                  ⚠️ <span className="text-indigo-650 bg-indigo-50/50 px-1 py-0.2 rounded font-bold">{"{{Nome}}"}</span>, último dia para regularizar sua renovação sem juros!
+                </div>
+              </div>
+
+              <div className="p-4 bg-slate-50 border rounded-xl space-y-2 text-xs font-semibold">
+                <span className="text-[9px] text-emerald-600 bg-emerald-50 px-2 py-0.5 border border-emerald-100 rounded-md uppercase tracking-wide">Como o cliente receberá:</span>
+                <div className="p-2.5 bg-white border rounded border-slate-150 font-mono text-slate-850 text-[11px] leading-relaxed">
+                  ⚠️ <span className="text-emerald-700 font-bold">Felipe</span>, último dia para regularizar sua renovação sem juros!
+                </div>
+              </div>
+            </div>
+
+            {/* Custom Interactive Gmail Compose Simulator to fulfill visual image replacement */}
+            <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-md max-w-xl mx-auto w-full space-y-3 font-sans">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div className="flex items-center gap-1.5 flex-row">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                </div>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nova Mensagem (Mail Merge)</span>
+                <span className="text-xs text-indigo-600 font-bold">Gmail</span>
+              </div>
+              <div className="space-y-2.5 text-xs font-semibold">
+                <div className="flex items-center gap-3 border-b border-slate-100 pb-1.5">
+                  <span className="text-slate-400 min-w-12">Para:</span>
+                  <span className="bg-slate-150 text-slate-800 py-0.5 px-2 rounded-md font-mono text-[10px] font-bold">{"{{Email}}"}</span>
+                </div>
+                <div className="flex items-center gap-3 border-b border-slate-100 pb-1.5">
+                  <span className="text-slate-400 min-w-12">Assunto:</span>
+                  <span className="text-indigo-600 bg-indigo-50 border border-indigo-150 py-0.5 px-2 rounded-md font-mono text-[10px] font-bold">
+                    ⚠️ {"{{Nome}}"}, último dia para regularizar sua renovação sem juros!
+                  </span>
+                </div>
+                <div className="space-y-1.5 pt-1 text-slate-500 font-normal select-none italic">
+                  <p>Olá, <span className="text-indigo-600 font-bold">{"{{Nome}}"}</span>!</p>
+                  <p>O prazo para renovação da sua assinatura Company Hero expira hoje. Regularize hoje mesmo para evitar suspensão de serviços.</p>
+                  <p>Valor promocional: <span className="text-slate-800 font-bold">{"{{Valor_Fatura}}"}</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Considerações Importantes */}
+        <div className="pt-6 border-t border-slate-200 space-y-4">
+          <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-amber-500 animate-pulse" />
+            ⚠️ Considerações Importantes para a Operação
+          </h4>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InfoBox title="Atenção a Maiúsculas e Minúsculas:" type="warning">
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                O Mail Merge é sensível ao caso (<strong className="text-slate-900">case-sensitive</strong>). Se na planilha a coluna está escrita como <code className="bg-slate-100 text-slate-800 px-1 py-0.5 rounded font-mono">Link_Fatura</code>, a tag no e-mail deve ser exatamente <code className="bg-indigo-50 text-indigo-600 px-1 py-0.5 rounded font-mono font-bold">{"{{Link_Fatura}}"}</code>.
+              </p>
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed mt-1.5">
+                Se escrever <code className="bg-red-50 text-red-650 px-1 py-0.5 rounded font-mono font-bold">{"{{link_fatura}}"}</code>, o sistema não reconhecerá e o envio falhará (ficará em branco no envio).
+              </p>
+            </InfoBox>
+
+            <InfoBox title="Validação de Linhas Vazias:" type="error">
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                Antes de clicar em enviar, certifique-se de que <strong className="text-slate-900">não existem linhas em branco intercaladas</strong> na sua base de dados do Google Sheets.
+              </p>
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed mt-1.5">
+                Isso pode interromper o fluxo operacional de leitura sequencial do Mail Merge, travando disparos pendentes.
+              </p>
+            </InfoBox>
           </div>
         </div>
       </div>
