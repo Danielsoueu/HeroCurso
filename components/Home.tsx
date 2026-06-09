@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { PlayCircle, Clock, ChevronRight, Lock, TrendingUp, ShieldCheck, Award, Star, Sparkles, Search } from 'lucide-react';
 import { courses, financeiroModules, renovacaoModules } from '../data';
 import { Course } from '../types';
+import { GlobalSearch } from './GlobalSearch';
 
 interface HomeProps {
   onSelectCourse: (courseId: string) => void;
+  onSelectModule: (courseId: string, moduleIndex: number) => void;
   onOpenWiki: () => void;
   completedModules: string[];
 }
 
-export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, completedModules }) => {
+export const Home: React.FC<HomeProps> = ({ onSelectCourse, onSelectModule, onOpenWiki, completedModules }) => {
   // Total modules in both active courses
   const totalModulesCount = financeiroModules.length + renovacaoModules.length;
   const progress = Math.min(100, Math.round((completedModules.length / totalModulesCount) * 100));
@@ -29,11 +31,13 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
 
   return (
     <div className="flex-1 bg-white overflow-y-auto">
-      {/* Hero Section with Pattern Background */}
-      <div className="relative overflow-hidden pt-20 pb-20 lg:pt-32 lg:pb-28">
-        {/* Background Gradients */}
-        <div className="absolute top-0 inset-x-0 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-hero-50/60 via-white to-white pointer-events-none"></div>
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-hero-100/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+      {/* Hero Section with Pattern Background (removed overflow-hidden to allow dropdown to expand over sections) */}
+      <div className="relative pt-20 pb-20 lg:pt-32 lg:pb-28">
+        {/* Background Gradients wrapped with overflow-hidden */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-0 inset-x-0 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-hero-50/60 via-white to-white"></div>
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-hero-100/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+        </div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
@@ -55,10 +59,19 @@ export const Home: React.FC<HomeProps> = ({ onSelectCourse, onOpenWiki, complete
                 </span>
               </h1>
               
-              <p className="text-xl text-slate-500 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+              <p className="text-xl text-slate-500 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
                 A plataforma oficial de treinamento da Company Hero. 
                 Desenvolva habilidades técnicas, domine nossa cultura e alcance novos níveis de performance.
               </p>
+
+              {/* Dynamic cross-course global unified search panel */}
+              <div className="mb-10 max-w-xl mx-auto lg:mx-0 text-left">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest font-mono mb-2 justify-center lg:justify-start">
+                  <span className="w-1.5 h-1.5 rounded-full bg-hero-500 animate-ping"></span>
+                  Busca Unificada de Cursos (Playbooks CX)
+                </span>
+                <GlobalSearch onSelectModule={onSelectModule} />
+              </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                  <button 

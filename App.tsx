@@ -5,6 +5,7 @@ import { Sidebar } from './components/Sidebar';
 import { ModuleViewer } from './components/ModuleViewer';
 import { Home } from './components/Home';
 import { Wiki } from './components/Wiki';
+import { GlobalSearch } from './components/GlobalSearch';
 import { financeiroModules, renovacaoModules, courses } from './data';
 
 type ViewState = 'HOME' | 'COURSE' | 'WIKI';
@@ -107,6 +108,12 @@ const App = () => {
     }
   };
 
+  const handleSelectModule = (courseId: string, moduleIndex: number) => {
+    setActiveCourseId(courseId);
+    setActiveModuleIndex(moduleIndex);
+    setView('COURSE');
+  };
+
   const handleSelectCourse = (courseId: string) => {
     if (courseId === 'financeiro' || courseId === 'renovacao') {
       setActiveCourseId(courseId);
@@ -159,14 +166,10 @@ const App = () => {
         {/* Global Search (Desktop Header - Course View) */}
         {view === 'COURSE' && (
           <div className="hidden lg:flex h-16 bg-white border-b border-gray-200 items-center justify-between px-6 z-20 shrink-0">
-            <div className="flex items-center text-gray-400 bg-gray-50 px-3 py-2 rounded-lg border border-transparent focus-within:border-hero-200 focus-within:bg-white focus-within:ring-2 focus-within:ring-hero-50 transition-all w-96">
-              <Search className="w-4 h-4 mr-2" />
-              <input 
-                type="text" 
-                placeholder="Pesquisar conteúdo (ex: Serasa, NF)..." 
-                className="bg-transparent border-none outline-none text-sm w-full placeholder-gray-400 text-gray-700"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+            <div className="relative w-96">
+              <GlobalSearch 
+                onSelectModule={handleSelectModule} 
+                placeholder="Busca rápida (ex: cancelamento)..." 
               />
             </div>
             <div className="flex items-center gap-4">
@@ -184,6 +187,7 @@ const App = () => {
         {view === 'HOME' ? (
           <Home 
             onSelectCourse={handleSelectCourse} 
+            onSelectModule={handleSelectModule}
             onOpenWiki={() => setView('WIKI')}
             completedModules={completedModules}
           />
