@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChevronRight, CheckCircle, ArrowLeft, Award, Sparkles, Play, Pause, Volume2, VolumeX, Maximize2, Settings, X, Info, RotateCcw } from 'lucide-react';
 import { Module } from '../types';
 import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ModuleViewerProps {
   module: Module;
@@ -22,7 +23,7 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
   onFinishCourse,
   courseId
 }) => {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   
   // States for intro video modal
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -46,8 +47,8 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
 
   // Scroll top on module change
   useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, [module.id]);
 
@@ -170,7 +171,7 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
   const driveId = getGoogleDriveId(videoUrl);
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-white overflow-hidden relative" ref={contentRef}>
+    <div className="flex-1 flex flex-col h-full bg-white overflow-hidden relative">
       
       {/* Header - Premium & Sticky */}
       <div className="bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-20 shadow-sm">
@@ -234,56 +235,52 @@ export const ModuleViewer: React.FC<ModuleViewerProps> = ({
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto" ref={scrollContainerRef}>
         <div className="max-w-4xl mx-auto px-6 py-12">
           
-          {courseId === 'financeiro' && module.id === 1 && !hasSeenIntro ? (
-            // INTRO SPLASH BLOCKER (Only shown on Module 1 the first time, preventing material from showing beforehand)
-            <div className="py-12 md:py-20 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-8 duration-700 max-w-2xl mx-auto">
-              <div className="relative mb-10 group">
-                <div className="absolute -inset-4 rounded-full bg-hero-100 animate-pulse opacity-50 blur-xl"></div>
-                <button 
-                  onClick={() => setShowVideoModal(true)}
-                  className="relative flex items-center justify-center w-28 h-28 bg-gradient-to-tr from-hero-600 to-hero-500 rounded-full text-white shadow-2xl hover:scale-110 active:scale-95 transition-transform duration-300 shadow-hero-500/30"
-                >
-                  <Play className="w-10 h-10 ml-2 text-white fill-current animate-bounce shrink-0" />
-                </button>
-              </div>
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={module.id}
+                initial={{ y: -80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 80, opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="w-full space-y-8 animate-in duration-700"
+              >
+                {/* Embed video directly on page as the very first element for Course 1 Module 1 */}
+                {courseId === 'financeiro' && module.id === 1 && (
+                  <div className="bg-slate-905 rounded-3xl p-5 border border-slate-800 bg-slate-950 shadow-xl overflow-hidden mb-12">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 px-1">
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-2.5 w-2.5 relative">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600"></span>
+                        </span>
+                        <h4 className="font-extrabold text-xs text-slate-200 uppercase tracking-widest flex items-center gap-2">
+                          🎬 Vídeo de Boas-vindas e Tom de Voz
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-semibold text-slate-500 italic">Duração: ~32 segundos • Assista Diretamente</span>
+                    </div>
 
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-hero-50 border border-hero-100 text-hero-600 text-[10px] font-extrabold uppercase tracking-widest mb-6 shadow-sm">
-                <Sparkles className="w-3.5 h-3.5 fill-hero-600 animate-spin" />
-                <span>Vídeo de Boas-vindas</span>
-              </span>
+                    <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shadow-inner">
+                      <iframe
+                        className="absolute inset-0 w-full h-full border-0"
+                        src="https://drive.google.com/file/d/19TdrrggCq2GRmpQtuD4eIoDf5MRvkL04/preview"
+                        title="Vídeo de Introdução"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  </div>
+                )}
 
-              <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-5">
-                Alavanque seu Aprendizado!
-              </h1>
-
-              <p className="text-slate-500 leading-relaxed font-semibold text-base mb-10 text-center max-w-lg">
-                Preparamos uma introdução especial em vídeo para alinhar nosso Tom de Voz e os múltiplos aprendizados desta jornada. Assista ao vídeo antes de prosseguir para o material ilustrativo.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-                 <button 
-                   onClick={() => setShowVideoModal(true)}
-                   className="w-full sm:w-auto px-10 py-4 bg-slate-950 hover:bg-slate-800 text-white font-bold rounded-2xl shadow-lg transition-transform hover:scale-[1.03] active:scale-95 text-sm flex items-center justify-center gap-2"
-                 >
-                   ▶ Iniciar com Vídeo
-                 </button>
-                 <button 
-                   onClick={handleSkipIntro}
-                   className="w-full sm:w-auto px-10 py-4 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-2xl shadow-sm transition-transform hover:scale-[1.03] active:scale-95 text-sm"
-                 >
-                   Pular Introdução
-                 </button>
-              </div>
-            </div>
-          ) : (
-            // REGULAR CORE LESSON MATERIAL
-            <div className="animate-in fade-in duration-700 slide-in-from-bottom-4">
-              {module.content}
-            </div>
-          )}
+                {/* Core Module written content */}
+                <div className="w-full">
+                  {module.content}
+                </div>
+              </motion.div>
+            </AnimatePresence>
 
           {/* Footer Navigation Area */}
           <div className="mt-20 pt-10 border-t border-slate-100">

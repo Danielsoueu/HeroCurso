@@ -4,7 +4,7 @@ import {
   CheckCircle, ChevronDown, Zap, BarChart3, Lock, Target, ClipboardList,
   MousePointer, Calculator, AlertOctagon, Search, RefreshCw, TrendingDown,
   Lightbulb, HeartHandshake, XOctagon, BrainCircuit, Phone, Calendar, Clock,
-  PauseCircle, ExternalLink, Video, Smartphone, Bot, Mail
+  PauseCircle, ExternalLink, Video, Smartphone, Bot, Mail, Database, Download
 } from 'lucide-react';
 import { Module, FAQCategory, Course } from './types';
 import { InfoBox, ScriptCard, ComparisonRow } from './components/ui/Cards';
@@ -975,7 +975,7 @@ export const financeiroModules: Module[] = [
             </h4>
             <ScriptCard 
               title="Script Educativo"
-              script={`Entendo. As vezes há uma confusão entre os honorários do contador e o aluguel do endereço fiscal.\n\nA Company Hero é a proprietária do imóvel onde sua empresa está registrada. Nós garantimos o IPTU, Alvará e a recepção das suas correspondências oficiais. Se não houver esse pagamento, juridicamente não podemos manter o vínculo, e seu contador precisará transferir sua empresa para outro local para evitar irregularidade na Receita Federal.\n\nQuer que eu explique isso diretamente para ele? Posso enviar um e-mail formalizando.`}
+              script={`Entendo. Às vezes há uma confusão entre os honorários do contador e o aluguel do endereço fiscal.\n\nA Company Hero é a proprietária do imóvel onde sua empresa está registrada. Nós garantimos o IPTU, Alvará e a recepção das suas correspondências oficiais. Se não houver esse pagamento, juridicamente não podemos manter o vínculo do endereço ativo, o que pode levar ao cancelamento do CNPJ/inabilitação do cadastro na prefeitura.`}
             />
           </div>
 
@@ -994,7 +994,7 @@ export const financeiroModules: Module[] = [
     id: 8,
     title: "FAQ Oficial e Retenção",
     category: "Prática",
-    icon: <MessageCircle className="w-5 h-5" />,
+    icon: <span className="text-base">💬</span>,
     duration: "Reference",
     content: (
       <FAQComponent />
@@ -1002,7 +1002,337 @@ export const financeiroModules: Module[] = [
   }
 ];
 
-// O simulador de formulário local foi substituído pelo formulário oficial de Retenção integrado ao HubSpot.
+const BigDataSimulator: React.FC = () => {
+  const [playInlineVideo, setPlayInlineVideo] = React.useState<boolean>(false);
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in duration-500 py-4">
+      {/* Header section with refined typography and soft border */}
+      <div className="text-center space-y-4">
+        <span className="inline-flex items-center text-[10px] bg-sky-50 border border-sky-200 text-sky-700 font-extrabold px-3 py-1 rounded-full uppercase tracking-wider font-mono shadow-sm">
+          Manual e Treinamento de Big Data
+        </span>
+        <h3 className="font-extrabold text-3xl text-slate-900 tracking-tight flex items-center justify-center gap-3">
+          <Database className="w-8 h-8 text-sky-650" />
+          Módulo 7: Utilizando o Big Data (Enriquecimento e Consulta)
+        </h3>
+        <p className="text-sm text-slate-500 max-w-2xl mx-auto leading-relaxed font-semibold">
+          Este módulo orienta o time sobre como utilizar a ferramenta de Big Data para realizar a consulta de dados e o enriquecimento da base (como localização de novos telefones, e-mails ou dados cadastrais de clientes). Esse processo é fundamental para aumentar o alcance e a assertividade das nossas réguas de acionamento em massa.
+        </p>
+      </div>
+
+      {/* Links Úteis, Documentação e Vídeo de Apoio Integrado */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 space-y-6 shadow-sm">
+        <div className="border-b border-slate-100 pb-4">
+          <h4 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
+            <ExternalLink className="w-5.5 h-5.5 text-sky-600" />
+            🔗 Ferramentas de Consulta e Capacitação Real
+          </h4>
+          <p className="text-xs text-slate-500 font-semibold mt-1">
+            Links diretos de acesso às plataformas oficiais da BigDataCorp e o treinamento completo gravado.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="p-5 rounded-2xl border border-slate-150 bg-slate-50/50 shadow-sm flex flex-col justify-between space-y-4 hover:border-sky-200 hover:shadow-md transition-all duration-300">
+            <div className="space-y-2">
+              <span className="text-[9px] bg-emerald-50 text-emerald-700 font-extrabold px-2 py-0.5 rounded uppercase tracking-wide">Página Web</span>
+              <h5 className="font-bold text-slate-900 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                🔍 Consulta Individual
+              </h5>
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                Acesse o portal da BigDataCorp para fazer consultas cadastrais pontuais e manuais por CPF ou CNPJ de forma rápida.
+              </p>
+            </div>
+            <a 
+              href="https://plataforma.bigdatacorp.com.br/query-portal/Enrichment.aspx" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="w-full text-center bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              Acessar Central Individual
+            </a>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-slate-150 bg-slate-50/50 shadow-sm flex flex-col justify-between space-y-4 hover:border-indigo-200 hover:shadow-md transition-all duration-300">
+            <div className="space-y-2">
+              <span className="text-[9px] bg-blue-50 text-blue-700 font-extrabold px-2 py-0.5 rounded uppercase tracking-wide">Portal BDC</span>
+              <h5 className="font-bold text-slate-900 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                📦 Consulta em Lote (Mailing)
+              </h5>
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                Suba planilhas completas de e-mails, telefones ou documentos para enriquecer centenas de cadastros simultaneamente.
+              </p>
+            </div>
+            <a 
+              href="https://center.bigdatacorp.com.br/login" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              Acessar Painel Center Lote
+            </a>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-red-100 bg-red-50/20 shadow-sm flex flex-col justify-between space-y-4 hover:border-red-300 hover:shadow-md transition-all duration-300">
+            <div className="space-y-2">
+              <span className="text-[9px] bg-red-50 text-red-700 font-extrabold px-2 py-0.5 rounded uppercase tracking-wide">Vídeo-Aula</span>
+              <h5 className="font-bold text-slate-900 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                <Video className="w-4 h-4 text-red-505 animate-pulse" />
+                🎬 Treinamento em Vídeo
+              </h5>
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+                Assista à demonstração oficial em vídeo do cruzamento cadastral e de melhores práticas de parametrização.
+              </p>
+            </div>
+            
+            {playInlineVideo ? (
+              <div className="relative rounded-xl overflow-hidden aspect-video border border-slate-200 bg-black shadow-lg animate-in zoom-in-95 duration-200">
+                <iframe
+                  src="https://drive.google.com/file/d/1KFsuf6WaZy6kVLrbXcEKTs1uST6ks6179baiItIv2ss/preview"
+                  className="absolute inset-0 w-full h-full border-0"
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  referrerPolicy="no-referrer"
+                ></iframe>
+              </div>
+            ) : (
+              <div 
+                onClick={() => setPlayInlineVideo(true)}
+                className="relative group overflow-hidden rounded-xl aspect-video border border-slate-200 bg-slate-900 flex items-center justify-center cursor-pointer shadow-sm hover:shadow-md transition-all"
+              >
+                <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900 to-sky-950 opacity-90 group-hover:opacity-85 transition-opacity"></div>
+                <div className="relative z-10 flex flex-col items-center justify-center text-center p-3 space-y-2">
+                  <div className="w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
+                    <svg className="w-4 h-4 fill-current ml-0.5" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" stroke="none" />
+                    </svg>
+                  </div>
+                  <span className="text-[10px] text-red-200 font-bold uppercase tracking-wider">Assistir Inline 🎬</span>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2">
+              {playInlineVideo && (
+                <button 
+                  onClick={() => setPlayInlineVideo(false)}
+                  className="w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] py-2 px-3 rounded-xl transition duration-200 shadow-sm border border-slate-200 active:scale-95"
+                >
+                  Minimizar Vídeo
+                </button>
+              )}
+              <a 
+                href="https://docs.google.com/videos/d/1KFsuf6WaZy6kVLrbXcEKTs1uST6ks6179baiItIv2ss/edit?scene=id.p#scene=id.p" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="w-full text-center bg-red-650 hover:bg-red-750 text-white font-bold text-[11px] py-2 px-3 rounded-xl transition duration-250 flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+              >
+                <Video className="w-3.5 h-3.5" />
+                Drives Google Externo
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Config warning alert block */}
+        <div className="p-4 bg-amber-50 border border-amber-100 rounded-2xl flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0 animate-pulse" />
+          <div className="space-y-1">
+            <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded uppercase tracking-wide">⚠️ Nota Importante de Configuração</span>
+            <p className="text-xs text-slate-705 font-semibold leading-relaxed">
+              Ao realizar pesquisas pontuais (Consulta Individual), certifique-se de marcar <strong className="text-amber-950">obrigatoriamente</strong> os datasets: <span className="underline decoration-amber-400 font-bold text-slate-950">Dados Básicos</span>, <span className="underline decoration-amber-400 font-bold text-slate-950">Relacionamentos Econômicos</span> e <span className="underline decoration-amber-400 font-bold text-slate-950">Dados Profissionais</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 1. Interface em Lote */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2.5 border-b border-slate-100 pb-2">
+          <div className="w-6 h-6 rounded-full bg-sky-100 text-sky-700 font-extrabold flex items-center justify-center text-xs">1</div>
+          <h4 className="font-bold text-slate-900 text-base">🌐 1. Acessando a Funcionalidade em Lote</h4>
+        </div>
+        <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+          Para cargas em lote, siga o seguinte fluxo de acesso em seu painel corporativo:
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-semibold text-xs text-slate-700">
+          <div className="p-4 bg-white border border-slate-200 rounded-2xl space-y-1 shadow-sm hover:border-slate-300 transition">
+            <span className="text-[10px] text-sky-600 uppercase font-bold tracking-wider">Etapa 1.1</span>
+            <p className="text-slate-800 font-bold">Autenticação</p>
+            <p className="text-slate-500 font-medium text-[11px] leading-normal pt-1">
+              Faça login usando suas credenciais corporativas no painel oficial do <strong className="text-slate-800">Center BigDataCorp</strong>.
+            </p>
+          </div>
+          <div className="p-4 bg-white border border-slate-200 rounded-2xl space-y-1 shadow-sm hover:border-slate-300 transition">
+            <span className="text-[10px] text-sky-600 uppercase font-bold tracking-wider">Etapa 1.2</span>
+            <p className="text-slate-800 font-bold">Módulo Plataforma</p>
+            <p className="text-slate-500 font-medium text-[11px] leading-normal pt-1">
+              No menu lateral esquerdo da plataforma, localize e clique no ícone <strong className="text-slate-800">Plataforma</strong>.
+            </p>
+          </div>
+          <div className="p-4 bg-white border border-slate-200 rounded-2xl space-y-1 shadow-sm hover:border-slate-300 transition">
+            <span className="text-[10px] text-sky-600 uppercase font-bold tracking-wider">Etapa 1.3</span>
+            <p className="text-slate-800 font-bold">Consulta de Arquivo</p>
+            <p className="text-slate-500 font-medium text-[11px] leading-normal pt-1">
+              Em seguida, selecione a opção <strong className="text-slate-800">Consulta de arquivo</strong> (geralmente sinalizada com a tag <span className="bg-amber-100 text-amber-800 font-mono px-1 rounded text-[9px] font-bold">BETA</span>).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Entendendo o painel principal */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2.5 border-b border-slate-100 pb-2">
+          <div className="w-6 h-6 rounded-full bg-sky-100 text-sky-700 font-extrabold flex items-center justify-center text-xs">2</div>
+          <h4 className="font-bold text-slate-900 text-base">📊 2. Entendendo o Painel Principal (Acompanhamento)</h4>
+        </div>
+        <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+          Antes de agendar novos cruzamentos cadastrais e enriquecer sua planilha de acionamentos, familiarize-se com a área de controle:
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5 shadow-sm">
+            <h6 className="font-bold text-xs text-slate-900 uppercase flex items-center gap-2">
+              🖥️ Histórico de Lotes
+            </h6>
+            <p className="text-xs text-slate-600 font-medium leading-relaxed">
+              Exibe a lista de todos os lotes processados pela área, detalhando o nome do arquivo enviado, a API utilizada (Pessoas vs Empresas), a data de atualização e o status do processamento (ex: <em className="text-amber-700 font-bold">Processando</em> ou <em className="text-emerald-700 font-bold font-mono">Pronto</em>).
+            </p>
+          </div>
+
+          <div className="p-4.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5 shadow-sm">
+            <h6 className="font-bold text-xs text-slate-900 uppercase flex items-center gap-2">
+              🧮 Calculadora de Preço
+            </h6>
+            <p className="text-xs text-slate-600 font-medium leading-relaxed">
+              Localizada no topo superior direito da tela, ela serve para estimar e prever o custo total em créditos do cruzamento e filtros aplicados antes de iniciar o processamento real.
+            </p>
+          </div>
+
+          <div className="p-4.5 bg-red-50/40 rounded-2xl border border-red-100 space-y-1.5 shadow-sm">
+            <h6 className="font-bold text-xs text-red-955 uppercase flex items-center gap-1.5">
+              <AlertCircle className="w-4 h-4 text-red-600" />
+              ID de Processamento & Suporte
+            </h6>
+            <p className="text-xs text-red-800 font-medium leading-relaxed">
+              Código identificador único gerado para cada lote de arquivo. Se o processo travar, perder conexões ou der erro, copie esse ID e envie ao time do suporte técnico para depuração.
+            </p>
+          </div>
+
+          <div className="p-4.5 bg-amber-50/40 rounded-2xl border border-amber-100 space-y-1.5 shadow-sm">
+            <h6 className="font-bold text-xs text-amber-955 uppercase flex items-center gap-1.5 font-mono">
+              <Clock className="w-4 h-4 text-amber-600" />
+              Prazo de Expiração (29 Dias)
+            </h6>
+            <p className="text-xs text-amber-800 font-medium leading-relaxed font-sans">
+              Exibe o tempo restante para fazer o download da planilha final de retorno. O prazo máximo de armazenamento é de <strong className="text-amber-950 font-bold">29 dias</strong>. Após isso, os servidores limpam o arquivo gerado por regras de governança e LGPD.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Operacional Passo a Passo */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2.5 border-b border-slate-100 pb-2">
+          <div className="w-6 h-6 rounded-full bg-sky-100 text-sky-700 font-extrabold flex items-center justify-center text-xs">3</div>
+          <h4 className="font-bold text-slate-900 text-base">🛠️ 3. Criando uma Nova Consulta em Lote (Passo a Passo)</h4>
+        </div>
+        <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+          Siga rigorosamente as 6 etapas estruturadas abaixo para carregar, configurar e extrair os dados de enriquecimento com total conformidade:
+        </p>
+
+        <div className="relative border-l-2 border-slate-200 pl-6 ml-3 space-y-8 text-xs font-semibold">
+          <div className="relative">
+            <span className="absolute -left-[32px] top-0.5 w-5 h-5 rounded-full bg-sky-600 text-white font-bold flex items-center justify-center text-[10px]">1</span>
+            <h5 className="font-bold text-slate-900 text-xs">Passo 1: Iniciar Novo Arquivo</h5>
+            <p className="text-slate-600 font-medium leading-relaxed mt-1">
+              Clique no botão azul <strong className="text-sky-700 font-bold">+ Novo arquivo</strong>, localizado no canto superior direito da tabela de histórico no painel Center BigDataCorp.
+            </p>
+          </div>
+
+          <div className="relative">
+            <span className="absolute -left-[32px] top-0.5 w-5 h-5 rounded-full bg-sky-600 text-white font-bold flex items-center justify-center text-[10px]">2</span>
+            <h5 className="font-bold text-slate-900 text-xs">Passo 2: Upload e Configuração de Entrada</h5>
+            <p className="text-slate-600 font-medium leading-relaxed mt-1">
+              Arraste ou busque no seu computador o arquivo com a lista de dados/documentos que deseja enriquecer.
+            </p>
+            <ul className="list-disc list-inside text-[11px] text-slate-500 font-medium space-y-1 mt-1.5 pl-2">
+              <li>Formatos suportados: <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-mono">.txt</code>, <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-mono">.csv</code> ou <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-mono">.tsv</code>.</li>
+              <li>Tamanho máximo do arquivo: <span className="text-slate-800 font-bold">20MB</span>.</li>
+              <li>Indique corretamente o <span className="text-slate-800 font-bold">Delimitador</span> (Vírgula, Ponto e Vírgula, ou Tab) e informe se a primeira linha contém os cabeçalhos das colunas.</li>
+            </ul>
+          </div>
+
+          <div className="relative">
+            <span className="absolute -left-[32px] top-0.5 w-5 h-5 rounded-full bg-sky-600 text-white font-bold flex items-center justify-center text-[10px]">3</span>
+            <h5 className="font-bold text-slate-900 text-xs">Passo 3: Mapeamento de Colunas</h5>
+            <p className="text-slate-600 font-medium leading-relaxed mt-1">
+              Mapeie os dados indicando o que está presente em cada coluna. Utilize os seletores acima da amostragem visual na tela para identificar qual coluna representa o dado de entrada chave (ex: identificando que a Coluna A é um <strong className="text-sky-700">CPF/CNPJ</strong>, um <strong className="text-sky-700">Nome Completo</strong>, etc.) e depois clique em continuar.
+            </p>
+          </div>
+
+          <div className="relative">
+            <span className="absolute -left-[32px] top-0.5 w-5 h-5 rounded-full bg-sky-600 text-white font-bold flex items-center justify-center text-[10px]">4</span>
+            <h5 className="font-bold text-slate-900 text-xs">Passo 4: Seleção de API e Datasets</h5>
+            <p className="text-slate-600 font-medium leading-relaxed mt-1">
+              <strong>Escolha a API correta:</strong> Selecione o tipo de motor de busca correto baseado em seu público (<strong className="text-slate-900 font-bold">Pessoas (PF)</strong> ou <strong className="text-slate-900 font-bold">Empresas (PJ)</strong>).
+            </p>
+            <p className="text-slate-600 font-medium leading-relaxed mt-1.5">
+              <strong>Marque os Datasets Obrigatórios:</strong> Para a nossa base de renovação, marque ativamente os pacotes <strong className="text-emerald-700 bg-emerald-50 px-1 rounded">Dados Cadastrais Básicos</strong>, <strong className="text-emerald-700 bg-emerald-50 px-1 rounded">Relacionamentos Econômicos</strong>, <strong className="text-emerald-700 bg-emerald-50 px-1 rounded">Contatos - E-mails</strong> e <strong className="text-emerald-700 bg-emerald-50 px-1 rounded">Contatos - Telefones</strong>.
+            </p>
+          </div>
+
+          <div className="relative">
+            <span className="absolute -left-[32px] top-0.5 w-5 h-5 rounded-full bg-sky-600 text-white font-bold flex items-center justify-center text-[10px]">5</span>
+            <h5 className="font-bold text-slate-900 text-xs">Passo 5: Configuração de Saída e Notificações</h5>
+            <p className="text-slate-600 font-medium leading-relaxed mt-1">
+              Determine o tipo de formato de saída e extensão desejada. No campo de e-mails de notificação, insira os endereços das pessoas do time (ex: <code className="bg-slate-100 text-slate-800 px-1 font-mono">renovacoes@companyhero.com</code>) para receberem um aviso assim que o processamento for finalizado de forma assíncrona.
+            </p>
+          </div>
+
+          <div className="relative">
+            <span className="absolute -left-[32px] top-0.5 w-5 h-5 rounded-full bg-sky-600 text-white font-bold flex items-center justify-center text-[10px]">6</span>
+            <h5 className="font-bold text-slate-900 text-xs">Passo 6: Revisão Final e Envio</h5>
+            <p className="text-slate-600 font-medium leading-relaxed mt-1">
+              Revise se as colunas estão devidamente configuradas, verifique o custo estimado em créditos e o seu saldo antes de confirmar a execução do enriquecimento comercial.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Dica de Produtividade */}
+      <div className="p-5 border border-sky-100 bg-sky-50 rounded-2xl flex items-start gap-3">
+        <Lightbulb className="w-6 h-6 text-sky-500 flex-shrink-0 mt-0.5 animate-bounce" />
+        <div className="space-y-1">
+          <h5 className="font-bold text-slate-900 text-xs uppercase tracking-wide">💡 Dica de Produtividade (Salvar Consulta)</h5>
+          <p className="text-xs text-sky-950 font-semibold leading-relaxed">
+            Se este for um modelo de enriquecimento que você realiza com frequência para a base de renovações, clique em <strong className="text-sky-750 font-bold">Salvar consulta</strong>. Nos próximos acessos, você não precisará reconfigurar todas as APIs e colunas do zero; bastará fazer o upload do novo arquivo de mailing e o sistema aplicará as regras salvas automaticamente.
+          </p>
+        </div>
+      </div>
+
+      {/* Recommended Best Practices Container for a highly polished UI page */}
+      <div className="bg-slate-100/50 border border-slate-200 rounded-3xl p-6 md:p-8 space-y-4">
+        <h4 className="font-bold text-slate-950 text-sm flex items-center gap-2">
+          <Shield className="w-5 h-5 text-emerald-600" />
+          Melhores Práticas de Operação Big Data e Higienização
+        </h4>
+        <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+          Para garantir o máximo de efetividade com os cruzamentos e preservar o orçamento da área, siga as diretrizes abaixo:
+        </p>
+        <ul className="list-disc list-inside text-xs text-slate-600 font-medium space-y-2 pl-2">
+          <li><strong>Mailing em Lote:</strong> Realize enriquecimentos agrupados utilizando planilhas higienizadas de entrada em formatos aceitáveis (<code className="bg-slate-200/50 px-1 py-0.5 rounded text-[11px] font-mono">.csv</code>, <code className="bg-slate-200/50 px-1 py-0.5 rounded text-[11px] font-mono">.txt</code>) para otimizar o tempo operacional de processamento.</li>
+          <li><strong>Datasets Críticos:</strong> Ao consultar CPFs ou CNPJs, sempre selecione Dados Cadastrais Básicos, Relacionamentos Econômicos, E-mails e Telefones ativos para maximizar os canais de acionamento em massa.</li>
+          <li><strong>Segurança:</strong> Respeite os prazos de expiração de relatórios de lote salvos no painel (máximo de 29 dias) para evitar ter que processar novamente e duplicar o uso de créditos.</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
 
 export const renovacaoModules: Module[] = [
   {
@@ -2485,6 +2815,16 @@ export const renovacaoModules: Module[] = [
           </div>
         </div>
       </div>
+    )
+  },
+  {
+    id: 7,
+    title: "Módulo 7: Utilizando o Big Data (Enriquecimento e Consulta)",
+    category: "Operação Big Data",
+    icon: <Database className="w-5 h-5" />,
+    duration: "50 min",
+    content: (
+      <BigDataSimulator />
     )
   }
 ];
