@@ -1388,21 +1388,21 @@ export const renovacaoModules: Module[] = [
           <p className="text-xs text-slate-500 mb-4">Acesse as ferramentas centrais da operação no dia-a-dia:</p>
           <div className="flex flex-wrap gap-4">
             <a 
-              href="https://app.hubspot.com/" 
+              href="https://app.hubspot.com/contacts/20005532/objects/0-5/views/61797955/board" 
               target="_blank" 
               rel="noreferrer" 
               className="inline-flex items-center gap-2 text-xs font-bold bg-white text-slate-800 border border-slate-200 hover:border-slate-300 hover:text-slate-900 p-3 rounded-xl transition-all"
             >
-              📋 Pipe de Tickets (HubSpot)
+              📋 Pipe de Renovação (HubSpot)
               <ExternalLink className="w-3 h-3 text-slate-400" />
             </a>
             <a 
-              href="https://fin-hero-gray.vercel.app/" 
+              href="https://app.hubspot.com/reports-dashboard/20005532/view/19393713" 
               target="_blank" 
               rel="noreferrer" 
               className="inline-flex items-center gap-2 text-xs font-bold bg-white text-slate-800 border border-slate-200 hover:border-slate-300 hover:text-slate-900 p-3 rounded-xl transition-all"
             >
-              📊 Dashboard de Resultados (Metabase)
+              📊 Dashboard de Renovação (HubSpot)
               <ExternalLink className="w-3 h-3 text-slate-400" />
             </a>
           </div>
