@@ -1033,7 +1033,7 @@ const BigDataSimulator: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-5 rounded-2xl border border-slate-150 bg-slate-50/50 shadow-sm flex flex-col justify-between space-y-4 hover:border-sky-200 hover:shadow-md transition-all duration-300">
             <div className="space-y-2">
               <span className="text-[9px] bg-emerald-50 text-emerald-700 font-extrabold px-2 py-0.5 rounded uppercase tracking-wide">Página Web</span>
@@ -1075,21 +1075,39 @@ const BigDataSimulator: React.FC = () => {
               Acessar Painel Center Lote
             </a>
           </div>
+        </div>
 
-          <div className="p-5 rounded-2xl border border-red-100 bg-red-50/20 shadow-sm flex flex-col justify-between space-y-4 hover:border-red-300 hover:shadow-md transition-all duration-300">
-            <div className="space-y-2">
-              <span className="text-[9px] bg-red-50 text-red-700 font-extrabold px-2 py-0.5 rounded uppercase tracking-wide">Vídeo-Aula</span>
-              <h5 className="font-bold text-slate-900 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
-                <Video className="w-4 h-4 text-red-505 animate-pulse" />
-                🎬 Treinamento em Vídeo
+        {/* Standalone Extra Large Prominent Video Section for Module 7 */}
+        <div className="p-6 md:p-8 rounded-3xl border border-red-100 bg-red-50/20 shadow-sm space-y-5 hover:border-red-200 transition-all duration-300">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-red-100/60 pb-3">
+            <div className="space-y-1">
+              <span className="inline-flex text-[9px] bg-red-100 text-red-800 font-extrabold px-2 py-0.5 rounded uppercase tracking-wide">
+                Vídeo-Aula Master
+              </span>
+              <h5 className="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                <Video className="w-5 h-5 text-red-600 animate-pulse" />
+                🎬 Treinamento em Vídeo: Operação Big Data na Prática
               </h5>
-              <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+              <p className="text-xs text-slate-500 font-semibold leading-relaxed">
                 Assista à demonstração oficial em vídeo do cruzamento cadastral e de melhores práticas de parametrização.
               </p>
             </div>
-            
+            <div>
+              <a 
+                href="https://docs.google.com/videos/d/1KFsuf6WaZy6kVLrbXcEKTs1uST6ks6179baiItIv2ss/edit?scene=id.p#scene=id.p" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="inline-flex bg-red-650 hover:bg-red-750 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition duration-250 items-center justify-center gap-1.5 shadow-sm active:scale-95"
+              >
+                <Video className="w-3.5 h-3.5" />
+                Google Drive (Externo)
+              </a>
+            </div>
+          </div>
+
+          <div className="max-w-3xl mx-auto w-full">
             {playInlineVideo ? (
-              <div className="relative rounded-xl overflow-hidden aspect-video border border-slate-200 bg-black shadow-lg animate-in zoom-in-95 duration-200">
+              <div className="relative rounded-2xl overflow-hidden aspect-video border-2 border-slate-200 bg-black shadow-lg animate-in zoom-in-95 duration-200">
                 <iframe
                   src="https://drive.google.com/file/d/1KFsuf6WaZy6kVLrbXcEKTs1uST6ks6179baiItIv2ss/preview"
                   className="absolute inset-0 w-full h-full border-0"
@@ -1101,39 +1119,33 @@ const BigDataSimulator: React.FC = () => {
             ) : (
               <div 
                 onClick={() => setPlayInlineVideo(true)}
-                className="relative group overflow-hidden rounded-xl aspect-video border border-slate-200 bg-slate-900 flex items-center justify-center cursor-pointer shadow-sm hover:shadow-md transition-all"
+                className="relative group overflow-hidden rounded-2xl aspect-video border-2 border-slate-200 bg-slate-900 flex items-center justify-center cursor-pointer shadow-md hover:shadow-lg transition-all"
               >
                 <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900 to-sky-950 opacity-90 group-hover:opacity-85 transition-opacity"></div>
-                <div className="relative z-10 flex flex-col items-center justify-center text-center p-3 space-y-2">
-                  <div className="w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
-                    <svg className="w-4 h-4 fill-current ml-0.5" viewBox="0 0 24 24">
+                <div className="relative z-10 flex flex-col items-center justify-center text-center p-6 space-y-3">
+                  <div className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all">
+                    <svg className="w-6 h-6 fill-current ml-1" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" stroke="none" />
                     </svg>
                   </div>
-                  <span className="text-[10px] text-red-200 font-bold uppercase tracking-wider">Assistir Inline 🎬</span>
+                  <span className="text-sm text-red-200 font-extrabold uppercase tracking-wider">Clique para Assistir ao Vídeo de Treinamento Completo 🎬</span>
+                  <p className="text-[11px] text-slate-400 font-semibold max-w-md mx-auto">
+                    Demonstração passo a passo de como carregar a base de dados, definir filtros de enriquecimento e baixar a versão final.
+                  </p>
                 </div>
               </div>
             )}
 
-            <div className="flex flex-col gap-2">
-              {playInlineVideo && (
+            {playInlineVideo && (
+              <div className="mt-3 flex justify-end">
                 <button 
                   onClick={() => setPlayInlineVideo(false)}
-                  className="w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] py-2 px-3 rounded-xl transition duration-200 shadow-sm border border-slate-200 active:scale-95"
+                  className="text-center bg-slate-150 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2 px-4 rounded-xl transition duration-200 shadow-sm border border-slate-200 active:scale-95"
                 >
                   Minimizar Vídeo
                 </button>
-              )}
-              <a 
-                href="https://docs.google.com/videos/d/1KFsuf6WaZy6kVLrbXcEKTs1uST6ks6179baiItIv2ss/edit?scene=id.p#scene=id.p" 
-                target="_blank" 
-                rel="noreferrer" 
-                className="w-full text-center bg-red-650 hover:bg-red-750 text-white font-bold text-[11px] py-2 px-3 rounded-xl transition duration-250 flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
-              >
-                <Video className="w-3.5 h-3.5" />
-                Drives Google Externo
-              </a>
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
