@@ -32,7 +32,7 @@ export const courses: Course[] = [
     title: "Prevenção de Churn",
     description: "Análise de dados e sinais vitais para evitar cancelamentos.",
     icon: <TrendingDown className="w-8 h-8" />,
-    status: 'construction',
+    status: 'active',
     color: 'from-blue-500 to-cyan-500'
   }
 ];

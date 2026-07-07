@@ -7,6 +7,7 @@ import { Home } from './components/Home';
 import { Wiki } from './components/Wiki';
 import { GlobalSearch } from './components/GlobalSearch';
 import { financeiroModules, renovacaoModules, courses } from './data';
+import { churnModules } from './data_churn';
 
 type ViewState = 'HOME' | 'COURSE' | 'WIKI';
 
@@ -19,7 +20,11 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Dynamic modules list computed based on current course
-  const modules = activeCourseId === 'financeiro' ? financeiroModules : renovacaoModules;
+  const modules = activeCourseId === 'financeiro' 
+    ? financeiroModules 
+    : activeCourseId === 'renovacao' 
+      ? renovacaoModules 
+      : churnModules;
 
   // Load state from local storage on mount
   useEffect(() => {
@@ -115,7 +120,7 @@ const App = () => {
   };
 
   const handleSelectCourse = (courseId: string) => {
-    if (courseId === 'financeiro' || courseId === 'renovacao') {
+    if (courseId === 'financeiro' || courseId === 'renovacao' || courseId === 'churn') {
       setActiveCourseId(courseId);
       setActiveModuleIndex(0);
       setView('COURSE');
@@ -128,7 +133,11 @@ const App = () => {
 
   const activeCourse = courses.find(c => c.id === activeCourseId) || courses[0];
   const courseTitle = activeCourse.title; 
-  const courseSubtitle = activeCourseId === 'financeiro' ? "Trilha Avançada • Financeiro" : "Trilha de Sucesso • Renovação";
+  const courseSubtitle = activeCourseId === 'financeiro' 
+    ? "Trilha Avançada • Financeiro" 
+    : activeCourseId === 'renovacao' 
+      ? "Trilha de Sucesso • Renovação"
+      : "Trilha Avançada • Retenção";
 
   return (
     <div className="flex h-screen bg-white font-sans text-gray-800 overflow-hidden selection:bg-hero-100 selection:text-hero-900">
