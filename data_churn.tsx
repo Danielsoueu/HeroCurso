@@ -177,22 +177,22 @@ export const churnModules: Module[] = [
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 1: Abrir o ticket e localizar o cliente (IUGU)</p>
-            <iframe src="https://drive.google.com/file/d/1J_mfLmGUnXmsbQeqp26s5eNnOW4lVSbV/preview" width="100%" height="400" className="rounded-lg border border-gray-200 mb-2"></iframe>
+            <img src="https://drive.google.com/uc?export=download&id=1J_mfLmGUnXmsbQeqp26s5eNnOW4lVSbV" referrerPolicy="no-referrer" alt="Abrindo o ticket" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 2: Validar o CNPJ na Receita Federal</p>
-            <iframe src="https://drive.google.com/file/d/1dWRlfkBGy084OdHVXqX7mK6K9xz-HiCT/preview" width="100%" height="400" className="rounded-lg border border-gray-200 mb-2"></iframe>
+            <img src="https://drive.google.com/uc?export=download&id=1dWRlfkBGy084OdHVXqX7mK6K9xz-HiCT" referrerPolicy="no-referrer" alt="Validando CNPJ" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 3: Confirmar se o endereço é da Hero (Notion)</p>
-            <iframe src="https://drive.google.com/file/d/1l8znGUAwVA9omkRZy3yDbfuXFREturxz/preview" width="100%" height="400" className="rounded-lg border border-gray-200 mb-2"></iframe>
+            <img src="https://drive.google.com/uc?export=download&id=1l8znGUAwVA9omkRZy3yDbfuXFREturxz" referrerPolicy="no-referrer" alt="Validando endereço" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 4: Cliente só com CPF (BigData Corp)</p>
-            <iframe src="https://drive.google.com/file/d/16HDUCIIwZ408xRoh9MFrOMcrl13wX2qF/preview" width="100%" height="400" className="rounded-lg border border-gray-200 mb-2"></iframe>
+            <video autoPlay loop muted playsInline src="https://drive.google.com/uc?export=download&id=16HDUCIIwZ408xRoh9MFrOMcrl13wX2qF" referrerPolicy="no-referrer" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
         </div>
 
@@ -208,7 +208,7 @@ export const churnModules: Module[] = [
             <li>Formalizar o cancelamento ao cliente;</li>
             <li>Atualizar e encerrar o ticket com status "Cancelamento sem negociação".</li>
           </ol>
-          <iframe src="https://drive.google.com/file/d/1o26Kj2YaZxayODGoSu2XtNd_UVAVZSzD/preview" width="100%" height="400" className="rounded-lg border border-gray-200 mb-4"></iframe>
+          <video autoPlay loop muted playsInline src="https://drive.google.com/uc?export=download&id=1o26Kj2YaZxayODGoSu2XtNd_UVAVZSzD" referrerPolicy="no-referrer" className="rounded-lg border border-gray-200 w-full mb-4" />
         </div>
 
         <div className="mb-6">
