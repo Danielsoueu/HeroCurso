@@ -177,17 +177,17 @@ export const churnModules: Module[] = [
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 1: Abrir o ticket e localizar o cliente (IUGU)</p>
-            <img src="/media/abrindo_ticket.gif" alt="Abrindo o ticket" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <video autoPlay loop muted playsInline src="/media/abrindo_ticket.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 2: Validar o CNPJ na Receita Federal</p>
-            <img src="/media/validando_cnpj.gif" alt="Validando CNPJ" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <video autoPlay loop muted playsInline src="/media/validando_cnpj.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 3: Confirmar se o endereço é da Hero (Notion)</p>
-            <img src="/media/validando_endereco.gif" alt="Validando endereço" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <video autoPlay loop muted playsInline src="/media/validando_endereco.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
