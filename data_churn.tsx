@@ -177,22 +177,22 @@ export const churnModules: Module[] = [
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 1: Abrir o ticket e localizar o cliente (IUGU)</p>
-            <video crossOrigin="use-credentials" autoPlay loop muted playsInline controls src="/media/abrindo_ticket.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <iframe src="https://drive.google.com/file/d/1J_mfLmGUnXmsbQeqp26s5eNnOW4lVSbV/preview" className="rounded-lg border border-gray-200 w-full mb-2 aspect-video" allow="autoplay"></iframe>
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 2: Validar o CNPJ na Receita Federal</p>
-            <video crossOrigin="use-credentials" autoPlay loop muted playsInline controls src="/media/validando_cnpj.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <iframe src="https://drive.google.com/file/d/1dWRlfkBGy084OdHVXqX7mK6K9xz-HiCT/preview" className="rounded-lg border border-gray-200 w-full mb-2 aspect-video" allow="autoplay"></iframe>
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 3: Confirmar se o endereço é da Hero (Notion)</p>
-            <video crossOrigin="use-credentials" autoPlay loop muted playsInline controls src="/media/validando_endereco.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <iframe src="https://drive.google.com/file/d/1l8znGUAwVA9omkRZy3yDbfuXFREturxz/preview" className="rounded-lg border border-gray-200 w-full mb-2 aspect-video" allow="autoplay"></iframe>
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 4: Cliente só com CPF (BigData Corp)</p>
-            <video crossOrigin="use-credentials" autoPlay loop muted playsInline controls src="/media/bigdata.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <iframe src="https://drive.google.com/file/d/16HDUCIIwZ408xRoh9MFrOMcrl13wX2qF/preview" className="rounded-lg border border-gray-200 w-full mb-2 aspect-video" allow="autoplay"></iframe>
           </div>
         </div>
 
@@ -208,7 +208,7 @@ export const churnModules: Module[] = [
             <li>Formalizar o cancelamento ao cliente;</li>
             <li>Atualizar e encerrar o ticket com status "Cancelamento sem negociação".</li>
           </ol>
-          <video crossOrigin="use-credentials" autoPlay loop muted playsInline controls src="/media/formalizando.mp4" className="rounded-lg border border-gray-200 w-full mb-4" />
+          <iframe src="https://drive.google.com/file/d/1o26Kj2YaZxayODGoSu2XtNd_UVAVZSzD/preview" className="rounded-lg border border-gray-200 w-full mb-4 aspect-video" allow="autoplay"></iframe>
         </div>
 
         <div className="mb-6">
