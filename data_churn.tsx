@@ -177,22 +177,22 @@ export const churnModules: Module[] = [
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 1: Abrir o ticket e localizar o cliente (IUGU)</p>
-            <video autoPlay loop muted playsInline src="/media/abrindo_ticket.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <video autoPlay loop muted playsInline controls src="/media/abrindo_ticket.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 2: Validar o CNPJ na Receita Federal</p>
-            <video autoPlay loop muted playsInline src="/media/validando_cnpj.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <video autoPlay loop muted playsInline controls src="/media/validando_cnpj.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 3: Confirmar se o endereço é da Hero (Notion)</p>
-            <video autoPlay loop muted playsInline src="/media/validando_endereco.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <video autoPlay loop muted playsInline controls src="/media/validando_endereco.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-sm font-bold text-slate-800 mb-2">Passo 4: Cliente só com CPF (BigData Corp)</p>
-            <video autoPlay loop muted playsInline src="/media/bigdata.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
+            <video autoPlay loop muted playsInline controls src="/media/bigdata.mp4" className="rounded-lg border border-gray-200 w-full mb-2" />
           </div>
         </div>
 
@@ -208,7 +208,7 @@ export const churnModules: Module[] = [
             <li>Formalizar o cancelamento ao cliente;</li>
             <li>Atualizar e encerrar o ticket com status "Cancelamento sem negociação".</li>
           </ol>
-          <video autoPlay loop muted playsInline src="/media/formalizando.mp4" className="rounded-lg border border-gray-200 w-full mb-4" />
+          <video autoPlay loop muted playsInline controls src="/media/formalizando.mp4" className="rounded-lg border border-gray-200 w-full mb-4" />
         </div>
 
         <div className="mb-6">
