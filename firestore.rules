@@ -1,0 +1,43 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 3. Primitive Definition
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isAdmin() { 
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; 
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'role', 'status', 'createdAt'])
+        && data.keys().size() == 4
+        && data.email is string
+        && data.email.size() <= 100
+        && data.role in ['user', 'admin']
+        && data.status in ['active', 'inactive'];
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      
+      allow create: if isOwner(userId) && isValidId(userId)
+                    && isValidUser(incoming())
+                    && incoming().createdAt == request.time
+                    && incoming().role == 'user'; // Prevent self-assigning admin
+
+      allow update: if (
+        isAdmin() || 
+        (isOwner(userId) && isValidUser(incoming()) && incoming().diff(existing()).affectedKeys().hasOnly(['status'])) // Only allow self update to specific fields if necessary? Actually users probably shouldn't update their own roles, maybe just their display name if we had one.
+      );
+    }
+  }
+}
