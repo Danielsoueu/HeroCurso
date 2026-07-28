@@ -67,7 +67,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signInWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const email = result.user.email;
+      
+      // Allow companyhero.com or the specific user email for testing
+      if (email && !email.endsWith('@companyhero.com') && email !== 'danielcontaescolha@gmail.com') {
+        await signOut(auth);
+        throw new Error('unauthorized-domain');
+      }
+    } catch (error: any) {
+      throw error;
+    }
   };
 
   const logout = async () => {

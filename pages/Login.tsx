@@ -18,8 +18,12 @@ export const Login: React.FC = () => {
       await signInWithGoogle();
     } catch (err: any) {
       console.error(err);
-      if (err.message?.includes('unauthorized-domain')) {
+      if (err.message === 'unauthorized-domain') {
         setError(t('login.error.unauthorized_domain'));
+      } else if (err.code === 'auth/unauthorized-domain') {
+        setError('O domínio deste aplicativo não está autorizado no Firebase. Por favor, adicione esta URL (' + window.location.hostname + ') na lista de Authorized Domains no console do Firebase (Authentication > Settings).');
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        // user closed popup, ignore
       } else {
         setError(t('login.error.default'));
       }
