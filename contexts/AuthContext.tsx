@@ -36,13 +36,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const userDoc = await getDoc(userDocRef);
             
             let userProfile: UserProfile;
+            const isAdmin = currentUser.email === 'danielmelo@companyhero.com' || currentUser.email === 'danielcontaescolha@gmail.com';
 
             if (userDoc.exists()) {
               userProfile = userDoc.data() as UserProfile;
+              if (isAdmin && userProfile.role !== 'admin') {
+                userProfile.role = 'admin';
+                await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+              }
             } else {
               userProfile = {
                 email: currentUser.email,
-                role: 'user',
+                role: isAdmin ? 'admin' : 'user',
                 status: 'active',
                 createdAt: serverTimestamp(),
               };
