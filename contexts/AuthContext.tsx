@@ -79,7 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Allow companyhero.com or the specific user email for testing
       if (email && !email.endsWith('@companyhero.com') && email !== 'danielcontaescolha@gmail.com') {
         await signOut(auth);
-        throw new Error('unauthorized-domain');
+        throw new Error('unauthorized-email');
       }
     } catch (error: any) {
       throw error;

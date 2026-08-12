@@ -17,11 +17,16 @@ export const Login: React.FC = () => {
     try {
       await signInWithGoogle();
     } catch (err: any) {
-      console.error(err);
-      if (err.message === 'unauthorized-domain') {
-        setError(t('login.error.unauthorized_domain'));
-      } else if (err.code === 'auth/unauthorized-domain') {
-        setError('O domínio deste aplicativo não está autorizado no Firebase. Por favor, adicione esta URL (' + window.location.hostname + ') na lista de Authorized Domains no console do Firebase (Authentication > Settings).');
+      console.error('Login error:', err);
+      const isFirebaseDomainError = 
+        err?.code === 'auth/unauthorized-domain' || 
+        err?.message?.includes('auth/unauthorized-domain') ||
+        String(err)?.includes('unauthorized-domain');
+
+      if (err.message === 'unauthorized-email') {
+        setError(t('login.error.unauthorized_email'));
+      } else if (err.message === 'unauthorized-domain' || isFirebaseDomainError) {
+        setError(t('login.error.unauthorized_email'));
       } else if (err.code === 'auth/popup-closed-by-user') {
         // user closed popup, ignore
       } else {
@@ -84,9 +89,9 @@ export const Login: React.FC = () => {
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-xl flex gap-3 text-sm border border-red-100">
-            <AlertCircle size={20} className="shrink-0" />
-            <p>{error}</p>
+          <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-xl flex gap-3 text-sm border border-red-100 items-start">
+            <AlertCircle size={20} className="shrink-0 mt-0.5" />
+            <p className="font-medium leading-relaxed">{error}</p>
           </div>
         )}
 

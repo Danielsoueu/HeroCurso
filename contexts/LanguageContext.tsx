@@ -34,10 +34,15 @@ const translations: Translations = {
     en: 'or',
     es: 'o',
   },
+  'login.error.unauthorized_email': {
+    pt: 'Cadastro não autorizado. Este e-mail não possui permissão para acessar o sistema.',
+    en: 'Unauthorized registration. This email does not have permission to access the system.',
+    es: 'Registro no autorizado. Este correo no tiene permiso para acceder al sistema.',
+  },
   'login.error.unauthorized_domain': {
-    pt: 'Seu e-mail não pertence a um domínio corporativo autorizado.',
-    en: 'Your email does not belong to an authorized corporate domain.',
-    es: 'Tu correo no pertenece a un dominio corporativo autorizado.',
+    pt: 'Cadastro não autorizado. Seu e-mail não pertence a um domínio corporativo autorizado.',
+    en: 'Unauthorized registration. Your email does not belong to an authorized corporate domain.',
+    es: 'Registro no autorizado. Tu correo no pertenece a un dominio corporativo autorizado.',
   },
   'login.error.default': {
     pt: 'Ocorreu um erro ao fazer login. Tente novamente.',
