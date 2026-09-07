@@ -39,7 +39,7 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
       
-      allow create: if isOwner(userId) && isValidId(userId)
+      allow create: if (isOwner(userId) || isAdmin()) && isValidId(userId)
                     && isValidUser(incoming())
                     && (incoming().role == 'user' || isSuperAdminEmail() || isAdmin());
 
@@ -48,6 +48,8 @@ service cloud.firestore {
         (isOwner(userId) && isSuperAdminEmail()) ||
         (isOwner(userId) && isValidUser(incoming()) && incoming().diff(existing()).affectedKeys().hasOnly(['status']))
       );
+
+      allow delete: if isAdmin();
     }
   }
 }
