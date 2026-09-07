@@ -2,23 +2,19 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 1. Global Safety Net
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // 3. Primitive Definition
-    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
-    function incoming() { return request.resource.data; }
-    function existing() { return resource.data; }
     function isSignedIn() { return request.auth != null; }
-    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
     function isSuperAdminEmail() {
-      return isSignedIn() && (
-        request.auth.token.email.lower() == 'danielmelo@companyhero.com' ||
-        request.auth.token.email.lower() == 'danielcontaescolha@gmail.com' ||
-        request.auth.token.email in ['danielmelo@companyhero.com', 'danielcontaescolha@gmail.com']
-      );
+      return isSignedIn() &&
+        ('email' in request.auth.token) &&
+        (
+          request.auth.token.email.toLower() == 'danielmelo@companyhero.com' ||
+          request.auth.token.email.toLower() == 'danielcontaescolha@gmail.com' ||
+          request.auth.token.email in ['danielmelo@companyhero.com', 'danielcontaescolha@gmail.com']
+        );
     }
 
     function isAdmin() { 
@@ -28,25 +24,13 @@ service cloud.firestore {
       ); 
     }
 
-    function isValidUser(data) {
-      return data.keys().hasAll(['email', 'role', 'status'])
-        && data.email is string
-        && data.email.size() <= 100
-        && data.role in ['user', 'admin']
-        && data.status in ['active', 'inactive'];
-    }
-
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
+      // Allow any signed in user to read the user directory
+      allow read: if isSignedIn();
       
-      allow create: if (isOwner(userId) || isAdmin()) && isValidId(userId)
-                    && isValidUser(incoming())
-                    && (incoming().role == 'user' || isSuperAdminEmail() || isAdmin());
-
-      allow update: if (
+      allow create, update: if isSignedIn() && (
         isAdmin() || 
-        (isOwner(userId) && isSuperAdminEmail()) ||
-        (isOwner(userId) && isValidUser(incoming()) && incoming().diff(existing()).affectedKeys().hasOnly(['status']))
+        request.auth.uid == userId
       );
 
       allow delete: if isAdmin();
