@@ -10,6 +10,16 @@ export interface UserProfile {
   createdAt: string | any;
 }
 
+export const ADMIN_EMAILS = [
+  'danielmelo@companyhero.com',
+  'danielcontaescolha@gmail.com'
+];
+
+export const isSuperAdmin = (email?: string | null): boolean => {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email.toLowerCase().trim());
+};
+
 interface AuthContextProps {
   user: User | null;
   profile: UserProfile | null;
@@ -36,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const userDoc = await getDoc(userDocRef);
             
             let userProfile: UserProfile;
-            const isAdmin = currentUser.email === 'danielmelo@companyhero.com' || currentUser.email === 'danielcontaescolha@gmail.com';
+            const isAdmin = isSuperAdmin(currentUser.email);
 
             if (userDoc.exists()) {
               userProfile = userDoc.data() as UserProfile;
@@ -74,10 +84,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const email = result.user.email;
+      const email = result.user.email?.toLowerCase().trim();
       
-      // Allow companyhero.com or the specific user email for testing
-      if (email && !email.endsWith('@companyhero.com') && email !== 'danielcontaescolha@gmail.com') {
+      // Allow companyhero.com or the specific admin emails
+      if (email && !email.endsWith('@companyhero.com') && !isSuperAdmin(email)) {
         await signOut(auth);
         throw new Error('unauthorized-email');
       }

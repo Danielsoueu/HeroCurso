@@ -32,11 +32,12 @@ service cloud.firestore {
       allow create: if isOwner(userId) && isValidId(userId)
                     && isValidUser(incoming())
                     && incoming().createdAt == request.time
-                    && incoming().role == 'user'; // Prevent self-assigning admin
+                    && (incoming().role == 'user' || request.auth.token.email in ['danielmelo@companyhero.com', 'danielcontaescolha@gmail.com']); // Prevent self-assigning admin unless explicitly allowed email
 
       allow update: if (
         isAdmin() || 
-        (isOwner(userId) && isValidUser(incoming()) && incoming().diff(existing()).affectedKeys().hasOnly(['status'])) // Only allow self update to specific fields if necessary? Actually users probably shouldn't update their own roles, maybe just their display name if we had one.
+        (isOwner(userId) && request.auth.token.email in ['danielmelo@companyhero.com', 'danielcontaescolha@gmail.com']) ||
+        (isOwner(userId) && isValidUser(incoming()) && incoming().diff(existing()).affectedKeys().hasOnly(['status']))
       );
     }
   }
