@@ -13,6 +13,7 @@ interface UserData {
 
 export const UserManagement: React.FC = () => {
   const { profile, isAdmin } = useAuth();
+  const isUserAdmin = Boolean(isAdmin || profile?.role === 'admin');
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,10 +33,10 @@ export const UserManagement: React.FC = () => {
       }
     };
 
-    if (isAdmin) {
+    if (isUserAdmin) {
       fetchUsers();
     }
-  }, [profile, isAdmin]);
+  }, [isUserAdmin]);
 
   const toggleRole = async (userId: string, currentRole: 'admin' | 'user') => {
     try {
@@ -48,7 +49,7 @@ export const UserManagement: React.FC = () => {
     }
   };
 
-  if (!isAdmin) {
+  if (!isUserAdmin) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8 text-center">
         <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-6">

@@ -11,6 +11,7 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, activeTab, onTabChange }) => {
   const { profile, logout, isAdmin } = useAuth();
+  const isUserAdmin = Boolean(isAdmin || profile?.role === 'admin');
   const { language, setLanguage } = useLanguage();
   const [isCollapsed, setIsCollapsed] = useState(() => {
     return localStorage.getItem('sidebar_collapsed') === 'true';
@@ -65,7 +66,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, acti
             {!isCollapsed && <span className="truncate">Dashboard</span>}
           </button>
           
-          {isAdmin && (
+          {isUserAdmin && (
             <button
               onClick={() => onTabChange('users')}
               title="Gestão de Usuários"
