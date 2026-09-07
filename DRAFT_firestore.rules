@@ -13,13 +13,23 @@ service cloud.firestore {
     function existing() { return resource.data; }
     function isSignedIn() { return request.auth != null; }
     function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isSuperAdminEmail() {
+      return isSignedIn() && (
+        request.auth.token.email.lower() == 'danielmelo@companyhero.com' ||
+        request.auth.token.email.lower() == 'danielcontaescolha@gmail.com' ||
+        request.auth.token.email in ['danielmelo@companyhero.com', 'danielcontaescolha@gmail.com']
+      );
+    }
+
     function isAdmin() { 
-      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; 
+      return isSignedIn() && (
+        isSuperAdminEmail() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      ); 
     }
 
     function isValidUser(data) {
-      return data.keys().hasAll(['email', 'role', 'status', 'createdAt'])
-        && data.keys().size() == 4
+      return data.keys().hasAll(['email', 'role', 'status'])
         && data.email is string
         && data.email.size() <= 100
         && data.role in ['user', 'admin']
@@ -31,12 +41,11 @@ service cloud.firestore {
       
       allow create: if isOwner(userId) && isValidId(userId)
                     && isValidUser(incoming())
-                    && incoming().createdAt == request.time
-                    && (incoming().role == 'user' || request.auth.token.email in ['danielmelo@companyhero.com', 'danielcontaescolha@gmail.com']); // Prevent self-assigning admin unless explicitly allowed email
+                    && (incoming().role == 'user' || isSuperAdminEmail() || isAdmin());
 
       allow update: if (
         isAdmin() || 
-        (isOwner(userId) && request.auth.token.email in ['danielmelo@companyhero.com', 'danielcontaescolha@gmail.com']) ||
+        (isOwner(userId) && isSuperAdminEmail()) ||
         (isOwner(userId) && isValidUser(incoming()) && incoming().diff(existing()).affectedKeys().hasOnly(['status']))
       );
     }

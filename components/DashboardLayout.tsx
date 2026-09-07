@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, activeTab, onTabChange }) => {
-  const { profile, logout } = useAuth();
+  const { profile, logout, isAdmin } = useAuth();
   const { language, setLanguage } = useLanguage();
   const [isCollapsed, setIsCollapsed] = useState(() => {
     return localStorage.getItem('sidebar_collapsed') === 'true';
@@ -65,7 +65,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, acti
             {!isCollapsed && <span className="truncate">Dashboard</span>}
           </button>
           
-          {profile?.role === 'admin' && (
+          {isAdmin && (
             <button
               onClick={() => onTabChange('users')}
               title="Gestão de Usuários"
@@ -111,7 +111,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, acti
                 </div>
                 <div className="overflow-hidden">
                   <p className="text-sm font-medium text-slate-900 truncate">{profile?.email}</p>
-                  <p className="text-xs text-slate-500 uppercase font-semibold tracking-wider">{profile?.role}</p>
+                  <p className="text-xs text-slate-500 uppercase font-semibold tracking-wider">{isAdmin ? 'admin' : (profile?.role || 'user')}</p>
                 </div>
               </div>
               
@@ -138,7 +138,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, acti
 
               <div 
                 className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 shrink-0"
-                title={`${profile?.email} (${profile?.role})`}
+                title={`${profile?.email} (${isAdmin ? 'admin' : (profile?.role || 'user')})`}
               >
                 <User size={16} />
               </div>

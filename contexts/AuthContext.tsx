@@ -17,12 +17,14 @@ export const ADMIN_EMAILS = [
 
 export const isSuperAdmin = (email?: string | null): boolean => {
   if (!email) return false;
-  return ADMIN_EMAILS.includes(email.toLowerCase().trim());
+  const clean = email.trim().toLowerCase();
+  return ADMIN_EMAILS.some(adminEmail => adminEmail.trim().toLowerCase() === clean);
 };
 
 interface AuthContextProps {
   user: User | null;
   profile: UserProfile | null;
+  isAdmin: boolean;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -35,40 +37,70 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const isAdmin = Boolean(
+    isSuperAdmin(user?.email) || 
+    isSuperAdmin(profile?.email) || 
+    profile?.role === 'admin'
+  );
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       
-      if (currentUser) {
-        if (currentUser.email) {
-          try {
-            const userDocRef = doc(db, 'users', currentUser.uid);
-            const userDoc = await getDoc(userDocRef);
-            
-            let userProfile: UserProfile;
-            const isAdmin = isSuperAdmin(currentUser.email);
+      if (currentUser && currentUser.email) {
+        const userEmail = currentUser.email.trim().toLowerCase();
+        const isSuper = isSuperAdmin(userEmail);
 
-            if (userDoc.exists()) {
-              userProfile = userDoc.data() as UserProfile;
-              if (isAdmin && userProfile.role !== 'admin') {
-                userProfile.role = 'admin';
-                await setDoc(userDocRef, { role: 'admin' }, { merge: true });
-              }
-            } else {
-              userProfile = {
-                email: currentUser.email,
-                role: isAdmin ? 'admin' : 'user',
+        let userProfile: UserProfile = {
+          email: userEmail,
+          role: isSuper ? 'admin' : 'user',
+          status: 'active',
+          createdAt: new Date().toISOString(),
+        };
+
+        const userDocRef = doc(db, 'users', currentUser.uid);
+
+        try {
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists()) {
+            const data = userDoc.data() as UserProfile;
+            userProfile = {
+              ...data,
+              role: isSuper ? 'admin' : (data.role || 'user'),
+            };
+          }
+        } catch (error) {
+          console.warn("Could not read user profile from Firestore:", error);
+        }
+
+        if (isSuper) {
+          userProfile.role = 'admin';
+        }
+
+        setProfile(userProfile);
+        localStorage.setItem('finhero_user_profile', JSON.stringify(userProfile));
+
+        // Sync with Firestore in background
+        try {
+          if (isSuper) {
+            await setDoc(userDocRef, {
+              email: userEmail,
+              role: 'admin',
+              status: 'active'
+            }, { merge: true });
+          } else {
+            const userDoc = await getDoc(userDocRef);
+            if (!userDoc.exists()) {
+              await setDoc(userDocRef, {
+                email: userEmail,
+                role: 'user',
                 status: 'active',
                 createdAt: serverTimestamp(),
-              };
-              await setDoc(userDocRef, userProfile);
+              });
             }
-            
-            setProfile(userProfile);
-            localStorage.setItem('finhero_user_profile', JSON.stringify(userProfile));
-          } catch (error) {
-            console.error("Error fetching/creating user profile:", error);
           }
+        } catch (syncError) {
+          console.warn("Could not sync user profile to Firestore:", syncError);
         }
       } else {
         setProfile(null);
