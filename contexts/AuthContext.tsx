@@ -1,14 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signInWithPopup, signOut } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { auth, db, googleProvider } from '../lib/firebase';
-
-export interface UserProfile {
-  email: string;
-  role: 'admin' | 'user';
-  status: 'active' | 'inactive';
-  createdAt: string | any;
-}
+import { UserProfile, WorkspaceSettings } from '../types';
 
 export interface AuthUser {
   uid: string;
@@ -28,20 +22,24 @@ export const isSuperAdmin = (email?: string | null): boolean => {
   return ADMIN_EMAILS.some(adminEmail => adminEmail.trim().toLowerCase() === clean);
 };
 
-export const isCompanyDomain = (email?: string | null): boolean => {
-  if (!email) return false;
-  const clean = email.trim().toLowerCase();
-  return clean.endsWith('@companyhero.com') || clean.endsWith('@companyhero.com.br');
+export const DEFAULT_WORKSPACE_SETTINGS: WorkspaceSettings = {
+  domainRestrictionEnabled: false,
+  allowedDomain: 'companyhero.com',
+  allowedEmails: ['danielcontaescolha@gmail.com', 'danielmelo@companyhero.com'],
+  updatedAt: new Date().toISOString()
 };
 
 interface AuthContextProps {
   user: User | AuthUser | null;
   profile: UserProfile | null;
   isAdmin: boolean;
+  isAuthenticated: boolean;
   loading: boolean;
+  workspaceSettings: WorkspaceSettings | null;
   signInWithGoogle: () => Promise<void>;
   signInWithCorporateEmail: (email: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateWorkspaceSettings: (settings: Partial<WorkspaceSettings>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -49,7 +47,32 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | AuthUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [workspaceSettings, setWorkspaceSettings] = useState<WorkspaceSettings | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Read and listen to Workspace Settings in real-time
+  useEffect(() => {
+    const settingsRef = doc(db, 'settings', 'workspace');
+    const unsubscribe = onSnapshot(settingsRef, async (snap) => {
+      if (snap.exists()) {
+        const data = snap.data() as WorkspaceSettings;
+        setWorkspaceSettings(data);
+      } else {
+        // Initialize default workspace settings if not created yet
+        try {
+          await setDoc(settingsRef, DEFAULT_WORKSPACE_SETTINGS, { merge: true });
+        } catch (e) {
+          console.warn("Could not bootstrap workspace settings:", e);
+        }
+        setWorkspaceSettings(DEFAULT_WORKSPACE_SETTINGS);
+      }
+    }, (err) => {
+      console.warn("Notice reading workspace settings:", err);
+      setWorkspaceSettings(DEFAULT_WORKSPACE_SETTINGS);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const isAdmin = Boolean(
     isSuperAdmin(user?.email) || 
@@ -57,162 +80,179 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     profile?.role === 'admin'
   );
 
-  // Helper to query firestore for pre-registered user by email or UID
-  const getRegisteredUserData = async (email: string, uid?: string): Promise<UserProfile | null> => {
-    const cleanEmail = email.trim().toLowerCase();
-    const docId = cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
+  const isAuthenticated = Boolean(user && profile?.status !== 'blocked');
 
-    // 1. Try UID doc
-    if (uid) {
-      try {
-        const uidSnap = await getDoc(doc(db, 'users', uid));
-        if (uidSnap.exists()) {
-          return uidSnap.data() as UserProfile;
-        }
-      } catch (e) {
-        console.warn("Could not fetch user by uid:", e);
-      }
+  // Verify domain restriction and allowed emails
+  const checkDomainPermission = (email: string, settings: WorkspaceSettings | null): { allowed: boolean; reason?: string } => {
+    const cleanEmail = email.toLowerCase().trim();
+    if (isSuperAdmin(cleanEmail)) {
+      return { allowed: true };
     }
 
-    // 2. Try sanitized email doc
-    try {
-      const emailSnap = await getDoc(doc(db, 'users', docId));
-      if (emailSnap.exists()) {
-        return emailSnap.data() as UserProfile;
-      }
-    } catch (e) {
-      console.warn("Could not fetch user by email doc:", e);
+    if (!settings || !settings.domainRestrictionEnabled) {
+      return { allowed: true };
     }
 
-    // 3. Fallback: check hero_users_cache from localStorage
-    try {
-      const cached = localStorage.getItem('hero_users_cache');
-      if (cached) {
-        const list = JSON.parse(cached);
-        if (Array.isArray(list)) {
-          const found = list.find((u: any) => u.email?.toLowerCase().trim() === cleanEmail);
-          if (found) {
-            return {
-              email: cleanEmail,
-              role: found.role || 'user',
-              status: found.status || 'active',
-              createdAt: found.createdAt || new Date().toISOString()
-            };
-          }
-        }
-      }
-    } catch (e) {
-      // ignore
+    // Check whitelist of exceptions
+    if (settings.allowedEmails && settings.allowedEmails.some(e => e.toLowerCase().trim() === cleanEmail)) {
+      return { allowed: true };
     }
 
-    return null;
+    // Check domain match
+    const userDomain = cleanEmail.split('@')[1] || '';
+    const mainAllowedDomain = (settings.allowedDomain || 'companyhero.com').toLowerCase().replace(/^@/, '').trim();
+
+    if (userDomain === mainAllowedDomain || userDomain === 'companyhero.com' || userDomain === 'companyhero.com.br') {
+      return { allowed: true };
+    }
+
+    return { allowed: false, reason: 'unauthorized-domain' };
   };
 
-  const verifyAuthorization = async (email: string, uid?: string): Promise<{ authorized: boolean; role: 'admin' | 'user'; status: 'active' | 'inactive'; reason?: string }> => {
-    const clean = email.trim().toLowerCase();
-    if (isSuperAdmin(clean)) {
-      return { authorized: true, role: 'admin', status: 'active' };
-    }
-
-    // Check Firestore user registry
-    const registered = await getRegisteredUserData(clean, uid);
-    if (registered) {
-      if (registered.status === 'inactive') {
-        return { authorized: false, role: registered.role || 'user', status: 'inactive', reason: 'inactive' };
-      }
-      return { authorized: true, role: registered.role || 'user', status: 'active' };
-    }
-
-    // Check Company Hero official corporate domains
-    if (isCompanyDomain(clean)) {
-      return { authorized: true, role: 'user', status: 'active' };
-    }
-
-    return { authorized: false, role: 'user', status: 'active', reason: 'unauthorized-email' };
-  };
-
+  // Listen to Firebase Auth state
   useEffect(() => {
     let isMounted = true;
+    let unsubscribeProfileListener: (() => void) | null = null;
 
-    // Safety timeout to avoid getting stuck in loading
     const safetyTimer = setTimeout(() => {
       if (isMounted) setLoading(false);
     }, 4000);
 
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
+      if (unsubscribeProfileListener) {
+        unsubscribeProfileListener();
+        unsubscribeProfileListener = null;
+      }
+
       if (currentUser && currentUser.email) {
-        const userEmail = currentUser.email.trim().toLowerCase();
+        const userEmail = currentUser.email.toLowerCase().trim();
+        const userUid = currentUser.uid;
         const isSuper = isSuperAdmin(userEmail);
+        const domain = userEmail.split('@')[1] || '';
 
-        let resolvedRole: 'admin' | 'user' = isSuper ? 'admin' : 'user';
-        let resolvedStatus: 'active' | 'inactive' = 'active';
+        // Attach Realtime Listener on user profile in Firestore
+        const userRef = doc(db, 'users', userUid);
+        unsubscribeProfileListener = onSnapshot(userRef, async (docSnap) => {
+          if (docSnap.exists()) {
+            const profileData = docSnap.data() as UserProfile;
+            
+            // Protection in real-time: if blocked by admin, log out immediately
+            if (profileData.status === 'blocked') {
+              if (isMounted) {
+                logout();
+              }
+              return;
+            }
 
-        try {
-          const registered = await getRegisteredUserData(userEmail, currentUser.uid);
-          if (registered) {
-            resolvedRole = isSuper ? 'admin' : (registered.role || 'user');
-            resolvedStatus = registered.status || 'active';
+            const mergedProfile: UserProfile = {
+              uid: userUid,
+              email: userEmail,
+              displayName: profileData.displayName || currentUser.displayName || userEmail.split('@')[0],
+              photoURL: profileData.photoURL || currentUser.photoURL || '',
+              role: isSuper ? 'admin' : (profileData.role || 'user'),
+              status: profileData.status || 'active',
+              domain: profileData.domain || domain,
+              createdAt: profileData.createdAt || new Date().toISOString(),
+              lastLoginAt: profileData.lastLoginAt || new Date().toISOString()
+            };
+
+            if (isMounted) {
+              setUser(currentUser);
+              setProfile(mergedProfile);
+              localStorage.setItem('finhero_user_profile', JSON.stringify(mergedProfile));
+              setLoading(false);
+            }
+          } else {
+            // First time login - auto create profile in Firestore
+            const initialRole: 'admin' | 'user' = isSuper ? 'admin' : 'user';
+            const newProfile: UserProfile = {
+              uid: userUid,
+              email: userEmail,
+              displayName: currentUser.displayName || userEmail.split('@')[0],
+              photoURL: currentUser.photoURL || '',
+              role: initialRole,
+              status: 'active',
+              domain,
+              createdAt: new Date().toISOString(),
+              lastLoginAt: new Date().toISOString()
+            };
+
+            try {
+              await setDoc(userRef, newProfile, { merge: true });
+            } catch (err) {
+              console.warn("Notice creating new profile in Firestore:", err);
+            }
+
+            if (isMounted) {
+              setUser(currentUser);
+              setProfile(newProfile);
+              localStorage.setItem('finhero_user_profile', JSON.stringify(newProfile));
+              setLoading(false);
+            }
           }
-        } catch (e) {
-          console.warn("Error reading user profile:", e);
-        }
-
-        const userProfile: UserProfile = {
-          email: userEmail,
-          role: resolvedRole,
-          status: resolvedStatus,
-          createdAt: new Date().toISOString()
-        };
-
-        if (isMounted) {
-          setUser(currentUser);
-          setProfile(userProfile);
-          localStorage.setItem('finhero_user_profile', JSON.stringify(userProfile));
-          setLoading(false);
-        }
-
-        // Background sync to Firestore without blocking UI
-        try {
-          const sanitizedId = userEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
-          const syncData = {
+        }, (err) => {
+          console.warn("Profile listener notice:", err);
+          // Fallback if permission or network fails
+          const fallbackProfile: UserProfile = {
+            uid: userUid,
             email: userEmail,
             displayName: currentUser.displayName || userEmail.split('@')[0],
             photoURL: currentUser.photoURL || '',
-            role: resolvedRole,
-            status: resolvedStatus,
-            lastLogin: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            role: isSuper ? 'admin' : 'user',
+            status: 'active',
+            domain,
+            createdAt: new Date().toISOString(),
+            lastLoginAt: new Date().toISOString()
           };
-
-          await setDoc(doc(db, 'users', currentUser.uid), syncData, { merge: true });
-          if (sanitizedId !== currentUser.uid) {
-            await setDoc(doc(db, 'users', sanitizedId), syncData, { merge: true });
+          if (isMounted) {
+            setUser(currentUser);
+            setProfile(fallbackProfile);
+            setLoading(false);
           }
-        } catch (syncErr) {
-          console.warn("Background sync notice:", syncErr);
-        }
+        });
+
+        // Update lastLoginAt in Firestore
+        setDoc(userRef, {
+          email: userEmail,
+          displayName: currentUser.displayName || userEmail.split('@')[0],
+          photoURL: currentUser.photoURL || '',
+          lastLoginAt: new Date().toISOString(),
+          domain
+        }, { merge: true }).catch(() => {});
+
       } else {
-        // If not authenticated in Firebase Auth, check local corporate session
+        // Check corporate email session in localStorage
         try {
           const savedSession = localStorage.getItem('finhero_corporate_session');
           if (savedSession) {
             const parsed = JSON.parse(savedSession);
             if (parsed?.user?.email && isMounted) {
+              const corpEmail = parsed.user.email.toLowerCase().trim();
+              const corpUid = parsed.user.uid;
+              const isSuper = isSuperAdmin(corpEmail);
+
+              // Realtime listener for corporate session
+              const corpRef = doc(db, 'users', corpUid);
+              unsubscribeProfileListener = onSnapshot(corpRef, (snap) => {
+                if (snap.exists()) {
+                  const data = snap.data() as UserProfile;
+                  if (data.status === 'blocked') {
+                    logout();
+                    return;
+                  }
+                  const updated: UserProfile = {
+                    ...data,
+                    role: isSuper ? 'admin' : (data.role || 'user')
+                  };
+                  setUser(parsed.user);
+                  setProfile(updated);
+                  setLoading(false);
+                }
+              }, () => {});
+
               setUser(parsed.user);
               setProfile(parsed.profile);
               setLoading(false);
-
-              // Keep Firestore lastLogin alive
-              const corpEmail = parsed.user.email.toLowerCase().trim();
-              const corpDocId = corpEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
-              setDoc(doc(db, 'users', corpDocId), {
-                email: corpEmail,
-                displayName: parsed.user.displayName || corpEmail.split('@')[0],
-                role: parsed.profile?.role || 'user',
-                status: parsed.profile?.status || 'active',
-                lastLogin: new Date().toISOString()
-              }, { merge: true }).catch(() => {});
-
               return;
             }
           }
@@ -232,7 +272,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       isMounted = false;
       clearTimeout(safetyTimer);
-      unsubscribe();
+      if (unsubscribeProfileListener) unsubscribeProfileListener();
+      unsubscribeAuth();
     };
   }, []);
 
@@ -246,43 +287,74 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('unauthorized-email');
       }
 
-      const authCheck = await verifyAuthorization(email, result.user.uid);
-      if (!authCheck.authorized) {
-        await signOut(auth);
-        throw new Error(authCheck.reason === 'inactive' ? 'inactive-user' : 'unauthorized-email');
+      // 1. Check workspace settings & domain restriction
+      let currentSettings = workspaceSettings;
+      if (!currentSettings) {
+        try {
+          const snap = await getDoc(doc(db, 'settings', 'workspace'));
+          if (snap.exists()) currentSettings = snap.data() as WorkspaceSettings;
+        } catch (e) {
+          // ignore
+        }
       }
 
+      const domainCheck = checkDomainPermission(email, currentSettings);
+      if (!domainCheck.allowed) {
+        await signOut(auth);
+        throw new Error('unauthorized-domain');
+      }
+
+      // 2. Check user status in Firestore
+      const userRef = doc(db, 'users', result.user.uid);
+      const userSnap = await getDoc(userRef);
+
       const isSuper = isSuperAdmin(email);
-      const role = isSuper ? 'admin' : authCheck.role;
-      const userProfile: UserProfile = {
-        email,
-        role,
-        status: 'active',
-        createdAt: new Date().toISOString()
-      };
+      const domain = email.split('@')[1] || '';
 
-      setUser(result.user);
-      setProfile(userProfile);
-      localStorage.setItem('finhero_user_profile', JSON.stringify(userProfile));
+      if (userSnap.exists()) {
+        const existing = userSnap.data() as UserProfile;
+        if (existing.status === 'blocked') {
+          await signOut(auth);
+          throw new Error('inactive-user');
+        }
 
-      // Sync Firestore profile
-      try {
-        const sanitizedId = email.replace(/[^a-zA-Z0-9_-]/g, '_');
-        const syncPayload = {
+        // Update last login
+        const role = isSuper ? 'admin' : (existing.role || 'user');
+        const updated: UserProfile = {
+          uid: result.user.uid,
+          email,
+          displayName: result.user.displayName || existing.displayName || email.split('@')[0],
+          photoURL: result.user.photoURL || existing.photoURL || '',
+          role,
+          status: 'active',
+          domain,
+          createdAt: existing.createdAt || new Date().toISOString(),
+          lastLoginAt: new Date().toISOString()
+        };
+
+        await setDoc(userRef, updated, { merge: true });
+        setUser(result.user);
+        setProfile(updated);
+        localStorage.setItem('finhero_user_profile', JSON.stringify(updated));
+      } else {
+        // Auto register new user
+        const role: 'admin' | 'user' = isSuper ? 'admin' : 'user';
+        const newProfile: UserProfile = {
+          uid: result.user.uid,
           email,
           displayName: result.user.displayName || email.split('@')[0],
           photoURL: result.user.photoURL || '',
           role,
           status: 'active',
-          lastLogin: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          domain,
+          createdAt: new Date().toISOString(),
+          lastLoginAt: new Date().toISOString()
         };
-        await setDoc(doc(db, 'users', result.user.uid), syncPayload, { merge: true });
-        if (sanitizedId !== result.user.uid) {
-          await setDoc(doc(db, 'users', sanitizedId), syncPayload, { merge: true });
-        }
-      } catch (syncErr) {
-        console.warn("Could not sync user profile:", syncErr);
+
+        await setDoc(userRef, newProfile, { merge: true });
+        setUser(result.user);
+        setProfile(newProfile);
+        localStorage.setItem('finhero_user_profile', JSON.stringify(newProfile));
       }
     } catch (error: any) {
       throw error;
@@ -295,14 +367,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error('invalid-format');
     }
 
-    const authCheck = await verifyAuthorization(cleanEmail);
-    if (!authCheck.authorized) {
-      throw new Error(authCheck.reason === 'inactive' ? 'inactive-user' : 'unauthorized-email');
+    // Check workspace settings & domain restriction
+    let currentSettings = workspaceSettings;
+    if (!currentSettings) {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'workspace'));
+        if (snap.exists()) currentSettings = snap.data() as WorkspaceSettings;
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    const domainCheck = checkDomainPermission(cleanEmail, currentSettings);
+    if (!domainCheck.allowed) {
+      throw new Error('unauthorized-domain');
     }
 
     const isSuper = isSuperAdmin(cleanEmail);
-    const role = isSuper ? 'admin' : authCheck.role;
+    const domain = cleanEmail.split('@')[1] || '';
     const uid = 'corp_' + cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    // Check if user is registered in Firestore
+    const userRef = doc(db, 'users', uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      const existing = userSnap.data() as UserProfile;
+      if (existing.status === 'blocked') {
+        throw new Error('inactive-user');
+      }
+    }
 
     const authUser: AuthUser = {
       uid,
@@ -310,11 +404,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       displayName: cleanEmail.split('@')[0]
     };
 
+    const role: 'admin' | 'user' = isSuper ? 'admin' : (userSnap.exists() ? (userSnap.data() as any).role || 'user' : 'user');
+
     const userProfile: UserProfile = {
+      uid,
       email: cleanEmail,
+      displayName: cleanEmail.split('@')[0],
       role,
       status: 'active',
-      createdAt: new Date().toISOString()
+      domain,
+      createdAt: userSnap.exists() ? (userSnap.data() as any).createdAt || new Date().toISOString() : new Date().toISOString(),
+      lastLoginAt: new Date().toISOString()
     };
 
     setUser(authUser);
@@ -324,19 +424,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Sync to Firestore in background
     try {
-      const docId = cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
-      const corpPayload = {
-        email: cleanEmail,
-        displayName: cleanEmail.split('@')[0],
-        role,
-        status: 'active',
-        lastLogin: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      await setDoc(doc(db, 'users', docId), corpPayload, { merge: true });
-      await setDoc(doc(db, 'users', uid), corpPayload, { merge: true });
+      await setDoc(userRef, userProfile, { merge: true });
     } catch (syncErr) {
       console.warn("Notice syncing corporate login to Firestore:", syncErr);
+    }
+  };
+
+  const updateWorkspaceSettings = async (newSettings: Partial<WorkspaceSettings>) => {
+    try {
+      const settingsRef = doc(db, 'settings', 'workspace');
+      const payload: WorkspaceSettings = {
+        ...(workspaceSettings || DEFAULT_WORKSPACE_SETTINGS),
+        ...newSettings,
+        updatedAt: new Date().toISOString(),
+        updatedBy: user?.email || 'admin'
+      };
+      await setDoc(settingsRef, payload, { merge: true });
+      setWorkspaceSettings(payload);
+    } catch (err) {
+      console.error("Error updating workspace settings:", err);
+      throw err;
     }
   };
 
@@ -353,7 +460,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, isAdmin, loading, signInWithGoogle, signInWithCorporateEmail, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      profile, 
+      isAdmin, 
+      isAuthenticated, 
+      loading, 
+      workspaceSettings, 
+      signInWithGoogle, 
+      signInWithCorporateEmail, 
+      logout,
+      updateWorkspaceSettings 
+    }}>
       {children}
     </AuthContext.Provider>
   );

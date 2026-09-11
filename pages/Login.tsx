@@ -25,11 +25,13 @@ export const Login: React.FC = () => {
         String(err)?.includes('unauthorized-domain');
 
       if (err.message === 'inactive-user') {
-        setError(t('login.error.inactive'));
+        setError('Acesso bloqueado: Este usuário foi desativado por um administrador.');
+      } else if (err.message === 'unauthorized-domain') {
+        setError('Acesso restrito: Seu e-mail não pertence ao domínio corporativo permitido nem consta na lista de exceções autorizadas.');
+      } else if (err?.code === 'auth/unauthorized-domain' || isFirebaseDomainError) {
+        setError('O pop-up do Google pode estar com restrição de domínio de origem no Firebase. Digite seu e-mail corporativo abaixo para acessar.');
       } else if (err.message === 'unauthorized-email') {
         setError(t('login.error.unauthorized_email'));
-      } else if (err.message === 'unauthorized-domain' || isFirebaseDomainError) {
-        setError('O pop-up do Google pode estar bloqueado neste domínio. Digite seu e-mail corporativo abaixo para acessar diretamente.');
       } else if (err.code === 'auth/popup-closed-by-user') {
         // user closed popup, ignore
       } else {
@@ -52,7 +54,9 @@ export const Login: React.FC = () => {
       if (err.message === 'invalid-format') {
         setError(t('login.error.invalid_format'));
       } else if (err.message === 'inactive-user') {
-        setError(t('login.error.inactive'));
+        setError('Acesso bloqueado: Este usuário foi desativado por um administrador.');
+      } else if (err.message === 'unauthorized-domain') {
+        setError('Acesso restrito: Seu e-mail não pertence ao domínio corporativo permitido nem consta na lista de exceções autorizadas.');
       } else if (err.message === 'unauthorized-email') {
         setError(t('login.error.unauthorized_email'));
       } else {
