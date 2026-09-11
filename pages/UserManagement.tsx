@@ -75,6 +75,17 @@ export const UserManagement: React.FC = () => {
     try {
       const newRole = currentRole === 'admin' ? 'user' : 'admin';
       await updateDoc(doc(db, 'users', userId), { role: newRole });
+      const targetUser = users.find(u => u.id === userId);
+      if (targetUser?.email) {
+        const altDocId = targetUser.email.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '_');
+        if (altDocId !== userId) {
+          try {
+            await setDoc(doc(db, 'users', altDocId), { role: newRole }, { merge: true });
+          } catch (e) {
+            // ignore
+          }
+        }
+      }
       setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
       showToast(`Permissão alterada para ${newRole === 'admin' ? 'Administrador' : 'Usuário'}.`);
     } catch (error: any) {
@@ -87,6 +98,17 @@ export const UserManagement: React.FC = () => {
     try {
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
       await updateDoc(doc(db, 'users', userId), { status: newStatus });
+      const targetUser = users.find(u => u.id === userId);
+      if (targetUser?.email) {
+        const altDocId = targetUser.email.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '_');
+        if (altDocId !== userId) {
+          try {
+            await setDoc(doc(db, 'users', altDocId), { status: newStatus }, { merge: true });
+          } catch (e) {
+            // ignore
+          }
+        }
+      }
       setUsers(users.map(u => u.id === userId ? { ...u, status: newStatus } : u));
       showToast(`Status alterado para ${newStatus === 'active' ? 'Ativo' : 'Inativo'}.`);
     } catch (error: any) {
@@ -101,6 +123,14 @@ export const UserManagement: React.FC = () => {
     }
     try {
       await deleteDoc(doc(db, 'users', userId));
+      const altDocId = userEmail.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '_');
+      if (altDocId !== userId) {
+        try {
+          await deleteDoc(doc(db, 'users', altDocId));
+        } catch (e) {
+          // ignore
+        }
+      }
       setUsers(users.filter(u => u.id !== userId));
       showToast(`Usuário ${userEmail} removido com sucesso.`);
     } catch (error: any) {

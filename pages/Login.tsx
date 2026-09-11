@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Building2, Globe, Moon, Sun, AlertCircle } from 'lucide-react';
+import { Building2, Moon, Sun, AlertCircle, Mail, ArrowRight } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const { t, language, setLanguage } = useLanguage();
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, signInWithCorporateEmail } = useAuth();
+  const [corporateEmail, setCorporateEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const currentYear = new Date().getFullYear();
 
-  const handleLogin = async () => {
+  const handleGoogleLogin = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -23,12 +24,37 @@ export const Login: React.FC = () => {
         err?.message?.includes('auth/unauthorized-domain') ||
         String(err)?.includes('unauthorized-domain');
 
-      if (err.message === 'unauthorized-email') {
+      if (err.message === 'inactive-user') {
+        setError(t('login.error.inactive'));
+      } else if (err.message === 'unauthorized-email') {
         setError(t('login.error.unauthorized_email'));
       } else if (err.message === 'unauthorized-domain' || isFirebaseDomainError) {
-        setError(t('login.error.unauthorized_email'));
+        setError('O pop-up do Google pode estar bloqueado neste domínio. Digite seu e-mail corporativo abaixo para acessar diretamente.');
       } else if (err.code === 'auth/popup-closed-by-user') {
         // user closed popup, ignore
+      } else {
+        setError(t('login.error.default'));
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCorporateLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!corporateEmail.trim()) return;
+    setLoading(true);
+    setError(null);
+    try {
+      await signInWithCorporateEmail(corporateEmail);
+    } catch (err: any) {
+      console.error('Corporate login error:', err);
+      if (err.message === 'invalid-format') {
+        setError(t('login.error.invalid_format'));
+      } else if (err.message === 'inactive-user') {
+        setError(t('login.error.inactive'));
+      } else if (err.message === 'unauthorized-email') {
+        setError(t('login.error.unauthorized_email'));
       } else {
         setError(t('login.error.default'));
       }
@@ -51,6 +77,7 @@ export const Login: React.FC = () => {
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           className={`p-2 rounded-full border transition-colors shadow-sm ${theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-500 hover:text-slate-800'}`}
+          title="Alternar tema"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
@@ -72,14 +99,14 @@ export const Login: React.FC = () => {
       </div>
 
       {/* Center Card */}
-      <div className={`w-full max-w-md rounded-3xl p-8 sm:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border z-10 mx-4 transition-colors ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
-        <div className="flex justify-center mb-8">
+      <div className={`w-full max-w-md rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border z-10 mx-4 transition-colors ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
+        <div className="flex justify-center mb-6">
           <div className="w-12 h-12 rounded-2xl bg-[#FF0066]/10 flex items-center justify-center text-[#FF0066]">
             <Building2 size={24} strokeWidth={2.5} />
           </div>
         </div>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
             {t('login.title')} <span className="text-[#FF0066]">Hero</span>
           </h1>
@@ -89,18 +116,19 @@ export const Login: React.FC = () => {
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-xl flex gap-3 text-sm border border-red-100 items-start">
+          <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-xl flex gap-3 text-sm border border-red-100 items-start animate-fade-in">
             <AlertCircle size={20} className="shrink-0 mt-0.5" />
             <p className="font-medium leading-relaxed">{error}</p>
           </div>
         )}
 
+        {/* Google Login Option */}
         <button
-          onClick={handleLogin}
+          onClick={handleGoogleLogin}
           disabled={loading}
-          className={`w-full flex items-center justify-center gap-3 border font-medium py-3.5 px-4 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-4 shadow-sm ${theme === 'dark' ? 'bg-slate-700 border-slate-600 hover:bg-slate-600 text-white' : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}`}
+          className={`w-full flex items-center justify-center gap-3 border font-medium py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-4 shadow-sm text-sm ${theme === 'dark' ? 'bg-slate-700 border-slate-600 hover:bg-slate-600 text-white' : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}`}
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -121,19 +149,53 @@ export const Login: React.FC = () => {
           {t('login.button.google')}
         </button>
 
-        <div className="relative flex items-center py-4">
-          <div className="flex-grow border-t border-slate-200"></div>
-          <span className={`flex-shrink-0 mx-4 text-xs ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>{t('login.or')}</span>
-          <div className="flex-grow border-t border-slate-200"></div>
+        <div className="relative flex items-center py-3">
+          <div className={`flex-grow border-t ${theme === 'dark' ? 'border-slate-700' : 'border-slate-200'}`}></div>
+          <span className={`flex-shrink-0 mx-3 text-xs uppercase tracking-wider font-semibold ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
+            {t('login.or')}
+          </span>
+          <div className={`flex-grow border-t ${theme === 'dark' ? 'border-slate-700' : 'border-slate-200'}`}></div>
         </div>
 
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3.5 px-4 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-        >
-          {loading ? '...' : t('login.button.submit')}
-        </button>
+        {/* Corporate Direct Email Login */}
+        <form onSubmit={handleCorporateLogin} className="space-y-3">
+          <div>
+            <label className={`block text-xs font-semibold mb-1.5 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              {t('login.corporate_email.label')}
+            </label>
+            <div className="relative">
+              <Mail className={`absolute left-3.5 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`} size={17} />
+              <input
+                type="email"
+                required
+                value={corporateEmail}
+                onChange={(e) => setCorporateEmail(e.target.value)}
+                placeholder={t('login.corporate_email.placeholder')}
+                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#FF0066]/20 focus:border-[#FF0066] ${
+                  theme === 'dark'
+                    ? 'bg-slate-700/50 border-slate-600 text-white placeholder-slate-500'
+                    : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
+                }`}
+              />
+            </div>
+            <p className={`text-[11px] mt-1.5 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+              Permitido: @companyhero.com, @companyhero.com.br e usuários cadastrados.
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading || !corporateEmail.trim()}
+            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center justify-center gap-2 text-sm"
+          >
+            {loading ? 'Entrando...' : (
+              <>
+                <span>{t('login.corporate_email.button')}</span>
+                <ArrowRight size={16} />
+              </>
+            )}
+          </button>
+        </form>
       </div>
 
       {/* Footer */}
