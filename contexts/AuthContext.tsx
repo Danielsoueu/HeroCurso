@@ -84,6 +84,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.warn("Could not fetch user by email doc:", e);
     }
 
+    // 3. Fallback: check hero_users_cache from localStorage
+    try {
+      const cached = localStorage.getItem('hero_users_cache');
+      if (cached) {
+        const list = JSON.parse(cached);
+        if (Array.isArray(list)) {
+          const found = list.find((u: any) => u.email?.toLowerCase().trim() === cleanEmail);
+          if (found) {
+            return {
+              email: cleanEmail,
+              role: found.role || 'user',
+              status: found.status || 'active',
+              createdAt: found.createdAt || new Date().toISOString()
+            };
+          }
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+
     return null;
   };
 

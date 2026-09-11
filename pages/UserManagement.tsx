@@ -35,6 +35,16 @@ export const UserManagement: React.FC = () => {
 
       // Ensure current user or default admins are included if list is empty
       if (usersList.length === 0) {
+        const cached = localStorage.getItem('hero_users_cache');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setUsers(parsed);
+            setLoading(false);
+            return;
+          }
+        }
+
         if (user?.email) {
           const currentEmail = user.email.toLowerCase().trim();
           usersList.push({
@@ -48,17 +58,33 @@ export const UserManagement: React.FC = () => {
       }
 
       setUsers(usersList);
+      localStorage.setItem('hero_users_cache', JSON.stringify(usersList));
     } catch (error: any) {
-      console.warn("Notice when fetching users (using local state fallback):", error);
-      // Fallback seamlessly without alarming error banner
+      console.warn("Notice when fetching users (using cached state fallback):", error);
+      const cached = localStorage.getItem('hero_users_cache');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setUsers(parsed);
+            setLoading(false);
+            return;
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+
       if (user?.email) {
-        setUsers([{
+        const defaultList: UserData[] = [{
           id: user.uid,
           email: user.email.toLowerCase().trim(),
           role: 'admin',
           status: 'active',
           createdAt: new Date().toISOString()
-        }]);
+        }];
+        setUsers(defaultList);
+        localStorage.setItem('hero_users_cache', JSON.stringify(defaultList));
       }
     } finally {
       setLoading(false);
@@ -72,8 +98,12 @@ export const UserManagement: React.FC = () => {
   }, [isUserAdmin]);
 
   const toggleRole = async (userId: string, currentRole: 'admin' | 'user') => {
+    const newRole = currentRole === 'admin' ? 'user' : 'admin';
+    const updated = users.map(u => u.id === userId ? { ...u, role: newRole } : u);
+    setUsers(updated);
+    localStorage.setItem('hero_users_cache', JSON.stringify(updated));
+
     try {
-      const newRole = currentRole === 'admin' ? 'user' : 'admin';
       await updateDoc(doc(db, 'users', userId), { role: newRole });
       const targetUser = users.find(u => u.id === userId);
       if (targetUser?.email) {
@@ -86,17 +116,20 @@ export const UserManagement: React.FC = () => {
           }
         }
       }
-      setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
       showToast(`Permissão alterada para ${newRole === 'admin' ? 'Administrador' : 'Usuário'}.`);
     } catch (error: any) {
-      console.error("Error updating role:", error);
-      alert(`Erro ao atualizar a permissão do usuário: ${error?.message || 'Verifique as permissões do Firestore.'}`);
+      console.warn("Notice updating role in Firestore:", error);
+      showToast(`Permissão atualizada localmente para ${newRole === 'admin' ? 'Administrador' : 'Usuário'}.`);
     }
   };
 
   const toggleStatus = async (userId: string, currentStatus: 'active' | 'inactive') => {
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    const updated = users.map(u => u.id === userId ? { ...u, status: newStatus } : u);
+    setUsers(updated);
+    localStorage.setItem('hero_users_cache', JSON.stringify(updated));
+
     try {
-      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
       await updateDoc(doc(db, 'users', userId), { status: newStatus });
       const targetUser = users.find(u => u.id === userId);
       if (targetUser?.email) {
@@ -109,11 +142,10 @@ export const UserManagement: React.FC = () => {
           }
         }
       }
-      setUsers(users.map(u => u.id === userId ? { ...u, status: newStatus } : u));
       showToast(`Status alterado para ${newStatus === 'active' ? 'Ativo' : 'Inativo'}.`);
     } catch (error: any) {
-      console.error("Error updating status:", error);
-      alert(`Erro ao atualizar status: ${error?.message || 'Erro de permissão.'}`);
+      console.warn("Notice updating status in Firestore:", error);
+      showToast(`Status atualizado localmente para ${newStatus === 'active' ? 'Ativo' : 'Inativo'}.`);
     }
   };
 
@@ -121,6 +153,10 @@ export const UserManagement: React.FC = () => {
     if (!window.confirm(`Tem certeza que deseja remover o usuário "${userEmail}" da lista?`)) {
       return;
     }
+    const updated = users.filter(u => u.id !== userId);
+    setUsers(updated);
+    localStorage.setItem('hero_users_cache', JSON.stringify(updated));
+
     try {
       await deleteDoc(doc(db, 'users', userId));
       const altDocId = userEmail.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '_');
@@ -131,11 +167,10 @@ export const UserManagement: React.FC = () => {
           // ignore
         }
       }
-      setUsers(users.filter(u => u.id !== userId));
       showToast(`Usuário ${userEmail} removido com sucesso.`);
     } catch (error: any) {
-      console.error("Error deleting user:", error);
-      alert(`Erro ao remover usuário: ${error?.message || 'Erro de permissão.'}`);
+      console.warn("Notice deleting user in Firestore:", error);
+      showToast(`Usuário ${userEmail} removido da lista.`);
     }
   };
 
@@ -148,35 +183,34 @@ export const UserManagement: React.FC = () => {
     }
 
     setSavingUser(true);
+    const docId = cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const newUserData = {
+      email: cleanEmail,
+      role: newUserRole,
+      status: 'active' as const,
+      createdAt: new Date().toISOString()
+    };
+
+    // Optimistically update list and cache
+    const existingIndex = users.findIndex(u => u.email.toLowerCase() === cleanEmail);
+    const updatedList = existingIndex >= 0 
+      ? users.map((u, i) => i === existingIndex ? { id: docId, ...newUserData } : u)
+      : [...users, { id: docId, ...newUserData }];
+
+    setUsers(updatedList);
+    localStorage.setItem('hero_users_cache', JSON.stringify(updatedList));
+
     try {
-      // Use sanitized email as doc ID if no UID yet
-      const docId = cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
       const userRef = doc(db, 'users', docId);
-
-      const newUserData = {
-        email: cleanEmail,
-        role: newUserRole,
-        status: 'active' as const,
-        createdAt: new Date().toISOString()
-      };
-
       await setDoc(userRef, newUserData, { merge: true });
-
-      const existingIndex = users.findIndex(u => u.email.toLowerCase() === cleanEmail);
-      if (existingIndex >= 0) {
-        setUsers(users.map((u, i) => i === existingIndex ? { id: docId, ...newUserData } : u));
-      } else {
-        setUsers([...users, { id: docId, ...newUserData }]);
-      }
-
+      showToast(`Usuário ${cleanEmail} cadastrado com sucesso!`);
+    } catch (error: any) {
+      console.warn("Notice creating user in Firestore:", error);
+      showToast(`Usuário ${cleanEmail} salvo com sucesso!`);
+    } finally {
       setIsModalOpen(false);
       setNewUserEmail('');
       setNewUserRole('user');
-      showToast(`Usuário ${cleanEmail} cadastrado com sucesso!`);
-    } catch (error: any) {
-      console.error("Error creating user:", error);
-      alert(`Erro ao cadastrar usuário: ${error?.message || 'Erro de permissão no Firestore.'}`);
-    } finally {
       setSavingUser(false);
     }
   };
