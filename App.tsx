@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import { Login } from './pages/Login';
 import { DashboardLayout } from './components/DashboardLayout';
@@ -6,8 +6,16 @@ import { UserManagement } from './pages/UserManagement';
 import HeroAcademyApp from './HeroAcademyApp';
 
 const App = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, isAdmin } = useAuth();
+  const isUserAdmin = Boolean(isAdmin || profile?.role === 'admin');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'users'>('dashboard');
+
+  // Strict RBAC protection: force standard users to dashboard
+  useEffect(() => {
+    if (!isUserAdmin && activeTab === 'users') {
+      setActiveTab('dashboard');
+    }
+  }, [isUserAdmin, activeTab]);
 
   if (loading) {
     return (
@@ -23,10 +31,10 @@ const App = () => {
 
   return (
     <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
-      {activeTab === 'dashboard' ? (
-        <HeroAcademyApp />
-      ) : (
+      {activeTab === 'users' && isUserAdmin ? (
         <UserManagement />
+      ) : (
+        <HeroAcademyApp />
       )}
     </DashboardLayout>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Building2, Moon, Sun, AlertCircle, Mail, ArrowRight, Copy, Check, ShieldCheck, Info } from 'lucide-react';
+import { Building2, Moon, Sun, AlertCircle, Mail, ArrowRight, Copy, Check, ShieldCheck, User, Info } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const { t, language, setLanguage } = useLanguage();
@@ -168,15 +168,26 @@ export const Login: React.FC = () => {
               </div>
             </div>
 
-            {/* Quick 1-Click Access */}
-            <button
-              onClick={() => handleQuickLogin('danielcontaescolha@gmail.com')}
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium py-2.5 px-3 rounded-xl transition-all shadow-sm"
-            >
-              <ShieldCheck size={16} />
-              <span>Entrar como Administrador (danielcontaescolha@gmail.com)</span>
-            </button>
+            {/* Quick 1-Click Access for Admins & Users */}
+            <div className="space-y-2">
+              <button
+                onClick={() => handleQuickLogin('danielmelo@companyhero.com')}
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold py-2.5 px-3 rounded-xl transition-all shadow-sm"
+              >
+                <ShieldCheck size={16} className="text-emerald-400" />
+                <span>Entrar como Administrador (danielmelo@companyhero.com)</span>
+              </button>
+
+              <button
+                onClick={() => handleQuickLogin('danielcontaescolha@gmail.com')}
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-semibold py-2.5 px-3 rounded-xl transition-all shadow-sm"
+              >
+                <User size={16} className="text-blue-600" />
+                <span>Entrar como Colaborador (danielcontaescolha@gmail.com)</span>
+              </button>
+            </div>
 
             {/* Copy Hostname for Firebase */}
             <div className="pt-2 border-t border-amber-500/15 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
@@ -264,21 +275,21 @@ export const Login: React.FC = () => {
               <span className={theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}>Atalho:</span>
               <button
                 type="button"
-                onClick={() => setCorporateEmail('danielcontaescolha@gmail.com')}
-                className={`px-2 py-0.5 rounded-md border text-[11px] font-medium transition-colors ${
-                  theme === 'dark' ? 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                danielcontaescolha@gmail.com
-              </button>
-              <button
-                type="button"
                 onClick={() => setCorporateEmail('danielmelo@companyhero.com')}
                 className={`px-2 py-0.5 rounded-md border text-[11px] font-medium transition-colors ${
                   theme === 'dark' ? 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                @companyhero.com
+                danielmelo@companyhero.com (Admin)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCorporateEmail('danielcontaescolha@gmail.com')}
+                className={`px-2 py-0.5 rounded-md border text-[11px] font-medium transition-colors ${
+                  theme === 'dark' ? 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                danielcontaescolha@gmail.com (Colaborador)
               </button>
             </div>
           </div>

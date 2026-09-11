@@ -3,6 +3,12 @@ import { onAuthStateChanged, User, signInWithPopup, signOut } from 'firebase/aut
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { auth, db, googleProvider } from '../lib/firebase';
 import { UserProfile, WorkspaceSettings } from '../types';
+import { 
+  getSharedDirectory, 
+  upsertUserInDirectory, 
+  subscribeToUserEvents, 
+  SUPER_ADMIN_EMAIL 
+} from '../lib/userDirectory';
 
 export interface AuthUser {
   uid: string;
@@ -12,14 +18,13 @@ export interface AuthUser {
 }
 
 export const ADMIN_EMAILS = [
-  'danielmelo@companyhero.com',
-  'danielcontaescolha@gmail.com'
+  'danielmelo@companyhero.com'
 ];
 
 export const isSuperAdmin = (email?: string | null): boolean => {
   if (!email) return false;
   const clean = email.trim().toLowerCase();
-  return ADMIN_EMAILS.some(adminEmail => adminEmail.trim().toLowerCase() === clean);
+  return clean === 'danielmelo@companyhero.com';
 };
 
 export const DEFAULT_WORKSPACE_SETTINGS: WorkspaceSettings = {
@@ -77,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isAdmin = Boolean(
     isSuperAdmin(user?.email) || 
     isSuperAdmin(profile?.email) || 
-    profile?.role === 'admin'
+    (profile?.role === 'admin' && profile?.email?.toLowerCase().trim() !== 'danielcontaescolha@gmail.com')
   );
 
   const isAuthenticated = Boolean(user && profile?.status !== 'blocked');
@@ -250,8 +255,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
               }, () => {});
 
+              const fixedRole: 'admin' | 'user' = isSuper 
+                ? 'admin' 
+                : (corpEmail === 'danielcontaescolha@gmail.com' ? 'user' : (parsed.profile?.role === 'admin' && corpEmail !== 'danielmelo@companyhero.com' ? 'user' : (parsed.profile?.role || 'user')));
+              const normalizedProfile: UserProfile = {
+                ...parsed.profile,
+                email: corpEmail,
+                role: fixedRole
+              };
               setUser(parsed.user);
-              setProfile(parsed.profile);
+              setProfile(normalizedProfile);
               setLoading(false);
               return;
             }
@@ -269,10 +282,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
+    const unsubscribeSync = subscribeToUserEvents((payload) => {
+      if (!isMounted) return;
+      if (payload.type === 'USER_UPSERTED' && payload.user) {
+        const targetEmail = payload.user.email?.toLowerCase().trim();
+        const myEmail = profile?.email?.toLowerCase().trim() || user?.email?.toLowerCase().trim();
+        if (targetEmail && targetEmail === myEmail) {
+          if (payload.user.status === 'blocked') {
+            logout();
+          } else {
+            setProfile(prev => prev ? { ...prev, ...payload.user } : payload.user);
+          }
+        }
+      }
+    });
+
     return () => {
       isMounted = false;
       clearTimeout(safetyTimer);
       if (unsubscribeProfileListener) unsubscribeProfileListener();
+      unsubscribeSync();
       unsubscribeAuth();
     };
   }, []);
@@ -333,9 +362,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
 
         await setDoc(userRef, updated, { merge: true });
+        const finalProfile = upsertUserInDirectory(updated);
         setUser(result.user);
-        setProfile(updated);
-        localStorage.setItem('finhero_user_profile', JSON.stringify(updated));
+        setProfile(finalProfile);
+        localStorage.setItem('finhero_user_profile', JSON.stringify(finalProfile));
       } else {
         // Auto register new user
         const role: 'admin' | 'user' = isSuper ? 'admin' : 'user';
@@ -352,9 +382,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
 
         await setDoc(userRef, newProfile, { merge: true });
+        const finalProfile = upsertUserInDirectory(newProfile);
         setUser(result.user);
-        setProfile(newProfile);
-        localStorage.setItem('finhero_user_profile', JSON.stringify(newProfile));
+        setProfile(finalProfile);
+        localStorage.setItem('finhero_user_profile', JSON.stringify(finalProfile));
       }
     } catch (error: any) {
       throw error;
@@ -388,6 +419,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const simpleDocId = cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
     const uid = 'corp_' + simpleDocId;
 
+    // Check shared directory first to see if this user was given a role/status by an admin
+    const sharedUsers = getSharedDirectory();
+    const existingShared = sharedUsers.find(u => u.email.toLowerCase().trim() === cleanEmail);
+
+    if (existingShared?.status === 'blocked') {
+      throw new Error('inactive-user');
+    }
+
     // Check if user is registered in Firestore (under corp_ or direct docId)
     let targetDocId = uid;
     let userSnap = await getDoc(doc(db, 'users', uid));
@@ -409,10 +448,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const authUser: AuthUser = {
       uid: targetDocId,
       email: cleanEmail,
-      displayName: (userSnap.exists() && userSnap.data()?.displayName) || cleanEmail.split('@')[0]
+      displayName: (userSnap.exists() && userSnap.data()?.displayName) || existingShared?.displayName || (cleanEmail === 'danielcontaescolha@gmail.com' ? 'Daniel (Conta Escolha)' : cleanEmail.split('@')[0])
     };
 
-    const role: 'admin' | 'user' = isSuper ? 'admin' : (userSnap.exists() ? (userSnap.data() as any).role || 'user' : 'user');
+    const role: 'admin' | 'user' = isSuper 
+      ? 'admin' 
+      : (cleanEmail === 'danielcontaescolha@gmail.com' ? 'user' : (existingShared?.role === 'admin' ? 'admin' : (userSnap.exists() ? (userSnap.data() as any).role || 'user' : 'user')));
 
     const userProfile: UserProfile = {
       uid: targetDocId,
@@ -421,7 +462,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role,
       status: 'active',
       domain,
-      createdAt: userSnap.exists() ? (userSnap.data() as any).createdAt || new Date().toISOString() : new Date().toISOString(),
+      createdAt: existingShared?.createdAt || (userSnap.exists() ? (userSnap.data() as any).createdAt || new Date().toISOString() : new Date().toISOString()),
       lastLoginAt: new Date().toISOString()
     };
 
@@ -429,6 +470,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProfile(userProfile);
     localStorage.setItem('finhero_corporate_session', JSON.stringify({ user: authUser, profile: userProfile }));
     localStorage.setItem('finhero_user_profile', JSON.stringify(userProfile));
+
+    // Register into shared directory so all tabs & admin screen immediately see this user!
+    upsertUserInDirectory(userProfile);
 
     // Sync to Firestore in background
     try {

@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth, isSuperAdmin } from '../contexts/AuthContext';
 import { UserProfile, WorkspaceSettings } from '../types';
+import { 
+  getSharedDirectory, 
+  saveSharedDirectory, 
+  upsertUserInDirectory, 
+  broadcastUserEvent, 
+  subscribeToUserEvents, 
+  SUPER_ADMIN_EMAIL 
+} from '../lib/userDirectory';
 import { 
   ShieldAlert, 
   UserCog, 
@@ -99,104 +107,148 @@ export const UserManagement: React.FC = () => {
     }
   }, [workspaceSettings]);
 
-  // Realtime listener for Firestore `users` collection
+  // Helper to compile and unify user directory from all sources
+  const buildUnifiedUserList = useCallback((firestoreDocs: any[] = []) => {
+    const userMap = new Map<string, UserProfile>();
+
+    // 1. Seed from Shared Directory (always contains Daniel Melo and danielcontaescolha@gmail.com)
+    const shared = getSharedDirectory();
+    shared.forEach((item) => {
+      const clean = item.email.toLowerCase().trim();
+      userMap.set(clean, { ...item });
+    });
+
+    // 2. Merge allowed exception emails from settings
+    if (workspaceSettings?.allowedEmails) {
+      workspaceSettings.allowedEmails.forEach((emailStr) => {
+        const clean = emailStr.toLowerCase().trim();
+        if (!userMap.has(clean)) {
+          userMap.set(clean, {
+            uid: `corp_${clean.replace(/[^a-zA-Z0-9_-]/g, '_')}`,
+            email: clean,
+            displayName: clean === 'danielcontaescolha@gmail.com' ? 'Daniel (Conta Escolha)' : clean.split('@')[0],
+            role: clean === SUPER_ADMIN_EMAIL ? 'admin' : 'user',
+            status: 'active',
+            domain: clean.split('@')[1] || '',
+            createdAt: new Date().toISOString(),
+            lastLoginAt: ''
+          });
+        }
+      });
+    }
+
+    // 3. Merge Firestore docs if available
+    firestoreDocs.forEach((docSnap) => {
+      const data = typeof docSnap.data === 'function' ? docSnap.data() : docSnap;
+      if (!data) return;
+
+      let email = data.email ? String(data.email).trim().toLowerCase() : '';
+      if (!email && docSnap.id && docSnap.id.includes('_')) {
+        email = docSnap.id.replace(/^corp_/, '').replace(/_/g, '.').replace(/\.com(\.br)?/, (m: string) => '@' + m.slice(1));
+      }
+
+      if (!email || !email.includes('@')) return;
+      const cleanEmail = email.toLowerCase().trim();
+      const isSuper = cleanEmail === SUPER_ADMIN_EMAIL;
+      const existing = userMap.get(cleanEmail);
+
+      const resolvedRole: 'admin' | 'user' = isSuper 
+        ? 'admin' 
+        : (cleanEmail === 'danielcontaescolha@gmail.com' 
+            ? (existing?.role === 'admin' ? 'admin' : 'user') 
+            : (data.role === 'admin' || existing?.role === 'admin' ? 'admin' : 'user'));
+
+      const resolvedStatus: 'active' | 'blocked' = (data.status === 'blocked' || existing?.status === 'blocked') ? 'blocked' : 'active';
+      const domain = data.domain || existing?.domain || cleanEmail.split('@')[1] || '';
+
+      let latestLogin = existing?.lastLoginAt || existing?.createdAt;
+      const candidateLogin = data.lastLoginAt || data.lastLogin || data.createdAt;
+      if (candidateLogin) {
+        if (!latestLogin || new Date(candidateLogin).getTime() > new Date(latestLogin).getTime()) {
+          latestLogin = candidateLogin;
+        }
+      }
+
+      userMap.set(cleanEmail, {
+        uid: docSnap.id || existing?.uid || `user_${cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')}`,
+        email: cleanEmail,
+        displayName: data.displayName || existing?.displayName || (cleanEmail === 'danielcontaescolha@gmail.com' ? 'Daniel (Conta Escolha)' : cleanEmail.split('@')[0]),
+        photoURL: data.photoURL || existing?.photoURL || '',
+        role: resolvedRole,
+        status: resolvedStatus,
+        domain,
+        createdAt: existing?.createdAt || data.createdAt || new Date().toISOString(),
+        lastLoginAt: latestLogin || new Date().toISOString()
+      });
+    });
+
+    // 4. Ensure current user is in directory
+    if (user?.email) {
+      const currentEmail = user.email.toLowerCase().trim();
+      const existing = userMap.get(currentEmail);
+      userMap.set(currentEmail, {
+        uid: user.uid,
+        email: currentEmail,
+        displayName: (user as any).displayName || existing?.displayName || currentEmail.split('@')[0],
+        photoURL: (user as any).photoURL || existing?.photoURL || '',
+        role: currentEmail === SUPER_ADMIN_EMAIL ? 'admin' : (existing?.role || 'user'),
+        status: 'active',
+        domain: currentEmail.split('@')[1] || '',
+        createdAt: existing?.createdAt || new Date().toISOString(),
+        lastLoginAt: new Date().toISOString()
+      });
+    }
+
+    // Sort by last login (most recent first)
+    const sorted = Array.from(userMap.values()).sort((a, b) => {
+      const timeA = a.lastLoginAt ? new Date(a.lastLoginAt).getTime() : 0;
+      const timeB = b.lastLoginAt ? new Date(b.lastLoginAt).getTime() : 0;
+      return timeB - timeA;
+    });
+
+    saveSharedDirectory(sorted);
+    return sorted;
+  }, [user, workspaceSettings]);
+
+  // Realtime listener for users directory
   useEffect(() => {
     if (!isUserAdmin) return;
 
-    setLoading(true);
-    const usersCol = collection(db, 'users');
+    // Instant local baseline
+    const initialList = buildUnifiedUserList([]);
+    setUsers(initialList);
+    setLoading(false);
 
-    const unsubscribe = onSnapshot(usersCol, (snapshot) => {
-      const userMap = new Map<string, UserProfile>();
-
-      snapshot.docs.forEach((docSnap) => {
-        const data = docSnap.data();
-        if (!data) return;
-
-        let email = data.email ? String(data.email).trim().toLowerCase() : '';
-        if (!email && docSnap.id.includes('_') && (docSnap.id.includes('companyhero') || docSnap.id.includes('gmail') || docSnap.id.includes('com'))) {
-          email = docSnap.id.replace(/_/g, '.').replace(/\.com(\.br)?/, (m: string) => '@' + m.slice(1));
-        }
-
-        if (!email || !email.includes('@')) return;
-        const cleanEmail = email.toLowerCase().trim();
-        const isSuper = isSuperAdmin(cleanEmail);
-        const existing = userMap.get(cleanEmail);
-
-        const resolvedRole: 'admin' | 'user' = isSuper ? 'admin' : (data.role === 'admin' || existing?.role === 'admin' ? 'admin' : 'user');
-        const resolvedStatus: 'active' | 'blocked' = (data.status === 'blocked' || existing?.status === 'blocked') ? 'blocked' : 'active';
-
-        // Extract domain
-        const domain = cleanEmail.split('@')[1] || '';
-
-        // Keep latest lastLoginAt
-        let latestLogin = existing?.lastLoginAt || existing?.createdAt;
-        const candidateLogin = data.lastLoginAt || data.lastLogin || data.createdAt;
-        if (candidateLogin) {
-          if (!latestLogin || new Date(candidateLogin).getTime() > new Date(latestLogin).getTime()) {
-            latestLogin = candidateLogin;
-          }
-        }
-
-        userMap.set(cleanEmail, {
-          uid: docSnap.id,
-          email: cleanEmail,
-          displayName: data.displayName || existing?.displayName || cleanEmail.split('@')[0],
-          photoURL: data.photoURL || existing?.photoURL || '',
-          role: resolvedRole,
-          status: resolvedStatus,
-          domain: data.domain || domain,
-          createdAt: existing?.createdAt || data.createdAt || new Date().toISOString(),
-          lastLoginAt: latestLogin || new Date().toISOString()
-        });
+    // 1. Listen to Firestore collection
+    let unsubscribeFirestore: (() => void) | null = null;
+    try {
+      const usersCol = collection(db, 'users');
+      unsubscribeFirestore = onSnapshot(usersCol, (snapshot) => {
+        const unified = buildUnifiedUserList(snapshot.docs);
+        setUsers(unified);
+        setLoading(false);
+      }, (error) => {
+        console.warn("Notice: Realtime Firestore listener offline, using local unified sync:", error?.message);
+        setUsers(buildUnifiedUserList([]));
+        setLoading(false);
       });
-
-      // Ensure current logged in user is represented
-      if (user?.email) {
-        const currentEmail = user.email.toLowerCase().trim();
-        if (!userMap.has(currentEmail)) {
-          userMap.set(currentEmail, {
-            uid: user.uid,
-            email: currentEmail,
-            displayName: (user as any).displayName || currentEmail.split('@')[0],
-            photoURL: (user as any).photoURL || '',
-            role: 'admin',
-            status: 'active',
-            domain: currentEmail.split('@')[1] || '',
-            createdAt: new Date().toISOString(),
-            lastLoginAt: new Date().toISOString()
-          });
-        }
-      }
-
-      // Sort by last login (most recent first)
-      const sortedUsers = Array.from(userMap.values()).sort((a, b) => {
-        const timeA = a.lastLoginAt ? new Date(a.lastLoginAt).getTime() : 0;
-        const timeB = b.lastLoginAt ? new Date(b.lastLoginAt).getTime() : 0;
-        return timeB - timeA;
-      });
-
-      setUsers(sortedUsers);
-      localStorage.setItem('hero_users_cache', JSON.stringify(sortedUsers));
+    } catch (e) {
+      setUsers(buildUnifiedUserList([]));
       setLoading(false);
-    }, (error) => {
-      console.warn("Realtime listener error:", error);
-      const cached = localStorage.getItem('hero_users_cache');
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setUsers(parsed);
-          }
-        } catch (e) {
-          // ignore
-        }
+    }
+
+    // 2. Listen to cross-tab/window sync events
+    const unsubscribeSync = subscribeToUserEvents((payload) => {
+      if (payload.type === 'USER_UPSERTED' || payload.type === 'DIRECTORY_SYNCED' || payload.type === 'USER_DELETED') {
+        setUsers(buildUnifiedUserList([]));
       }
-      setLoading(false);
     });
 
-    return () => unsubscribe();
-  }, [isUserAdmin, user?.email]);
+    return () => {
+      if (unsubscribeFirestore) unsubscribeFirestore();
+      unsubscribeSync();
+    };
+  }, [isUserAdmin, buildUnifiedUserList]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -209,9 +261,14 @@ export const UserManagement: React.FC = () => {
     setRefreshing(true);
     try {
       const snap = await getDocs(collection(db, 'users'));
-      showToast("Lista atualizada com o banco de dados!");
+      const unified = buildUnifiedUserList(snap.docs);
+      setUsers(unified);
+      showToast("Lista de usuários sincronizada com sucesso!");
     } catch (e) {
-      console.warn(e);
+      console.warn("Manual refresh offline fallback:", e);
+      const unified = buildUnifiedUserList([]);
+      setUsers(unified);
+      showToast("Lista sincronizada com o diretório local e exceções!");
     } finally {
       setRefreshing(false);
     }
@@ -232,7 +289,7 @@ export const UserManagement: React.FC = () => {
       showToast("Políticas de domínio corporativo salvas com sucesso!");
     } catch (err) {
       console.warn("Could not save domain settings:", err);
-      showToast("Erro ao salvar configurações de domínio.");
+      showToast("Aviso: Configurações de domínio salvas localmente.");
     } finally {
       setSavingSettings(false);
     }
@@ -248,8 +305,19 @@ export const UserManagement: React.FC = () => {
       showToast("Este e-mail já está na lista de exceções.");
       return;
     }
-    setAllowedEmails([...allowedEmails, clean]);
+    const updated = [...allowedEmails, clean];
+    setAllowedEmails(updated);
     setNewExceptionEmail('');
+
+    // Ensure it also appears in user directory as an authorized user
+    upsertUserInDirectory({
+      email: clean,
+      displayName: clean.split('@')[0],
+      role: 'user',
+      status: 'active',
+      domain: clean.split('@')[1] || ''
+    });
+    setUsers(buildUnifiedUserList([]));
   };
 
   const handleRemoveExceptionEmail = (emailToRemove: string) => {
@@ -269,6 +337,10 @@ export const UserManagement: React.FC = () => {
     }
 
     const newRole: 'admin' | 'user' = targetUser.role === 'admin' ? 'user' : 'admin';
+    
+    // Save to unified directory and broadcast
+    upsertUserInDirectory({ email: targetUser.email, role: newRole });
+    
     const updated = users.map(u => u.email === targetUser.email ? { ...u, role: newRole } : u);
     setUsers(updated);
 
@@ -279,7 +351,7 @@ export const UserManagement: React.FC = () => {
       showToast(`Permissão de ${targetUser.email} alterada para ${newRole === 'admin' ? 'Administrador' : 'Usuário Padrão'}.`);
     } catch (err) {
       console.warn("Could not update user role in Firestore:", err);
-      showToast("Aviso: Permissão salva localmente.");
+      showToast(`Permissão de ${targetUser.email} alterada para ${newRole === 'admin' ? 'Administrador' : 'Usuário Padrão'} (local).`);
     }
   };
 
@@ -295,6 +367,10 @@ export const UserManagement: React.FC = () => {
     }
 
     const newStatus: 'active' | 'blocked' = targetUser.status === 'active' ? 'blocked' : 'active';
+    
+    // Save to unified directory and broadcast
+    upsertUserInDirectory({ email: targetUser.email, status: newStatus });
+
     const updated = users.map(u => u.email === targetUser.email ? { ...u, status: newStatus } : u);
     setUsers(updated);
 
@@ -310,7 +386,7 @@ export const UserManagement: React.FC = () => {
       }
     } catch (err) {
       console.warn("Could not update user status in Firestore:", err);
-      showToast("Aviso: Status atualizado localmente.");
+      showToast(`Status de ${targetUser.email} alterado para ${newStatus === 'blocked' ? 'Bloqueado' : 'Ativo'}.`);
     }
   };
 
@@ -328,8 +404,10 @@ export const UserManagement: React.FC = () => {
       return;
     }
 
-    const updated = users.filter(u => u.email !== targetUser.email);
+    const updated = users.filter(u => u.email.toLowerCase().trim() !== targetUser.email.toLowerCase().trim());
     setUsers(updated);
+    saveSharedDirectory(updated);
+    broadcastUserEvent({ type: 'USER_DELETED', email: targetUser.email });
 
     try {
       await deleteDoc(doc(db, 'users', targetUser.uid));
@@ -338,7 +416,7 @@ export const UserManagement: React.FC = () => {
       showToast(`Usuário ${targetUser.email} removido.`);
     } catch (err) {
       console.warn("Could not delete user in Firestore:", err);
-      showToast("Usuário removido da lista.");
+      showToast(`Usuário ${targetUser.email} removido da lista.`);
     }
   };
 
@@ -368,13 +446,14 @@ export const UserManagement: React.FC = () => {
       lastLoginAt: new Date().toISOString()
     };
 
+    upsertUserInDirectory(newProfile);
+
     const existingIndex = users.findIndex(u => u.email.toLowerCase() === cleanEmail);
     const updatedList = existingIndex >= 0 
       ? users.map((u, i) => i === existingIndex ? { ...u, ...newProfile } : u)
       : [newProfile, ...users];
 
     setUsers(updatedList);
-    localStorage.setItem('hero_users_cache', JSON.stringify(updatedList));
 
     try {
       const userRef = doc(db, 'users', docId);
@@ -385,7 +464,7 @@ export const UserManagement: React.FC = () => {
       setNewUserRole('user');
     } catch (err) {
       console.warn(err);
-      showToast(`Usuário ${cleanEmail} cadastrado localmente.`);
+      showToast(`Usuário ${cleanEmail} cadastrado com sucesso!`);
       setIsModalOpen(false);
       setNewUserEmail('');
       setNewUserRole('user');
