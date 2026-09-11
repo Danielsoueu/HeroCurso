@@ -173,13 +173,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Background sync to Firestore without blocking UI
         try {
-          const uidRef = doc(db, 'users', currentUser.uid);
-          await setDoc(uidRef, {
+          const sanitizedId = userEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
+          const syncData = {
             email: userEmail,
+            displayName: currentUser.displayName || userEmail.split('@')[0],
+            photoURL: currentUser.photoURL || '',
             role: resolvedRole,
             status: resolvedStatus,
-            lastLogin: new Date().toISOString()
-          }, { merge: true });
+            lastLogin: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+
+          await setDoc(doc(db, 'users', currentUser.uid), syncData, { merge: true });
+          if (sanitizedId !== currentUser.uid) {
+            await setDoc(doc(db, 'users', sanitizedId), syncData, { merge: true });
+          }
         } catch (syncErr) {
           console.warn("Background sync notice:", syncErr);
         }
@@ -193,6 +201,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               setUser(parsed.user);
               setProfile(parsed.profile);
               setLoading(false);
+
+              // Keep Firestore lastLogin alive
+              const corpEmail = parsed.user.email.toLowerCase().trim();
+              const corpDocId = corpEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
+              setDoc(doc(db, 'users', corpDocId), {
+                email: corpEmail,
+                displayName: parsed.user.displayName || corpEmail.split('@')[0],
+                role: parsed.profile?.role || 'user',
+                status: parsed.profile?.status || 'active',
+                lastLogin: new Date().toISOString()
+              }, { merge: true }).catch(() => {});
+
               return;
             }
           }
@@ -247,13 +267,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Sync Firestore profile
       try {
-        const uidRef = doc(db, 'users', result.user.uid);
-        await setDoc(uidRef, {
+        const sanitizedId = email.replace(/[^a-zA-Z0-9_-]/g, '_');
+        const syncPayload = {
           email,
+          displayName: result.user.displayName || email.split('@')[0],
+          photoURL: result.user.photoURL || '',
           role,
           status: 'active',
-          lastLogin: new Date().toISOString()
-        }, { merge: true });
+          lastLogin: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        await setDoc(doc(db, 'users', result.user.uid), syncPayload, { merge: true });
+        if (sanitizedId !== result.user.uid) {
+          await setDoc(doc(db, 'users', sanitizedId), syncPayload, { merge: true });
+        }
       } catch (syncErr) {
         console.warn("Could not sync user profile:", syncErr);
       }
@@ -298,12 +325,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Sync to Firestore in background
     try {
       const docId = cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
-      await setDoc(doc(db, 'users', docId), {
+      const corpPayload = {
         email: cleanEmail,
+        displayName: cleanEmail.split('@')[0],
         role,
         status: 'active',
-        lastLogin: new Date().toISOString()
-      }, { merge: true });
+        lastLogin: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      await setDoc(doc(db, 'users', docId), corpPayload, { merge: true });
+      await setDoc(doc(db, 'users', uid), corpPayload, { merge: true });
     } catch (syncErr) {
       console.warn("Notice syncing corporate login to Firestore:", syncErr);
     }
