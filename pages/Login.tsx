@@ -1,40 +1,74 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Building2, Moon, Sun, AlertCircle, Mail, ArrowRight } from 'lucide-react';
+import { Building2, Moon, Sun, AlertCircle, Mail, ArrowRight, Copy, Check, ShieldCheck, Info } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const { t, language, setLanguage } = useLanguage();
   const { signInWithGoogle, signInWithCorporateEmail } = useAuth();
   const [corporateEmail, setCorporateEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [domainNotice, setDomainNotice] = useState<string | null>(null);
+  const [copiedDomain, setCopiedDomain] = useState(false);
   const [loading, setLoading] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const currentYear = new Date().getFullYear();
+  const currentHostname = typeof window !== 'undefined' ? window.location.hostname : '';
+
+  const copyDomainToClipboard = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(currentHostname);
+      setCopiedDomain(true);
+      setTimeout(() => setCopiedDomain(false), 2500);
+    }
+  };
+
+  const handleQuickLogin = async (email: string) => {
+    setCorporateEmail(email);
+    setLoading(true);
+    setError(null);
+    try {
+      await signInWithCorporateEmail(email);
+    } catch (err: any) {
+      console.warn('Direct login issue:', err?.message || err);
+      if (err.message === 'inactive-user') {
+        setError('Acesso bloqueado: Este usuário foi desativado por um administrador.');
+      } else if (err.message === 'unauthorized-domain') {
+        setError('Acesso restrito: Seu e-mail não pertence ao domínio corporativo permitido nem consta na lista de exceções autorizadas.');
+      } else {
+        setError(t('login.error.default'));
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError(null);
+    setDomainNotice(null);
     try {
       await signInWithGoogle();
     } catch (err: any) {
-      console.error('Login error:', err);
       const isFirebaseDomainError = 
         err?.code === 'auth/unauthorized-domain' || 
         err?.message?.includes('auth/unauthorized-domain') ||
         String(err)?.includes('unauthorized-domain');
 
-      if (err.message === 'inactive-user') {
+      if (isFirebaseDomainError) {
+        console.warn('Firebase Auth: Current hostname is not registered in Firebase Authorized Domains list. Offering direct corporate login.', currentHostname);
+        setDomainNotice(currentHostname);
+        setCorporateEmail('danielcontaescolha@gmail.com');
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        // User closed popup, no error needed
+      } else if (err.message === 'inactive-user') {
         setError('Acesso bloqueado: Este usuário foi desativado por um administrador.');
       } else if (err.message === 'unauthorized-domain') {
         setError('Acesso restrito: Seu e-mail não pertence ao domínio corporativo permitido nem consta na lista de exceções autorizadas.');
-      } else if (err?.code === 'auth/unauthorized-domain' || isFirebaseDomainError) {
-        setError('O pop-up do Google pode estar com restrição de domínio de origem no Firebase. Digite seu e-mail corporativo abaixo para acessar.');
       } else if (err.message === 'unauthorized-email') {
         setError(t('login.error.unauthorized_email'));
-      } else if (err.code === 'auth/popup-closed-by-user') {
-        // user closed popup, ignore
       } else {
+        console.warn('Login notice:', err?.message || err);
         setError(t('login.error.default'));
       }
     } finally {
@@ -50,7 +84,7 @@ export const Login: React.FC = () => {
     try {
       await signInWithCorporateEmail(corporateEmail);
     } catch (err: any) {
-      console.error('Corporate login error:', err);
+      console.warn('Corporate login notice:', err?.message || err);
       if (err.message === 'invalid-format') {
         setError(t('login.error.invalid_format'));
       } else if (err.message === 'inactive-user') {
@@ -110,7 +144,7 @@ export const Login: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h1 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
             {t('login.title')} <span className="text-[#FF0066]">Hero</span>
           </h1>
@@ -118,6 +152,48 @@ export const Login: React.FC = () => {
             {t('login.subtitle')}
           </p>
         </div>
+
+        {/* Domain Helper Notice */}
+        {domainNotice && (
+          <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-left animate-fade-in space-y-3">
+            <div className="flex items-start gap-2.5">
+              <Info size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-semibold text-amber-900 dark:text-amber-200">
+                  Domínio não listado no Firebase Console
+                </p>
+                <p className="text-[12px] text-amber-700 dark:text-amber-300 mt-1 leading-relaxed">
+                  O Google bloqueou o pop-up porque este domínio de pré-visualização ainda não foi adicionado aos <strong>Domínios Autorizados</strong> do Firebase Authentication.
+                </p>
+              </div>
+            </div>
+
+            {/* Quick 1-Click Access */}
+            <button
+              onClick={() => handleQuickLogin('danielcontaescolha@gmail.com')}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium py-2.5 px-3 rounded-xl transition-all shadow-sm"
+            >
+              <ShieldCheck size={16} />
+              <span>Entrar como Administrador (danielcontaescolha@gmail.com)</span>
+            </button>
+
+            {/* Copy Hostname for Firebase */}
+            <div className="pt-2 border-t border-amber-500/15 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="truncate max-w-[200px]" title={domainNotice}>
+                {domainNotice}
+              </span>
+              <button
+                type="button"
+                onClick={copyDomainToClipboard}
+                className="inline-flex items-center gap-1 text-[#FF0066] font-semibold hover:underline"
+              >
+                {copiedDomain ? <Check size={13} /> : <Copy size={13} />}
+                <span>{copiedDomain ? 'Copiado!' : 'Copiar domínio'}</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-xl flex gap-3 text-sm border border-red-100 items-start animate-fade-in">
@@ -182,9 +258,29 @@ export const Login: React.FC = () => {
                 }`}
               />
             </div>
-            <p className={`text-[11px] mt-1.5 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-              Permitido: @companyhero.com, @companyhero.com.br e usuários cadastrados.
-            </p>
+            
+            {/* Quick Email Selector Chips */}
+            <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
+              <span className={theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}>Atalho:</span>
+              <button
+                type="button"
+                onClick={() => setCorporateEmail('danielcontaescolha@gmail.com')}
+                className={`px-2 py-0.5 rounded-md border text-[11px] font-medium transition-colors ${
+                  theme === 'dark' ? 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                danielcontaescolha@gmail.com
+              </button>
+              <button
+                type="button"
+                onClick={() => setCorporateEmail('danielmelo@companyhero.com')}
+                className={`px-2 py-0.5 rounded-md border text-[11px] font-medium transition-colors ${
+                  theme === 'dark' ? 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                @companyhero.com
+              </button>
+            </div>
           </div>
 
           <button

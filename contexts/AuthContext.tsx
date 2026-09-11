@@ -385,11 +385,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const isSuper = isSuperAdmin(cleanEmail);
     const domain = cleanEmail.split('@')[1] || '';
-    const uid = 'corp_' + cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const simpleDocId = cleanEmail.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const uid = 'corp_' + simpleDocId;
 
-    // Check if user is registered in Firestore
-    const userRef = doc(db, 'users', uid);
-    const userSnap = await getDoc(userRef);
+    // Check if user is registered in Firestore (under corp_ or direct docId)
+    let targetDocId = uid;
+    let userSnap = await getDoc(doc(db, 'users', uid));
+    if (!userSnap.exists()) {
+      const altSnap = await getDoc(doc(db, 'users', simpleDocId));
+      if (altSnap.exists()) {
+        userSnap = altSnap;
+        targetDocId = simpleDocId;
+      }
+    }
 
     if (userSnap.exists()) {
       const existing = userSnap.data() as UserProfile;
@@ -399,17 +407,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const authUser: AuthUser = {
-      uid,
+      uid: targetDocId,
       email: cleanEmail,
-      displayName: cleanEmail.split('@')[0]
+      displayName: (userSnap.exists() && userSnap.data()?.displayName) || cleanEmail.split('@')[0]
     };
 
     const role: 'admin' | 'user' = isSuper ? 'admin' : (userSnap.exists() ? (userSnap.data() as any).role || 'user' : 'user');
 
     const userProfile: UserProfile = {
-      uid,
+      uid: targetDocId,
       email: cleanEmail,
-      displayName: cleanEmail.split('@')[0],
+      displayName: authUser.displayName || cleanEmail.split('@')[0],
       role,
       status: 'active',
       domain,
@@ -424,7 +432,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Sync to Firestore in background
     try {
-      await setDoc(userRef, userProfile, { merge: true });
+      await setDoc(doc(db, 'users', targetDocId), userProfile, { merge: true });
     } catch (syncErr) {
       console.warn("Notice syncing corporate login to Firestore:", syncErr);
     }
@@ -442,7 +450,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await setDoc(settingsRef, payload, { merge: true });
       setWorkspaceSettings(payload);
     } catch (err) {
-      console.error("Error updating workspace settings:", err);
+      console.warn("Notice updating workspace settings:", err);
       throw err;
     }
   };

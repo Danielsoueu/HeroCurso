@@ -231,7 +231,7 @@ export const UserManagement: React.FC = () => {
       });
       showToast("Políticas de domínio corporativo salvas com sucesso!");
     } catch (err) {
-      console.error(err);
+      console.warn("Could not save domain settings:", err);
       showToast("Erro ao salvar configurações de domínio.");
     } finally {
       setSavingSettings(false);
@@ -278,7 +278,7 @@ export const UserManagement: React.FC = () => {
       await setDoc(doc(db, 'users', altDocId), { role: newRole }, { merge: true }).catch(() => {});
       showToast(`Permissão de ${targetUser.email} alterada para ${newRole === 'admin' ? 'Administrador' : 'Usuário Padrão'}.`);
     } catch (err) {
-      console.error(err);
+      console.warn("Could not update user role in Firestore:", err);
       showToast("Aviso: Permissão salva localmente.");
     }
   };
@@ -309,7 +309,7 @@ export const UserManagement: React.FC = () => {
         showToast(`Acesso de ${targetUser.email} reativado com sucesso.`);
       }
     } catch (err) {
-      console.error(err);
+      console.warn("Could not update user status in Firestore:", err);
       showToast("Aviso: Status atualizado localmente.");
     }
   };
@@ -337,7 +337,7 @@ export const UserManagement: React.FC = () => {
       await deleteDoc(doc(db, 'users', altDocId)).catch(() => {});
       showToast(`Usuário ${targetUser.email} removido.`);
     } catch (err) {
-      console.error(err);
+      console.warn("Could not delete user in Firestore:", err);
       showToast("Usuário removido da lista.");
     }
   };
